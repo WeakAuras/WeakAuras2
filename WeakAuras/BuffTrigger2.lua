@@ -2221,8 +2221,7 @@ local brokenUnitMap = {
 }
 
 local function EventHandler(frame, event, arg1, arg2, ...)
-  Private.StartProfileSystem("bufftrigger2")
-
+  Private.StartProfileSystem("bufftrigger2 - ".. event)
   local deactivatedTriggerInfos = {}
   local unitsToRemove = {}
 
@@ -2361,19 +2360,19 @@ local function EventHandler(frame, event, arg1, arg2, ...)
     matchDataUpToDate[unit] = nil
   end
 
-  Private.StopProfileSystem("bufftrigger2")
+  Private.StopProfileSystem("bufftrigger2 - ".. event)
 end
 
 if WeakAuras.IsCataOrMistsOrRetail() then
   Private.LibSpecWrapper.Register(function(unit)
-    Private.StartProfileSystem("bufftrigger2")
+    Private.StartProfileSystem("bufftrigger2 - LibSpsecWrapper")
 
     local deactivatedTriggerInfos = {}
     RecheckActiveForUnitType("group", unit, deactivatedTriggerInfos)
     RecheckActiveForUnitType("group", WeakAuras.unitToPetUnit[unit], deactivatedTriggerInfos)
     DeactivateScanFuncs(deactivatedTriggerInfos)
 
-    Private.StopProfileSystem("bufftrigger2")
+    Private.StopProfileSystem("bufftrigger2 - LibSpsecWrapper")
   end)
 end
 
@@ -2502,13 +2501,13 @@ Buff2Frame:SetScript("OnUpdate", function()
   if WeakAuras.IsPaused() then
     return
   end
-  Private.StartProfileSystem("bufftrigger2")
+  Private.StartProfileSystem("bufftrigger2 - OnUpdate")
   if next(matchDataChanged) then
     local time = GetTime()
     UpdateStates(matchDataChanged, time)
     wipe(matchDataChanged)
   end
-  Private.StopProfileSystem("bufftrigger2")
+  Private.StopProfileSystem("bufftrigger2 - OnUpdate")
 end)
 
 local function UnloadAura(scanFuncName, id)
@@ -4239,11 +4238,35 @@ do
     end
   end
 
-  CheckAurasMulti = function(base, unit, filter)
+  CheckAurasMulti = function(base, unit, filter, unitAuraUpdateInfo)
     if newAPI then
       _base = base
       _unit = unit
-      AuraUtil.ForEachAura(unit, filter, nil, HandleAura, true)
+      if unitAuraUpdateInfo then
+          -- incremental
+          if unitAuraUpdateInfo.addedAuras ~= nil then
+            for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
+              if (aura.isHelpful and filter == "HELPFUL") or (aura.isHarmful and filter == "HARMFUL") then
+                HandleAura(aura)
+              end
+            end
+          end
+          if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
+              local aura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID)
+              if aura and ((aura.isHelpful and filter == "HELPFUL") or (aura.isHarmful and filter == "HARMFUL")) then
+                HandleAura(aura)
+              end
+            end
+          end
+          if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
+              -- TODO
+            end
+          end
+      else
+        AuraUtil.ForEachAura(unit, filter, nil, HandleAura, true)
+      end
     else
       local index = 1
       while true do
@@ -4329,11 +4352,11 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
     unit = unit.."target"
     ReleaseUID(unit)
   elseif event == "UNIT_AURA" then
-    local unit = ...
+    local unit, updateInfo = ...
     local guid = UnitGUID(unit)
     if matchDataMulti[guid] then
-      CheckAurasMulti(matchDataMulti[guid], unit, "HELPFUL")
-      CheckAurasMulti(matchDataMulti[guid], unit, "HARMFUL")
+      CheckAurasMulti(matchDataMulti[guid], unit, "HELPFUL", updateInfo)
+      CheckAurasMulti(matchDataMulti[guid], unit, "HARMFUL", updateInfo)
     end
   elseif event == "PLAYER_LEAVING_WORLD" then
     -- Remove everything..
