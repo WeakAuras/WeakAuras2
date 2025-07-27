@@ -672,7 +672,7 @@ end
 
 local function Tick(self)
   Private.StartProfileAura(self.id)
-  self.values.lastCustomTextUpdate = nil
+  self.values.customTextUpdated = false
   self.subRegionEvents:Notify("FrameTick")
   Private.StopProfileAura(self.id)
 end

@@ -90,6 +90,30 @@ local function createOptions(id, data)
       values = OptionsPrivate.Private.text_check_types,
       order = 36
     },
+    text_customTextUpdateThrottle = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      softMin = 0,
+      softMax = 5,
+      bigStep = 0.1,
+      min = 0,
+      width = WeakAuras.doubleWidth,
+      name = L["Custom Text Update Throttle"],
+      order = 36.1,
+      get = function() return data.customTextUpdateThrottle or 0 end,
+      set = function(info, v)
+        v = tonumber(v) or 0
+        if v < 0 then
+          v = 0
+        end
+        data.customTextUpdateThrottle = v
+        WeakAuras.Add(data)
+        WeakAuras.ClearAndUpdateOptions(data.id)
+      end,
+      hidden = function()
+        return hideCustomTextOption() or (data.customTextUpdate ~= "update")
+      end
+    },
     -- code editor added below
 
     font = {
