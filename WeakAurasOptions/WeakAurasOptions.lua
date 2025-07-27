@@ -1170,21 +1170,21 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
         end
       end
       if hasLoaded > 0 then
-        child:SetLoaded(1, {0, 0.68, 0.30, 1}, L["Loaded"], L["%d displays loaded"]:format(hasLoaded))
+        child:SetLoaded(1, "loaded", L["Loaded"], L["%d displays loaded"]:format(hasLoaded))
       elseif hasStandBy > 0 then
-        child:SetLoaded(2, {0.96, 0.82, 0.16, 1}, L["Standby"], L["%d displays on standby"]:format(hasStandBy))
+        child:SetLoaded(2, "standby", L["Standby"], L["%d displays on standby"]:format(hasStandBy))
       elseif hasNotLoaded > 0 then
-        child:SetLoaded(3, {0.6, 0.6, 0.6, 1}, L["Not Loaded"], L["%d displays not loaded"]:format(hasNotLoaded))
+        child:SetLoaded(3, "unloaded", L["Not Loaded"], L["%d displays not loaded"]:format(hasNotLoaded))
       else
         child:ClearLoaded()
       end
     else
       if OptionsPrivate.Private.loaded[id] == true then
-        child:SetLoaded(1, {0, 0.68, 0.30, 1}, L["Loaded"], L["This display is currently loaded"])
+        child:SetLoaded(1, "loaded", L["Loaded"], L["This display is currently loaded"])
       elseif OptionsPrivate.Private.loaded[id] == false then
-        child:SetLoaded(2, {0.96, 0.82, 0.16, 1}, L["Standby"], L["This display is on standby, it will be loaded when needed."])
+        child:SetLoaded(2, "standby", L["Standby"], L["This display is on standby, it will be loaded when needed."])
       else
-        child:SetLoaded(3, {0.6, 0.6, 0.6, 1}, L["Not Loaded"], L["This display is not currently loaded"])
+        child:SetLoaded(3, "unloaded", L["Not Loaded"], L["This display is not currently loaded"])
       end
     end
 
