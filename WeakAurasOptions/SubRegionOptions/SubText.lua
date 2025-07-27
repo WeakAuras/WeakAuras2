@@ -493,6 +493,30 @@ local function createOptions(parentData, data, index, subIndex)
         WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     },
+    text_customTextUpdateThrottle = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      softMin = 0,
+      softMax = 5,
+      bigStep = 0.1,
+      min = 0,
+      width = WeakAuras.doubleWidth,
+      name = L["Custom Text Update Throttle"],
+      order = 3.01,
+      get = function() return parentData.customTextUpdateThrottle or 0 end,
+      set = function(info, v)
+        v = tonumber(v) or 0
+        if v < 0 then
+          v = 0
+        end
+        parentData.customTextUpdateThrottle = v
+        WeakAuras.Add(parentData)
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
+      end,
+      hidden = function()
+        return hideCustomTextOption() or (parentData.customTextUpdate ~= "update")
+      end
+    }
   }
 
   OptionsPrivate.commonOptions.AddCodeOption(commonTextOptions, parentData, L["Custom Function"], "customText",
