@@ -75,6 +75,35 @@ local function GetCustomTriggerOptions(data, triggernum)
         WeakAuras.Add(data);
       end
     },
+    onUpdateThrottle = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      softMin = 0,
+      softMax = 5,
+      bigStep = 0.1,
+      min = 0,
+      width = WeakAuras.doubleWidth,
+      name = L["Custom trigger Update Throttle"],
+      order = 9.01,
+      get = function() return trigger.onUpdateThrottle or 0 end,
+      set = function(info, v)
+        v = tonumber(v) or 0
+        if v < 0 then
+          v = 0
+        end
+        trigger.onUpdateThrottle = v
+        WeakAuras.Add(data)
+      end,
+      hidden = function() return not (
+        trigger.type == "custom"
+        and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
+        and (
+          (trigger.check == "update")
+          or (trigger.check == "event" and type(trigger.events) == "string" and trigger.events:find("FRAME_UPDATE", 1, true))
+        )
+      )
+      end,
+    },
     events = {
       type = "input",
       multiline = true,
