@@ -953,6 +953,18 @@ function WeakAuras.ScanUnitEvents(event, unit, ...)
   scannerFrame:Queue(Private.ScanUnitEvents, event, unit, ...)
 end
 
+local function checkOnUpdateThrottle(data)
+  if data.onUpdateThrottle then
+    local now = GetTime()
+    if not data.lastOnUpdate or (now - data.lastOnUpdate) >= data.onUpdateThrottle then
+      data.lastOnUpdate = now
+      return true
+    end
+    return false
+  end
+  return true
+end
+
 ---@private
 ---@param event_list table<string>
 ---@param event string
@@ -965,14 +977,23 @@ function Private.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     Private.ActivateAuraEnvironment(id);
     local updateTriggerState = false;
     for triggernum, data in pairs(triggers) do
-      local delay = GenericTrigger.GetDelay(data)
-      if delay == 0 then
-        local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-        if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
-          updateTriggerState = true
+      if event == "FRAME_UPDATE" then
+        if checkOnUpdateThrottle(data) then
+          local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+          if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
+            updateTriggerState = true
+          end
         end
       else
-        Private.RunTriggerFuncWithDelay(delay, id, triggernum, data, event, arg1, arg2, ...)
+        local delay = GenericTrigger.GetDelay(data)
+        if delay == 0 then
+          local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+          if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
+            updateTriggerState = true
+          end
+        else
+          Private.RunTriggerFuncWithDelay(delay, id, triggernum, data, event, arg1, arg2, ...)
+        end
       end
     end
     if (updateTriggerState) then
@@ -1877,6 +1898,7 @@ function GenericTrigger.Add(data, region)
           statesParameter = statesParameter,
           event = trigger.event,
           events = trigger_events,
+          onUpdateThrottle = trigger.onUpdateThrottle,
           ignorePartyUnitsInRaid = ignorePartyUnitsInRaid,
           internal_events = internal_events,
           loadInternalEventFunc = loadInternalEventFunc,
