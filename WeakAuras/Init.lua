@@ -118,6 +118,7 @@ Private.frames = {}
 --- @field spec_types string[]
 --- @field spec_types_3 string[]
 --- @field spec_types_2 string[]
+--- @field SquelchingActions fun(uid: uid): boolean
 --- @field StartProfileAura fun(id: auraId)
 --- @field StartProfileSystem fun(system: string)
 --- @field StopProfileAura fun(id: auraId)
