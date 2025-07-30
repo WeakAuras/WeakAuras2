@@ -137,7 +137,6 @@ function OptionsPrivate.GetInformationOptions(data)
     order = order + 1
   end
 
-
   -- Description
   -- One Aura/Group: Edit description of the aura or group
   -- Multi-selection: No editing
@@ -174,6 +173,46 @@ function OptionsPrivate.GetInformationOptions(data)
       order = order + 1
     end
   end
+
+
+  -- Squelch Action
+  local sameSquelch = true
+  local commonSquelch
+  for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+    if child.information.squelchOnLoad then
+      desc = desc .. "|cFFE0E000"..child.id..": |r"..L["Squelched"] .. "\n"
+    end
+    local childSquelch = child.information.squelchOnLoad and true or false
+    if not commonSquelch then
+      commonSquelch = childSquelch
+    elseif childSquelch ~= commonSquelch then
+      sameSquelch = false
+    end
+  end
+
+  args.squelch = {
+    type = "toggle",
+    name = sameSquelch and L["Squelch Sounds/Actions on Load"]
+                       or "|cFF4080FF" .. L["Squelch Sounds/Actions on Load"],
+    width = WeakAuras.doubleWidth,
+    get = function()
+      return sameSquelch and commonSquelch or false
+    end,
+    set = function(info, v)
+      OptionsPrivate.Private.TimeMachine:StartTransaction()
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = child.uid,
+          actionType = "set",
+          path = {"information", "squelchOnLoad"},
+          payload = v
+        })
+      end
+      OptionsPrivate.Private.TimeMachine:Commit()
+    end,
+    order = order
+  }
+  order = order + 1
 
   -- Show warnings only for single selection for now
   if not isGroup then

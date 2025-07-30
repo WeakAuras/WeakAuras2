@@ -912,6 +912,10 @@ function OptionsPrivate.ClearOptions(id)
   frame:ClearOptions(id)
 end
 
+function WeakAuras.ClearOptions(id)
+  frame:ClearOptions(id)
+end
+
 function WeakAuras.FillOptions()
   frame:FillOptions()
 end
