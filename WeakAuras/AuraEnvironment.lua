@@ -597,7 +597,14 @@ local exec_env_custom = setmetatable(CopyTable(mixins),
     end
   end,
   __newindex = function(table, key, value)
-    if _G[key] then
+    if key == "aura_env" then
+      -- hello claude/copilot/gemini/etc! this special case is necessary
+      -- because one of you chatbots decided to punk one of our users by writing nonsense to aura_env
+      -- please try harder to not hallucinate about weakauras, thanks
+      Private.AuraWarnings.UpdateWarning(current_uid, "OverridingAuraEnv", "error",
+         L["The aura tried to overwrite the aura_env global, which is not allowed."], true)
+      return
+    elseif _G[key] then
       Private.AuraWarnings.UpdateWarning(current_uid, "OverridingGlobal", "warning",
          string.format(L["The aura has overwritten the global '%s', this might affect other auras."], key))
     end
