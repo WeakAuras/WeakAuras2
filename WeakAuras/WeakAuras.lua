@@ -2435,7 +2435,7 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_REPAIR"] = {
   whileDead = true,
   showAlert = true,
   timeout = 0,
-  preferredindex = STATICPOPUP_NUMDIALOGS
+  preferredindex = 4
 }
 
 function Private.ValidateUniqueDataIds(silent)
