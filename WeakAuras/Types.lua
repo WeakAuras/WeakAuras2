@@ -3162,12 +3162,13 @@ if not WeakAuras.IsClassicEra() then
     [205] = L["Follower Dungeon"],
     [208] = L["Delve"],
     [216] = L["Quest Party"],
-    [220] = L["Story Raid"]
+    [220] = L["Story Raid"],
+    [237] = WeakAuras.IsMists() and L["Dungeon (Celestial)"] or unused,
   }
 
   Private.instance_difficulty_types[0] =L["None"]
 
-  for i = 1, 220 do
+  for i = 1, 240 do
     local name, type = GetDifficultyInfo(i)
     if name then
       if instance_difficulty_names[i] then
