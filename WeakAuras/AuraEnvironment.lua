@@ -685,7 +685,7 @@ local function CreateFunctionCache(exec_env)
       local loadedFunction, errorString = loadstring(string, firstLine(string))
       if errorString then
         if not silent then
-          print(string.format(L["Error in aura '%s'"], id), errorString)
+          print(string.format(L["Error in Aura '%s'"], id), errorString)
         end
         return nil, errorString
       elseif loadedFunction then
