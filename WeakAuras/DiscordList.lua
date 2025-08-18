@@ -27,7 +27,6 @@ Private.DiscordList = {
   [=[Guffin]=],
   [=[Ifor]=],
   [=[Ironi]=],
-  [=[Jiberish]=],
   [=[Jods]=],
   [=[kanegasi]=],
   [=[Korvus]=],
