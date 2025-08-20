@@ -82,9 +82,7 @@
           <OnMouseDown>
             if button == "LeftButton" then
               self.is_moving = true
-              local parent = self:GetParent()
-              parent:ClearAllPoints()
-              parent:StartMoving()
+              self:GetParent():StartMoving()
             end
           </OnMouseDown>
           <OnMouseUp>
