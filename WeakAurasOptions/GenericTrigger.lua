@@ -356,7 +356,8 @@ local function GetCustomTriggerOptions(data, triggernum)
     paused = "string",
     remaining = "string",
     modRate = "string",
-    useModRate = "boolean"
+    useModRate = "boolean",
+    formatter = "string"
   }
 
   local function validateCustomVariables(variables)
