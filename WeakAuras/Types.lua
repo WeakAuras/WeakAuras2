@@ -4389,6 +4389,12 @@ Private.dbm_types = {
   [7] = L["Important"]
 }
 
+Private.bossmods_timerTypes = {
+  PULL = L["Pull"],
+  BREAK = L["Break"],
+  TIMER = L["Timer"],
+}
+
 ---@type table<string, string>
 Private.weapon_enchant_types = {
   showOnActive = L["Enchant Found"],
