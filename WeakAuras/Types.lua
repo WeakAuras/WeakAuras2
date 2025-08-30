@@ -3391,21 +3391,6 @@ Private.send_chat_message_types = {
 
 Private.send_chat_message_types.TTS = L["Text-to-speech"]
 
----@type table
-Private.tts_voices = {}
-
-local function updateTts()
-  wipe(Private.tts_voices)
-  for i, voiceInfo in pairs(C_VoiceChat.GetTtsVoices()) do
-    Private.tts_voices[voiceInfo.voiceID] = voiceInfo.name
-  end
-end
-
-updateTts()
-
-local TtsUpdateFrame = CreateFrame("FRAME")
-TtsUpdateFrame:RegisterEvent("VOICE_CHAT_TTS_VOICES_UPDATE")
-TtsUpdateFrame:SetScript("OnEvent", updateTts)
 
 ---@type table<string, string>
 Private.group_aura_name_info_types = {
