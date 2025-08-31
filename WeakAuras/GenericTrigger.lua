@@ -5331,11 +5331,14 @@ Private.ExecEnv.GetCurrencyAccountInfo = function(currencyId)
   end
 
   if not currencyInfo then
-    currencyInfo = C_CurrencyInfo.GetCurrencyInfo(1) --Currency Token Test Token 4
-    currencyInfo.iconFileID = "Interface\\Icons\\INV_Misc_QuestionMark" --We don't want the user to think their input was valid
+    local testToken = C_CurrencyInfo.GetCurrencyInfo(1) --Currency Token Test Token 4
+    if testToken then
+      currencyInfo = testToken
+      currencyInfo.iconFileID = "Interface\\Icons\\INV_Misc_QuestionMark" --We don't want the user to think their input was valid
+    end
   end
 
-  return currencyInfo
+  return currencyInfo or {}
 end
 
 
