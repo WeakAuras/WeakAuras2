@@ -10,6 +10,61 @@ local L = WeakAuras.L;
 
 local encounter_list = ""
 local zoneId_list = ""
+
+local journalID2EncoutnerID = {
+  [655] = 1397,
+  [708] = 1442,
+  [660] = 1422,
+  [688] = 1423,
+  [659] = 1426,
+  [673] = 1303,
+  [693] = 1465,
+  [668] = 1412,
+  [672] = 1418,
+  [679] = 1395,
+  [689] = 1390,
+  [682] = 1434,
+  [687] = 1436,
+  [726] = 1500,
+  [677] = 1407,
+  [745] = 1507,
+  [744] = 1504,
+  [713] = 1463,
+  [741] = 1498,
+  [737] = 1499,
+  [743] = 1501,
+  [683] = 1409,
+  [742] = 1505,
+  [729] = 1506,
+  [709] = 1431,
+  [827] = 1577,
+  [819] = 1575,
+  [816] = 1570,
+  [825] = 1565,
+  [821] = 1578,
+  [828] = 1573,
+  [818] = 1572,
+  [820] = 1574,
+  [824] = 1576,
+  [817] = 1559,
+  [829] = 1560,
+  [832] = 1579,
+  [852] = 1602,
+  [849] = 1598,
+  [866] = 1624,
+  [867] = 1604,
+  [868] = 1622,
+  [864] = 1600,
+  [856] = 1606,
+  [850] = 1603,
+  [846] = 1595,
+  [870] = 1594,
+  [851] = 1599,
+  [865] = 1601,
+  [853] = 1593,
+  [869] = 1623,
+} -- extracted from retail
+
 function Private.InitializeEncounterAndZoneLists()
 	local currTier = EJ_GetCurrentTier()
   if encounter_list ~= "" then
@@ -27,7 +82,7 @@ function Private.InitializeEncounterAndZoneLists()
 				EJ_SelectInstance(instance_id)
 				local instance_name, _, _, _, _, _, dungeonAreaMapID = EJ_GetInstanceInfo(instance_id)
 				local ej_index = 1
-				local boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
+				local boss, _, journalID = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
 
 				-- zone ids
 				if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
@@ -42,15 +97,15 @@ function Private.InitializeEncounterAndZoneLists()
 				-- Encounter ids
 				if inRaid then
 					while boss do
-						if encounter_id then
+						if journalID and journalID2EncoutnerID[journalID] then
 							if instance_name then
 								encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, instance_name)
 								instance_name = nil -- Only add it once per section
 							end
-							encounter_list = ("%s%s: %d\n"):format(encounter_list, boss, encounter_id)
+							encounter_list = ("%s%s: %d\n"):format(encounter_list, boss, journalID2EncoutnerID[journalID])
 						end
 						ej_index = ej_index + 1
-						boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
+						boss, _, journalID = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
 					end
 					encounter_list = encounter_list .. "\n"
 				end
