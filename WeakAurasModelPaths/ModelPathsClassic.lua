@@ -12044,6 +12044,81 @@ WeakAuras.ModelPaths = {
         value = "helm_plate_raidpaladin_b_01_trm.m2",
        },
        {
+        fileId = "6156305",
+        text = "helm_plate_raidpaladin_b_02_dwf.m2",
+        value = "helm_plate_raidpaladin_b_02_dwf.m2",
+       },
+       {
+        fileId = "6156318",
+        text = "helm_plate_raidpaladin_b_02_dwm.m2",
+        value = "helm_plate_raidpaladin_b_02_dwm.m2",
+       },
+       {
+        fileId = "6156322",
+        text = "helm_plate_raidpaladin_b_02_gnf.m2",
+        value = "helm_plate_raidpaladin_b_02_gnf.m2",
+       },
+       {
+        fileId = "6156319",
+        text = "helm_plate_raidpaladin_b_02_gnm.m2",
+        value = "helm_plate_raidpaladin_b_02_gnm.m2",
+       },
+       {
+        fileId = "6156320",
+        text = "helm_plate_raidpaladin_b_02_huf.m2",
+        value = "helm_plate_raidpaladin_b_02_huf.m2",
+       },
+       {
+        fileId = "6156321",
+        text = "helm_plate_raidpaladin_b_02_hum.m2",
+        value = "helm_plate_raidpaladin_b_02_hum.m2",
+       },
+       {
+        fileId = "6156323",
+        text = "helm_plate_raidpaladin_b_02_nif.m2",
+        value = "helm_plate_raidpaladin_b_02_nif.m2",
+       },
+       {
+        fileId = "6156324",
+        text = "helm_plate_raidpaladin_b_02_nim.m2",
+        value = "helm_plate_raidpaladin_b_02_nim.m2",
+       },
+       {
+        fileId = "6156325",
+        text = "helm_plate_raidpaladin_b_02_orf.m2",
+        value = "helm_plate_raidpaladin_b_02_orf.m2",
+       },
+       {
+        fileId = "6156327",
+        text = "helm_plate_raidpaladin_b_02_scf.m2",
+        value = "helm_plate_raidpaladin_b_02_scf.m2",
+       },
+       {
+        fileId = "6156328",
+        text = "helm_plate_raidpaladin_b_02_scm.m2",
+        value = "helm_plate_raidpaladin_b_02_scm.m2",
+       },
+       {
+        fileId = "6156329",
+        text = "helm_plate_raidpaladin_b_02_taf.m2",
+        value = "helm_plate_raidpaladin_b_02_taf.m2",
+       },
+       {
+        fileId = "6156330",
+        text = "helm_plate_raidpaladin_b_02_tam.m2",
+        value = "helm_plate_raidpaladin_b_02_tam.m2",
+       },
+       {
+        fileId = "6156331",
+        text = "helm_plate_raidpaladin_b_02_trf.m2",
+        value = "helm_plate_raidpaladin_b_02_trf.m2",
+       },
+       {
+        fileId = "6156332",
+        text = "helm_plate_raidpaladin_b_02_trm.m2",
+        value = "helm_plate_raidpaladin_b_02_trm.m2",
+       },
+       {
         fileId = "140948",
         text = "helm_plate_raidpaladin_c_01_dwf.m2",
         value = "helm_plate_raidpaladin_c_01_dwf.m2",
@@ -13909,6 +13984,86 @@ WeakAuras.ModelPaths = {
         value = "helm_robe_raidpriest_b_01_trm.m2",
        },
        {
+        fileId = "6156335",
+        text = "helm_robe_raidpriest_b_02_dwf.m2",
+        value = "helm_robe_raidpriest_b_02_dwf.m2",
+       },
+       {
+        fileId = "6156336",
+        text = "helm_robe_raidpriest_b_02_dwm.m2",
+        value = "helm_robe_raidpriest_b_02_dwm.m2",
+       },
+       {
+        fileId = "6156337",
+        text = "helm_robe_raidpriest_b_02_gnf.m2",
+        value = "helm_robe_raidpriest_b_02_gnf.m2",
+       },
+       {
+        fileId = "6156338",
+        text = "helm_robe_raidpriest_b_02_gnm.m2",
+        value = "helm_robe_raidpriest_b_02_gnm.m2",
+       },
+       {
+        fileId = "6156339",
+        text = "helm_robe_raidpriest_b_02_huf.m2",
+        value = "helm_robe_raidpriest_b_02_huf.m2",
+       },
+       {
+        fileId = "6156340",
+        text = "helm_robe_raidpriest_b_02_hum.m2",
+        value = "helm_robe_raidpriest_b_02_hum.m2",
+       },
+       {
+        fileId = "6156341",
+        text = "helm_robe_raidpriest_b_02_nif.m2",
+        value = "helm_robe_raidpriest_b_02_nif.m2",
+       },
+       {
+        fileId = "6156342",
+        text = "helm_robe_raidpriest_b_02_nim.m2",
+        value = "helm_robe_raidpriest_b_02_nim.m2",
+       },
+       {
+        fileId = "6156343",
+        text = "helm_robe_raidpriest_b_02_orf.m2",
+        value = "helm_robe_raidpriest_b_02_orf.m2",
+       },
+       {
+        fileId = "6156344",
+        text = "helm_robe_raidpriest_b_02_orm.m2",
+        value = "helm_robe_raidpriest_b_02_orm.m2",
+       },
+       {
+        fileId = "6156345",
+        text = "helm_robe_raidpriest_b_02_scf.m2",
+        value = "helm_robe_raidpriest_b_02_scf.m2",
+       },
+       {
+        fileId = "6156346",
+        text = "helm_robe_raidpriest_b_02_scm.m2",
+        value = "helm_robe_raidpriest_b_02_scm.m2",
+       },
+       {
+        fileId = "6156347",
+        text = "helm_robe_raidpriest_b_02_taf.m2",
+        value = "helm_robe_raidpriest_b_02_taf.m2",
+       },
+       {
+        fileId = "6156348",
+        text = "helm_robe_raidpriest_b_02_tam.m2",
+        value = "helm_robe_raidpriest_b_02_tam.m2",
+       },
+       {
+        fileId = "6156349",
+        text = "helm_robe_raidpriest_b_02_trf.m2",
+        value = "helm_robe_raidpriest_b_02_trf.m2",
+       },
+       {
+        fileId = "6156350",
+        text = "helm_robe_raidpriest_b_02_trm.m2",
+        value = "helm_robe_raidpriest_b_02_trm.m2",
+       },
+       {
         fileId = "142182",
         text = "helm_robe_raidpriest_c_01_dwf.m2",
         value = "helm_robe_raidpriest_c_01_dwf.m2",
@@ -14227,6 +14382,16 @@ WeakAuras.ModelPaths = {
         fileId = "142370",
         text = "helm_robe_raidwarlock_b_01_trm.m2",
         value = "helm_robe_raidwarlock_b_01_trm.m2",
+       },
+       {
+        fileId = "6156333",
+        text = "helm_robe_raidwarlock_b_02_gnm.m2",
+        value = "helm_robe_raidwarlock_b_02_gnm.m2",
+       },
+       {
+        fileId = "6156334",
+        text = "helm_robe_raidwarlock_b_02_hum.m2",
+        value = "helm_robe_raidwarlock_b_02_hum.m2",
        },
        {
         fileId = "142379",
@@ -15138,6 +15303,11 @@ WeakAuras.ModelPaths = {
         value = "lshoulder_plate_raidpaladin_b_01.m2",
        },
        {
+        fileId = "6156298",
+        text = "lshoulder_plate_raidpaladin_b_02.m2",
+        value = "lshoulder_plate_raidpaladin_b_02.m2",
+       },
+       {
         fileId = "143276",
         text = "lshoulder_plate_raidpaladin_c_01.m2",
         value = "lshoulder_plate_raidpaladin_c_01.m2",
@@ -15748,6 +15918,11 @@ WeakAuras.ModelPaths = {
         value = "rshoulder_plate_raidpaladin_b_01.m2",
        },
        {
+        fileId = "6156299",
+        text = "rshoulder_plate_raidpaladin_b_02.m2",
+        value = "rshoulder_plate_raidpaladin_b_02.m2",
+       },
+       {
         fileId = "143575",
         text = "rshoulder_plate_raidpaladin_c_01.m2",
         value = "rshoulder_plate_raidpaladin_c_01.m2",
@@ -15936,6 +16111,11 @@ WeakAuras.ModelPaths = {
         fileId = "143641",
         text = "rshoulder_robe_raidwarlock_b_01.m2",
         value = "rshoulder_robe_raidwarlock_b_01.m2",
+       },
+       {
+        fileId = "6156300",
+        text = "rshoulder_robe_raidwarlock_b_02.m2",
+        value = "rshoulder_robe_raidwarlock_b_02.m2",
        },
        {
         fileId = "143642",
