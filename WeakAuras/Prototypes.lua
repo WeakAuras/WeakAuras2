@@ -1964,7 +1964,6 @@ Private.load_prototype = {
           odd  = L["Odd"],
         }
       end,
-      -- 👇 add a description with the newFeatureString appended
       desc = L["Matches your current raid subgroup parity (Even/Odd). Only applies while in a raid."] .. WeakAuras.newFeatureString,
       test = [[
         (function(v)
