@@ -1951,6 +1951,38 @@ Private.load_prototype = {
       optional = true,
     },
     {
+  name   = "group_parity",
+  display= L["Group Parity"],
+  type   = "select",
+  width  = WeakAuras.normalWidth,
+  init   = "arg",            -- make the selected value available to the test
+  -- Show in options but don't force-load auras by itself
+  optional = true,
+  -- Re-evaluate whenever parity can change
+  events = { "PLAYER_ENTERING_WORLD", "GROUP_ROSTER_UPDATE", "ENCOUNTER_START", "ENCOUNTER_END" },
+  -- Values for the dropdown
+  values = function()
+    return {
+      any  = L["Any"],
+      even = L["Even"],
+      odd  = L["Odd"],
+    }
+  end,
+  -- The actual load test (single expression). v is the selected value: "any"/"even"/"odd".
+  test = [[
+    (function(v)
+      if v == "any" then return true end
+      if not IsInRaid() then return false end
+      local idx = UnitInRaid("player"); if not idx then return false end
+      local _, _, g = GetRaidRosterInfo(idx + 1); if not g then return false end
+      if v == "even" then return (g % 2 == 0) end
+      if v == "odd"  then return (g % 2 == 1) end
+      return true
+    end)(%q)
+  ]],
+},
+
+    {
       name = "group_leader",
       display = WeakAuras.newFeatureString .. L["Group Leader/Assist"],
       type = "multiselect",
