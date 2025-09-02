@@ -1955,31 +1955,39 @@ Private.load_prototype = {
       display= L["Group Parity"],
       type   = "select",
       width  = WeakAuras.normalWidth,
-      -- Show in options but don't force-load auras by itself
       optional = true,
-      -- Re-evaluate whenever parity can change
       events = { "PLAYER_ENTERING_WORLD", "GROUP_ROSTER_UPDATE", "ENCOUNTER_START", "ENCOUNTER_END" },
-      -- Values for the dropdown
       values = function()
-      return {
-        any  = L["Any"],
-        even = L["Even"],
-        odd  = L["Odd"],
-      }
+        return {
+          any  = L["Any"],
+          even = L["Even"],
+          odd  = L["Odd"],
+        }
       end,
-      -- The actual load test (single expression). v is the selected value: "any"/"even"/"odd".
-  test = [[
-    (function(v)
-      if v == "any" then return true end
-      if not IsInRaid() then return false end
-      local idx = UnitInRaid("player"); if not idx then return false end
-      local _, _, g = GetRaidRosterInfo(idx + 1); if not g then return false end
-      if v == "even" then return (g % 2 == 0) end
-      if v == "odd"  then return (g % 2 == 1) end
-      return true
-    end)(%q)
-  ]],
-},
+      test = [[
+        (function(v)
+          -- normalize the incoming selection
+          v = tostring(v or "any")
+          local vl = v:lower()
+      
+          -- "any" always passes
+          if vl == "any" then return true end
+      
+          -- compute parity
+          if not IsInRaid() then return false end
+          local idx = UnitInRaid("player"); if not idx then return false end
+          local _, _, g = GetRaidRosterInfo(idx); if not g then return false end
+          local isEven = (math.fmod(g, 2) == 0)
+      
+          -- if selection is "even" (in any case / locale), require even; otherwise treat as odd
+          if vl == "even" then
+            return isEven
+          else
+            return not isEven
+          end
+        end)(%q)
+      ]],
+    },
     {
       name = "group_leader",
       display = WeakAuras.newFeatureString .. L["Group Leader/Assist"],
