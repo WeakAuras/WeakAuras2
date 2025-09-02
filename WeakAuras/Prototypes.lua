@@ -1956,7 +1956,7 @@ Private.load_prototype = {
       type   = "select",
       width  = WeakAuras.normalWidth,
       optional = true,
-      events = { "PLAYER_ENTERING_WORLD", "GROUP_ROSTER_UPDATE", "ENCOUNTER_START", "ENCOUNTER_END" },
+      events = { "PLAYER_ENTERING_WORLD", "GROUP_ROSTER_UPDATE", "ENCOUNTER_START", "ENCOUNTER_END", "PLAYER_LOGIN" },
       values = function()
         return {
           any  = L["Any"],
@@ -1964,22 +1964,18 @@ Private.load_prototype = {
           odd  = L["Odd"],
         }
       end,
+      -- 👇 add a description with the newFeatureString appended
+      desc = L["Matches your current raid subgroup parity (Even/Odd). Only applies while in a raid."] .. WeakAuras.newFeatureString,
       test = [[
         (function(v)
-          -- normalize the incoming selection
-          v = tostring(v or "any")
-          local vl = v:lower()
-      
-          -- "any" always passes
+          v = tostring(v or "any"); local vl = v:lower()
           if vl == "any" then return true end
-      
-          -- compute parity
+    
           if not IsInRaid() then return false end
           local idx = UnitInRaid("player"); if not idx then return false end
           local _, _, g = GetRaidRosterInfo(idx); if not g then return false end
           local isEven = (math.fmod(g, 2) == 0)
-      
-          -- if selection is "even" (in any case / locale), require even; otherwise treat as odd
+    
           if vl == "even" then
             return isEven
           else
