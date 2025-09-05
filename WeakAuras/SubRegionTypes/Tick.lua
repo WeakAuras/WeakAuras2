@@ -197,11 +197,13 @@ local funcs = {
     self.tick_color[1], self.tick_color[2], self.tick_color[3], self.tick_color[4] = r, g, b, a or 1
     if self.use_texture then
       for _, tick in ipairs(self.ticks) do
+        tick:SetColorTexture(r, g, b, a or 1)
         tick:SetVertexColor(r, g, b, a or 1)
       end
       self:UpdateTickDesaturated()
     else
       for _, tick in ipairs(self.ticks) do
+        tick:SetVertexColor(r, g, b, a or 1)
         tick:SetColorTexture(r, g, b, a or 1)
       end
     end
