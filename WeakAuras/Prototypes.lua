@@ -7665,11 +7665,17 @@ Private.event_prototypes = {
         store = true,
       },
       {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true",
+      },
+      {
         name = "clones",
         display = L["Clone per Match"],
         type = "toggle",
         test = "true",
-        enable = function(trigger) return not trigger.use_totemType end,
+        enable = function(trigger) return not (trigger.use_totemType or trigger.use_inverse) end,
       },
       {
         name = "remaining",
@@ -7677,13 +7683,6 @@ Private.event_prototypes = {
         type = "number",
         enable = function(trigger) return not(trigger.use_inverse) end
       },
-      {
-        name = "inverse",
-        display = L["Inverse"],
-        type = "toggle",
-        test = "true",
-        enable = function(trigger) return (trigger.use_totemName or trigger.use_totemNamePattern) and not trigger.use_clones end
-      }
     },
     automaticrequired = true
   },
