@@ -27,7 +27,7 @@ local default = function(parentType)
     model_st_us = 40,
 
     model_fileId = WeakAuras.IsClassic() and "165589" or "235338",
-    bar_model_clip = true
+    bar_model_attach = true
   }
 end
 
@@ -93,8 +93,12 @@ local function AcquireModel(region, data)
 
   local anchor
   if region.parentType == "aurabar" then
-    if data.bar_model_clip then
-      anchor = region.parent.bar.fgMask
+    if data.bar_model_attach then
+      if data.bar_model_stretch then
+        anchor = region.parent.bar.fgMask
+      else
+        anchor = region.parent.bar
+      end
     else
       anchor = region.parent.bar
     end
@@ -102,8 +106,9 @@ local function AcquireModel(region, data)
     anchor = region.parent
   end
 
+
   local extra_width, extra_height = 0, 0
-  if not(data.bar_model_clip and region.parentType == "aurabar") then
+  if not(data.bar_model_attach and region.parentType == "aurabar") then
     extra_width = data.extra_width or 0
     extra_height = data.extra_height or 0
   end
@@ -194,6 +199,7 @@ local funcs = {
 local function create()
   local subRegion = CreateFrame("Frame", nil, UIParent)
   subRegion:SetFlattensRenderLayers(true)
+  subRegion:SetClipsChildren(true)
 
   for k, v in pairs(funcs) do
     subRegion[k] = v
@@ -225,7 +231,7 @@ local function modify(parent, region, parentData, data, first)
 
   local anchor
   if parentData.regionType == "aurabar" then
-    if data.bar_model_clip then
+    if data.bar_model_attach then
       anchor = parent.bar.fgMask
     else
       anchor = parent.bar
@@ -235,7 +241,7 @@ local function modify(parent, region, parentData, data, first)
   end
 
   local extra_width, extra_height = 0, 0
-  if not(data.bar_model_clip and parentData.regionType == "aurabar") then
+  if not(data.bar_model_attach and parentData.regionType == "aurabar") then
     extra_width = data.extra_width or 0
     extra_height = data.extra_height or 0
   end

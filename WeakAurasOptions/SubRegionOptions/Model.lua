@@ -35,34 +35,52 @@ local function createOptions(parentData, data, index, subIndex)
       control = "WeakAurasIcon",
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
     },
-    bar_model_clip = {
+    bar_model_attach = {
       type = "toggle",
-      width = WeakAuras.doubleWidth,
+      width = WeakAuras.normalWidth,
       name = L["Attach to Foreground"],
       order = 12,
       hidden = function() return parentData.regionType ~= "aurabar" end
+    },
+    bar_model_stretch = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Stretched by Foreground"],
+      order = 12.1,
+      hidden = function()
+        return parentData.regionType ~= "aurabar" or not data.bar_model_attach
+      end
+    },
+    bar_model_spacer ={
+      type = "description",
+      width = WeakAuras.normalWidth,
+      name = "",
+      order = 12.15,
+      hidden = function()
+        return parentData.regionType ~= "aurabar" or data.bar_model_attach
+      end
     },
     extra_width = {
       type = "range",
       control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Extra Width"],
-      order = 12.1,
+      order = 12.2,
       softMin = -100,
       softMax = 500,
       step = 1,
-      hidden = function() return data.bar_model_clip and parentData.regionType == "aurabar" end
+      hidden = function() return data.bar_model_attach and parentData.regionType == "aurabar" end
     },
     extra_height = {
       type = "range",
       control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Extra Height"],
-      order = 12.2,
+      order = 12.3,
       softMin = -100,
       softMax = 500,
       step = 1,
-      hidden = function() return data.bar_model_clip and parentData.regionType == "aurabar" end
+      hidden = function() return data.bar_model_attach and parentData.regionType == "aurabar" end
     },
     model_alpha = {
       type = "range",
