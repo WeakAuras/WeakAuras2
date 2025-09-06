@@ -2079,7 +2079,6 @@ templates.class.PRIEST = {
         { spell = 194509, type = "ability", charges = true, overlayGlow = true, talent = 103722 }, -- Power Word: Radiance
         { spell = 200174, type = "ability", requiresTarget = true, talent = 103788 }, -- Mindbender
         { spell = 205364, type = "ability", talent = 103678 }, -- Dominate Mind
-        { spell = 246287, type = "ability", talent = 103691 }, -- Evangelism
         { spell = 271466, type = "ability", buff = true, talent = 116182 }, -- Luminous Barrier
         { spell = 373481, type = "ability", usable = true, talent = 103822 }, -- Power Word: Life
         { spell = 400169, type = "ability" }, -- Dark Reprimand

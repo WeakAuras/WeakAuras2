@@ -3,7 +3,7 @@ local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
 
-local internalVersion = 85
+local internalVersion = 86
 
 -- Lua APIs
 local insert = table.insert
@@ -114,7 +114,7 @@ do
     if data then
       Private.AuraWarnings.UpdateWarning(data.uid, "LuaError", "error",
         L["This aura has caused a Lua error."] .. "\n" .. L["Install the addons BugSack and BugGrabber for detailed error logs."], true)
-      table.insert(juicedMessage, L["Lua error in aura '%s': %s"]:format(data.id, currentErrorHandlerContext or L["unknown location"]))
+      table.insert(juicedMessage, L["Lua error in Aura '%s': %s"]:format(data.id, currentErrorHandlerContext or L["unknown location"]))
     else
       table.insert(juicedMessage, L["Lua error"])
     end
@@ -1585,6 +1585,10 @@ local function GetInstanceTypeAndSize()
   local _, instanceType, difficultyIndex, _, _, _, _, instanceId = GetInstanceInfo()
   if inInstance or instanceType ~= "none" then
     size = Type
+    -- WORKAROUND Tol'Viron arena returning a difficulty index of 1
+    if Type == "arena" or Type == "pvp" then
+      difficultyIndex = 0
+    end
     local difficultyInfo = Private.difficulty_info[difficultyIndex]
     if difficultyInfo then
       size, difficulty = difficultyInfo.size, difficultyInfo.difficulty
@@ -5087,7 +5091,10 @@ end
 
 local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, formatter, trigger)
   local value;
-  if string.sub(textStr, 1, 1) == "c" then
+
+  local customIndexSubStr = textStr:match("^c(%d*)$")
+
+  if customIndexSubStr then
     local custom
     if customFunc then
       custom = Private.RunCustomTextFunc(region, customFunc)
@@ -5095,7 +5102,7 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, form
       custom = region.values.custom
     end
 
-    local index = tonumber(textStr:match("^c(%d+)$") or 1)
+    local index = tonumber(customIndexSubStr) or 1
 
     if custom then
       value = custom[index]
@@ -5294,8 +5301,8 @@ function Private.ReplacePlaceHolders(textStr, region, customFunc, useHiddenState
     return textStr;
   end
 
-  if (endPos == 2) then
-    if string.byte(textStr, 1) == 37 then
+  if (endPos == 2) then -- Two byte string, quickly check for all cases
+    if string.byte(textStr, 1) == 37 then -- "%"
       local symbol = string.sub(textStr, 2)
       if symbol == "%" then
         return "%" -- Double % input
