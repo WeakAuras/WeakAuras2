@@ -1175,12 +1175,6 @@ function Private.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
   if texture.IsAtlas then
     return texture:SetAtlas(path);
   else
-    if (texture.wrapModeH and texture.wrapModeH ~= wrapModeH) or (texture.wrapModeV and texture.wrapModeV ~= wrapModeV) then
-      -- WORKAROUND https://github.com/Stanzilla/WoWUIBugs/issues/250
-      texture:SetTexture(nil)
-    end
-    texture.wrapModeH = wrapModeH
-    texture.wrapModeV = wrapModeV
     return texture:SetTexture(path, wrapModeH, wrapModeV);
   end
 end
