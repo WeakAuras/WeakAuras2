@@ -1585,6 +1585,9 @@ local function GetInstanceTypeAndSize()
   local _, instanceType, difficultyIndex, _, _, _, _, instanceId = GetInstanceInfo()
   if inInstance or instanceType ~= "none" then
     size = Type
+    if Type == "arena" or Type == "pvp" then
+      difficultyIndex = 0
+    end
     local difficultyInfo = Private.difficulty_info[difficultyIndex]
     if difficultyInfo then
       size, difficulty = difficultyInfo.size, difficultyInfo.difficulty
