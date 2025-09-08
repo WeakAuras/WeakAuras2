@@ -10,7 +10,7 @@ jobs:
     if: github.repository == 'WeakAuras/WeakAuras2'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: leafo/gh-actions-lua@v11
       - uses: leafo/gh-actions-luarocks@v5
 
