@@ -211,7 +211,9 @@ local blockedTables = {
   ChatFrame1 = true,
   WeakAurasSaved = true,
   WeakAurasOptions = true,
-  WeakAurasOptionsSaved = true
+  WeakAurasOptionsSaved = true,
+  ItemRackUser = true,
+  ItemRackEvents = true
 }
 
 local aura_environments = {}

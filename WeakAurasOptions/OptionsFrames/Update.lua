@@ -1627,6 +1627,26 @@ local methods = {
     end
   end,
   Import = function(self)
+    if C_GameRules.IsHardcoreActive() then
+      StaticPopupDialogs["WEAKAURAS_CONFIRM_IMPORT_HARDCORE"] = {
+        text = L["You are about to Import an Aura with custom Lua code on a Hardcore server.\n\n|cFFFF0000There is a risk the custom code could be used to kill your hardcore character!|r\n\nWould you like to continue?"],
+        button1 = L["Import"],
+        button2 = L["Cancel"],
+        OnShow = function(self)
+          self.text:SetFontObject(GameFontNormalLarge)
+        end,
+        OnHide = function(self)
+          self.text:SetFontObject(GameFontNormal)
+        end,
+        OnAccept = function()
+          OptionsPrivate.Private.Threads:Add("import", coroutine.create(function()
+            self:ImportImpl()
+          end))
+        end,
+      }
+      StaticPopup_Show("WEAKAURAS_CONFIRM_IMPORT_HARDCORE")
+      return
+    end
     OptionsPrivate.Private.Threads:Add("import", coroutine.create(function()
       self:ImportImpl()
     end))
