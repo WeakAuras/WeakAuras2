@@ -150,6 +150,7 @@ globals = {
 	-- FrameXML globals
 	"ChatFontNormal",
 	"GameFontNormal",
+	"GameFontNormalLarge",
 	"GameFontNormalHuge",
 	"GameFontNormalSmall",
 	"GameFontNormalSmall2",
