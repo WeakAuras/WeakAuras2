@@ -1627,7 +1627,7 @@ local methods = {
     end
   end,
   Import = function(self)
-    if C_GameRules.IsHardcoreActive() then
+    if WeakAuras.IsClassicEra() and C_GameRules.IsHardcoreActive() then
       StaticPopupDialogs["WEAKAURAS_CONFIRM_IMPORT_HARDCORE"] = {
         text = L["You are about to Import an Aura with custom Lua code on a Hardcore server.\n\n|cFFFF0000There is a risk the custom code could be used to kill your hardcore character!|r\n\nWould you like to continue?"],
         button1 = L["Import"],
