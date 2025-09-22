@@ -1125,13 +1125,13 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
   end
   if prototype.timedrequired then
     options.unevent = {
-      type = "select",
+      type = "toggle",
+      disabled = true,
       width = WeakAuras.normalWidth,
-      name = L["Hide"],
+      name = L["Hide After"],
       order = order,
-      values = OptionsPrivate.Private.timedeventend_types,
       get = function()
-        return "timed"
+        return true
       end,
       set = function(info, v)
         -- unevent is no longer used
