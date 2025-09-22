@@ -4375,6 +4375,7 @@ Private.reset_ranged_swing_spells = {
   [5019] = true, -- Shoot Wands
   [75] = true, -- Auto Shot
   [5384] = true, -- Feign Death
+  [467718] = true, -- Bleak Arrows
 }
 
 Private.noreset_swing_spells = {
