@@ -4020,6 +4020,24 @@ function Private.ExecEnv.CheckTotemIcon(totemIcon, triggerTotemIcon, operator)
   return (totemIcon == triggerTotemIcon) == (operator == "==")
 end
 
+function Private.ExecEnv.CheckTotemSpellId(spellId, triggerSpellId, followoverride)
+  if not triggerSpellId then
+    return true
+  end
+
+  if spellId == triggerSpellId then
+    return true
+  end
+
+  if followoverride then
+    if spellId == FindSpellOverrideByID(triggerSpellId) then
+      return true
+    end
+  end
+
+  return false
+end
+
 -- Queueable Spells
 if WeakAuras.IsClassicEra() then
   local queueableSpells
