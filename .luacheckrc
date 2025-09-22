@@ -32,10 +32,12 @@ globals = {
 	"_G",
 	"bit",
 	"Constants",
+	"OKAY",
 
 	-- misc custom
 	"AceGUIWeakAurasMultiLineEditBoxInsertLink",
 	"AceGUIWeakAurasMultiLineEditBoxWithEnterInsertLink",
+	"AceGUIWeakAurasInputWithIndentationInsertLink",
 	"AceGUIWidgetLSMlists",
 	"CUSTOM_CLASS_COLORS",
 	"LibStub",

@@ -28,6 +28,7 @@ function _G.AceGUIWeakAurasMultiLineEditBoxInsertLink(text)
   for i = 1, AceGUI:GetWidgetCount(Type) do
     local editbox = _G[("WeakAurasMultiLineEditBox%uEdit"):format(i)]
     if editbox and editbox:IsVisible() and editbox:HasFocus() then
+      text = text:gsub("|", "||")
       editbox:Insert(text)
       return true
     end
