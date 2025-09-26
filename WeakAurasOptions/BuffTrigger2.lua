@@ -13,17 +13,32 @@ local function getAuraMatchesLabel(name)
     for _ in pairs(ids) do
       numMatches = numMatches + 1
     end
-    return tostring(numMatches)
+    return L["Matches %s spells"]:format(tostring(numMatches))
   else
     return ""
   end
 end
 
-local function getAuraMatchesList(name)
+local function getAuraMatchesList(name, showSpellIdRecommendation)
   local ids = WeakAuras.spellCache.GetSpellsMatching(name)
   if ids then
+    local numMatches = 0
     local descText = ""
+
+    local playerSpells = {}
+    local otherSpells = {}
+
     for id, _ in pairs(ids) do
+      numMatches = numMatches + 1
+
+      if WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(id) then
+        tinsert(playerSpells, id)
+      else
+        tinsert(otherSpells, id)
+      end
+    end
+
+    local function addSpellToDesc(id)
       local icon = OptionsPrivate.Private.ExecEnv.GetSpellIcon(id)
       if icon then
         if descText == "" then
@@ -33,7 +48,44 @@ local function getAuraMatchesList(name)
         end
       end
     end
-    return descText
+
+    table.sort(playerSpells)
+    table.sort(otherSpells)
+
+    if #playerSpells > 0 then
+      descText = descText .. L["Player Spells found:"]
+      for _, id in ipairs(playerSpells) do
+        addSpellToDesc(id)
+      end
+    end
+
+    if #otherSpells > 0 then
+      if descText ~= "" then
+        descText = descText .. "\n\n"
+      end
+      descText = descText .. L["Spells found:"]
+
+      for _, id in ipairs(otherSpells) do
+        addSpellToDesc(id)
+      end
+    end
+
+    local bestSuggestion
+    if #playerSpells == 1 then
+      bestSuggestion = playerSpells[1]
+    elseif #playerSpells == 0 and #otherSpells == 1 then
+      bestSuggestion = otherSpells[1]
+    end
+
+    if showSpellIdRecommendation then
+      local tip = L["WeakAuras recommends using spell ids instead of names. Spell ids are automatically localized."]
+      if bestSuggestion then
+        tip = tip .. "\n" .. "|cffffd200" .. L["Click to replace the name with %s."]:format(bestSuggestion) .. "|r"
+      end
+      descText = descText .. "\n\n" .. tip
+    end
+
+    return descText, bestSuggestion
   else
     return ""
   end
@@ -79,7 +131,9 @@ local function CanHaveMatchCheck(trigger)
   return trigger.showClones
 end
 
-local function CreateNameOptions(aura_options, data, trigger, size, isExactSpellId, isIgnoreList, prefix, baseOrder, useKey, optionKey, name, desc, inverse)
+local function CreateNameOptions(aura_options, data, triggernum, size, isExactSpellId, isIgnoreList, prefix, baseOrder, useKey, optionKey, name, desc, inverse)
+  local trigger = data.triggers[triggernum].trigger
+
   local spellCache = WeakAuras.spellCache
 
   for i = 1, size do
@@ -136,7 +190,8 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
       end
 
       aura_options[iconOption].desc = function()
-        local spellId = trigger[optionKey] and trigger[optionKey][i] and WeakAuras.SafeToNumber(trigger[optionKey][i])
+        local input = trigger[optionKey] and trigger[optionKey][i]
+        local spellId = input and WeakAuras.SafeToNumber(input)
         if spellId then
           local name = OptionsPrivate.Private.ExecEnv.GetSpellName(spellId)
           if name then
@@ -147,18 +202,36 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
             return auraDesc
           end
         else
-          return getAuraMatchesList(trigger[optionKey] and trigger[optionKey][i])
+          if input and input ~= "" then
+            return getAuraMatchesList(input, true)
+          end
         end
       end
       aura_options[iconOption].image = function()
         local icon
-        local spellId = trigger[optionKey] and trigger[optionKey][i] and WeakAuras.SafeToNumber(trigger[optionKey][i])
+        local input = trigger[optionKey] and trigger[optionKey][i]
+        local spellId = input and WeakAuras.SafeToNumber(input)
         if spellId then
           icon = OptionsPrivate.Private.ExecEnv.GetSpellIcon(spellId)
-        else
-          icon = spellCache.GetIcon(trigger[optionKey] and trigger[optionKey][i])
+        elseif input and input ~= "" then
+          icon = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\info"
         end
         return icon and tostring(icon) or "", 18, 18
+      end
+
+      aura_options[iconOption].func = function()
+        local input = trigger[optionKey] and trigger[optionKey][i]
+        local spellId = input and WeakAuras.SafeToNumber(trigger[optionKey][i])
+        if spellId then
+          -- Do nothing
+        elseif input and input ~= "" then
+          local _, bestSuggestion = getAuraMatchesList(input)
+          if bestSuggestion then
+            trigger[optionKey][i] = bestSuggestion
+            WeakAuras.Add(data)
+            WeakAuras.ClearAndUpdateOptions(data.id)
+          end
+        end
       end
     end
 
@@ -1341,25 +1414,25 @@ local function GetBuffTriggerOptions(data, triggernum)
   local ignoreNameOptionSize = CountNames(data, triggernum, "ignoreAuraNames") + 1
   local ignoreSpellOptionsSize = CountNames(data, triggernum, "ignoreAuraSpellids") + 1
 
-  CreateNameOptions(aura_options, data, trigger, nameOptionSize,
+  CreateNameOptions(aura_options, data, triggernum, nameOptionSize,
                     false, false, "name", 12, "useName", "auranames",
                     L["Aura Name"],
                     L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."],
                     IsSingleMissing(trigger))
 
 
-  CreateNameOptions(aura_options, data, trigger, spellOptionsSize,
+  CreateNameOptions(aura_options, data, triggernum, spellOptionsSize,
                     true, false, "spellid", 22, "useExactSpellId", "auraspellids",
                     L["Spell ID"], L["Enter a Spell ID. You can use the addon idTip to determine spell ids."],
                     IsSingleMissing(trigger))
 
-  CreateNameOptions(aura_options, data, trigger, ignoreNameOptionSize,
+  CreateNameOptions(aura_options, data, triggernum, ignoreNameOptionSize,
                     false, true, "ignorename", 32, "useIgnoreName", "ignoreAuraNames",
                     L["Ignored Aura Name"],
                     L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."],
                     IsSingleMissing(trigger))
 
-  CreateNameOptions(aura_options, data, trigger, ignoreSpellOptionsSize,
+  CreateNameOptions(aura_options, data, triggernum, ignoreSpellOptionsSize,
                     true, true, "ignorespellid", 42, "useIgnoreExactSpellId", "ignoreAuraSpellids",
                     L["Ignored Spell ID"], L["Enter a Spell ID. You can use the addon idTip to determine spell ids."],
                     IsSingleMissing(trigger))
