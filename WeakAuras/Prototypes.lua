@@ -7510,11 +7510,12 @@ Private.event_prototypes = {
     progressType = "timed",
     triggerFunction = function(trigger)
       local ret = [[return
-      function (states)
+      function (states, event, slotId)
         local totemType = %s;
         local triggerTotemName = %q
         local triggerTotemPattern = %q
         local triggerTotemPatternOperator = %q
+        local triggerSpellId = %s
         local triggerTotemIcon = %s
         local triggerTotemIconOperator = %q
         local clone = %s
@@ -7526,7 +7527,12 @@ Private.event_prototypes = {
         end
 
         if (totemType) then -- Check a specific totem slot
-          local _, totemName, startTime, duration, icon = GetTotemInfo(totemType);
+          if slotId and event == "PLAYER_TOTEM_UPDATE" and totemType ~= slotId then
+            -- PLAYER_TOTEM_UPDATE for a different slot
+            return false
+          end
+
+          local _, totemName, startTime, duration, icon, modRate, spellId = GetTotemInfo(totemType);
           active = (startTime and startTime ~= 0);
 
           if not Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
@@ -7534,6 +7540,10 @@ Private.event_prototypes = {
           end
 
           if not Private.ExecEnv.CheckTotemIcon(icon, triggerTotemIcon, triggerTotemIconOperator) then
+            active = false
+          end
+
+          if triggerSpellId and triggerSpellId ~= spellId then
             active = false
           end
 
@@ -7560,15 +7570,18 @@ Private.event_prototypes = {
             state.progressType = "timed";
             state.duration = duration;
             state.expirationTime = startTime and (startTime + duration);
+            state.modRate = modRate
+            state.spellId = spellId
             state.icon = icon;
           end
         elseif inverse then -- inverse without a specific slot
           local found = false;
           for i = 1, 5 do
-            local _, totemName, startTime, duration, icon = GetTotemInfo(i);
+            local _, totemName, startTime, duration, icon, modRate, spellId = GetTotemInfo(i);
             if ((startTime and startTime ~= 0)
               and Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
               and Private.ExecEnv.CheckTotemIcon(icon, triggerTotemIcon, triggerTotemIconOperator)
+              and (not triggerSpellId or triggerSpellId == spellId)
             ) then
               found = true;
             end
@@ -7585,11 +7598,12 @@ Private.event_prototypes = {
           end
         else -- check all slots
           for i = 1, 5 do
-            local _, totemName, startTime, duration, icon = GetTotemInfo(i);
+            local _, totemName, startTime, duration, icon, modRate, spellId = GetTotemInfo(i);
             active = (startTime and startTime ~= 0);
 
             if not Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
               or not Private.ExecEnv.CheckTotemIcon(icon, triggerTotemIcon, triggerTotemIconOperator)
+              or (triggerSpellId and triggerSpellId ~= spellId)
             then
               active = false;
             end
@@ -7612,6 +7626,8 @@ Private.event_prototypes = {
               state.totemName = totemName;
               state.progressType = "timed";
               state.duration = duration;
+              state.modRate = modRate
+              state.spellId = spellId
               state.expirationTime = startTime and (startTime + duration);
               state.icon = icon;
             end
@@ -7628,6 +7644,7 @@ Private.event_prototypes = {
         trigger.use_totemName and totemName or "",
         trigger.use_totemNamePattern and trigger.totemNamePattern or "",
         trigger.use_totemNamePattern and trigger.totemNamePattern_operator or "",
+        WeakAuras.IsRetail() and trigger.use_totemSpellId and trigger.totemSpellId or "nil",
         trigger.use_icon and trigger.icon or "nil",
         trigger.use_icon and trigger.icon_operator or "",
         trigger.use_clones and "true" or "false",
@@ -7655,6 +7672,14 @@ Private.event_prototypes = {
         name = "totemNamePattern",
         display = L["Totem Name Pattern Match"],
         type = "longstring",
+      },
+      {
+        name = "totemSpellId",
+        display = L["Spell Id"],
+        type = "spell",
+        conditionType = "number",
+        operator_types = "only_equal",
+        enable = WeakAuras.IsRetail(),
       },
       {
         name = "icon",

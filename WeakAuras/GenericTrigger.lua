@@ -1610,7 +1610,7 @@ do
         return false
       end
 
-      for i = 1, 20 do
+      for i = 0, 20 do
         counter.fastMatches[i] = counter.RunTests(counter, i)
       end
 

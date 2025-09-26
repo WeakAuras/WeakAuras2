@@ -708,7 +708,18 @@ if not WeakAuras.IsMistsOrRetail() then
         display = L["Count"],
         desc = L["Occurrence of the event, reset when aura is unloaded\nCan be a range of values\nCan have multiple values separated by a comma or a space\n\nExamples:\n2nd 5th and 6th events: 2, 5, 6\n2nd to 6th: 2-6\nevery 2 events: /2\nevery 3 events starting from 2nd: 2/3\nevery 3 events starting from 2nd and ending at 11th: 2-11/3\n\nOnly if DBM shows it on it's bar"],
         type = "string",
+        store = true,
         conditionType = "string",
+        operator_types = "none",
+        preamble = "local counter = Private.ExecEnv.CreateTriggerCounter(%q)",
+        test = "counter:SetCount(tonumber(count) or 0) == nil and counter:Match()",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.CreateTriggerCounter(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          preamble:SetCount(tonumber(state.count) or 0)
+          return preamble:Match()
+        end,
       },
       {
         name = "dbmType",
@@ -1401,6 +1412,16 @@ if not WeakAuras.IsMistsOrRetail() then
         type = "string",
         store = true,
         conditionType = "string",
+        operator_types = "none",
+        preamble = "local counter = Private.ExecEnv.CreateTriggerCounter(%q)",
+        test = "counter:SetCount(tonumber(count) or 0) == nil and counter:Match()",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.CreateTriggerCounter(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          preamble:SetCount(tonumber(state.count) or 0)
+          return preamble:Match()
+        end,
       },
       {
         name = "cast",
@@ -1584,6 +1605,9 @@ Private.event_prototypes["Boss Mod Announce"] = {
       display = L["Count"],
       desc = L["Occurrence of the event\nCan be a range of values\nCan have multiple values separated by a comma or a space\n\nExamples:\n2nd 5th and 6th events: 2, 5, 6\n2nd to 6th: 2-6\nevery 2 events: /2\nevery 3 events starting from 2nd: 2/3\nevery 3 events starting from 2nd and ending at 11th: 2-11/3\n\nWorks only if Boss Mod addon show counter"],
       type = "string",
+      store = true,
+      conditionType = "string",
+      operator_types = "none",
       preamble = "local counter = Private.ExecEnv.CreateTriggerCounter(%q)",
       test = "counter:SetCount(tonumber(count) or 0) == nil and counter:Match()",
       conditionPreamble = function(input)
@@ -1593,9 +1617,6 @@ Private.event_prototypes["Boss Mod Announce"] = {
         preamble:SetCount(tonumber(state.count) or 0)
         return preamble:Match()
       end,
-      store = true,
-      conditionType = "string",
-      operator_types = "none"
     },
     {
       name = "cloneId",
@@ -1834,6 +1855,17 @@ Private.event_prototypes["Boss Mod Timer"] = {
       desc = L["Occurrence of the event, reset when aura is unloaded\nCan be a range of values\nCan have multiple values separated by a comma or a space\n\nExamples:\n2nd 5th and 6th events: 2, 5, 6\n2nd to 6th: 2-6\nevery 2 events: /2\nevery 3 events starting from 2nd: 2/3\nevery 3 events starting from 2nd and ending at 11th: 2-11/3\n\nOnly if DBM shows it on it's bar"],
       type = "string",
       conditionType = "string",
+      operator_types = "none",
+      preamble = "local counter = Private.ExecEnv.CreateTriggerCounter(%q)",
+      test = "counter:SetCount(tonumber(count) or 0) == nil and counter:Match()",
+      conditionPreamble = function(input)
+        return Private.ExecEnv.CreateTriggerCounter(input)
+      end,
+      conditionTest = function(state, needle, op, preamble)
+        preamble:SetCount(tonumber(state.count) or 0)
+        return preamble:Match()
+      end,
+      store = true,
     },
     {
       name = "isBarEnabled",
