@@ -3,7 +3,7 @@ local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
 
-local internalVersion = 88
+local internalVersion = 89
 
 -- Lua APIs
 local insert = table.insert
@@ -341,7 +341,11 @@ Private.triggerTypesOptions = {};
 --  changed: Whether this trigger state was recently changed and its properties
 --           need to be applied to a region. The glue code resets this
 --           after syncing the region to the trigger state
---  show: Whether the region for this trigger state should be shown
+--  show: used to be a required field
+--        Whether the region for this trigger state should be shown
+--        true = show, false = hide
+--        nil: If the compability option is enabled, hide (with warning)
+--             otherwise show
 --  progressType: Either "timed", "static"
 --    duration: The duration if the progressType is timed
 --    expirationTime: The expirationTime if the progressType is timed
@@ -3534,10 +3538,9 @@ end
 function Private.SetAllStatesHidden(id, triggernum)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   local changed = false
-  for _, state in pairs(triggerState) do
-    changed = changed or state.show
-    state.show = false;
-    state.changed = true;
+  for cloneId, state in pairs(triggerState) do
+    changed = true
+    triggerState[cloneId] = nil
   end
   return changed
 end
@@ -3546,8 +3549,7 @@ function Private.SetAllStatesHiddenExcept(id, triggernum, list)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   for cloneId, state in  pairs(triggerState) do
     if (not (list[cloneId])) then
-      state.show = false;
-      state.changed = true;
+      triggerState[cloneId] = nil
     end
   end
 end
@@ -4191,7 +4193,6 @@ local function CreateFallbackState(id, triggernum)
     state.trigger = data.triggers[triggernum].trigger
     state.triggernum = triggernum
   else
-    state.show = true;
     state.changed = true;
     state.progressType = "timed";
     state.duration = 0;
@@ -4764,7 +4765,7 @@ do
 end
 
 --- @type fun(id: auraId, triggernum: integer, cloneId: string)
-local function stopAutoHideTimer(id, triggernum, cloneId)
+local function stopAutoHideTimerForTrigger(id, triggernum, cloneId)
   if(timers[id] and timers[id][triggernum] and timers[id][triggernum][cloneId]) then
     local record = timers[id][triggernum][cloneId];
     if (record.handle) then
@@ -4776,10 +4777,29 @@ local function stopAutoHideTimer(id, triggernum, cloneId)
   end
 end
 
---- @type fun(id: auraId, triggernum: integer, cloneId: string, state: state)
-local function startStopTimers(id, cloneId, triggernum, state)
-  if not state.show or not state.autoHide then
-    stopAutoHideTimer(id, triggernum, cloneId)
+-- For collapse in RegionPrototype
+--- @type fun(id: auraId, cloneId: string)
+function Private.StopAutoHideTimer(id, cloneId)
+  if timers[id] then
+    for triggerNum, triggerData in pairs(timers[id]) do
+      local record = triggerData[cloneId]
+      if record then
+        if (record.handle) then
+          timer:CancelTimer(record.handle);
+        end
+        record.handle = nil;
+        record.expirationTime = nil;
+        record.state = nil
+      end
+    end
+  end
+end
+
+--- @type fun(states: table<any, state>, id: auraId, triggernum: integer, cloneId: string)
+local function startStopTimers(states, id, cloneId, triggernum)
+  local state = states[cloneId]
+  if not state.autoHide then
+    stopAutoHideTimerForTrigger(id, triggernum, cloneId)
     return
   end
 
@@ -4788,7 +4808,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
   local expirationTime
   if type(state.autoHide) == "boolean" then
     if state.paused then
-      stopAutoHideTimer(id, triggernum, cloneId)
+      stopAutoHideTimerForTrigger(id, triggernum, cloneId)
       return
     else
       if state.expirationTime == nil and type(state.duration) == "number" then
@@ -4813,9 +4833,8 @@ local function startStopTimers(id, cloneId, triggernum, state)
     if expirationTime and type(expirationTime) == "number" then
       record.handle = timer:ScheduleTimerFixed(
         function()
-          if (state.show ~= false and state.show ~= nil) then
-            state.show = false;
-            state.changed = true;
+          if states[cloneId] then
+            states[cloneId] = nil
 
             -- if the trigger has updated then check to see if it is flagged for WatchedTrigger and send to queue if it is
             if Private.watched_trigger_events[id] and Private.watched_trigger_events[id][triggernum] then
@@ -4900,32 +4919,30 @@ local function ApplyStatesToRegions(id, activeTrigger, states)
     parent:Suspend()
   end
   for cloneId, state in pairs(states) do
-    if (state.show) then
-      local region = Private.EnsureRegion(id, cloneId);
-      local applyChanges = not region.toShow or state.changed or region.state ~= state
-      region.state = state
-      region.states = region.states or {}
-      for triggernum = -1, triggerState[id].numTriggers do
-        local triggerState
-        if triggernum == activeTrigger then
-          triggerState = state
-        else
-          local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
-          triggerState = triggerStates[cloneId] or triggerStates[""] or {}
-        end
-        if triggernum > 0 then
-          applyChanges = applyChanges or region.states[triggernum] ~= triggerState or (triggerState and triggerState.changed)
-                       or region.states[triggernum] ~= triggerState
-                       or (triggerState and triggerState.changed)
-        end
-
-        region.states[triggernum] = triggerState
+    local region = Private.EnsureRegion(id, cloneId);
+    local applyChanges = not region.toShow or state.changed or region.state ~= state
+    region.state = state
+    region.states = region.states or {}
+    for triggernum = -1, triggerState[id].numTriggers do
+      local triggerState
+      if triggernum == activeTrigger then
+        triggerState = state
+      else
+        local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
+        triggerState = triggerStates[cloneId] or triggerStates[""] or {}
+      end
+      if triggernum > 0 then
+        applyChanges = applyChanges or region.states[triggernum] ~= triggerState or (triggerState and triggerState.changed)
+                      or region.states[triggernum] ~= triggerState
+                      or (triggerState and triggerState.changed)
       end
 
-      if (applyChanges) then
-        ApplyStateToRegion(id, cloneId, region, parent);
-        Private.RunConditions(region, data.uid, not state.show)
-      end
+      region.states[triggernum] = triggerState
+    end
+
+    if (applyChanges) then
+      ApplyStateToRegion(id, cloneId, region, parent);
+      Private.RunConditions(region, data.uid, false)
     end
   end
   if parent and parent.Resume then
@@ -4968,6 +4985,17 @@ function Private.UpdatedTriggerState(id)
     return;
   end
 
+  -- Still support setting show to false
+  for triggernum = 1, triggerState[id].numTriggers do
+    if triggerState[id][triggernum] then
+      for cloneId, state in pairs(triggerState[id][triggernum]) do
+        if state.show == false then
+          triggerState[id][triggernum][cloneId] = nil
+        end
+      end
+    end
+  end
+
   local changed = false;
   for triggernum = 1, triggerState[id].numTriggers do
     triggerState[id][triggernum] = triggerState[id][triggernum] or setmetatable({}, Private.allstatesMetatable)
@@ -4980,9 +5008,9 @@ function Private.UpdatedTriggerState(id)
       state.id = id;
 
       if (state.changed) then
-        startStopTimers(id, cloneId, triggernum, state);
+        startStopTimers(triggerState[id][triggernum], id, cloneId, triggernum);
       end
-      anyStateShown = anyStateShown or state.show;
+      anyStateShown = true
     end
     -- Update triggerState.triggers
     changed = applyToTriggerStateTriggers(anyStateShown, id, triggernum) or changed;
@@ -5019,14 +5047,7 @@ function Private.UpdatedTriggerState(id)
       activeTriggerState = emptyState;
     end
   elseif (show) then
-    local needsFallback = true;
-    for _, state in pairs(activeTriggerState) do
-      if (state.show) then
-        needsFallback = false;
-        break;
-      end
-    end
-    if (needsFallback) then
+    if not next(activeTriggerState) then
       activeTriggerState = CreateFallbackState(id, newActiveTrigger)
     end
   end
@@ -5046,11 +5067,11 @@ function Private.UpdatedTriggerState(id)
   elseif (show and oldShow) then -- Already shown, update regions
     -- Hide old clones
     for cloneId, clone in pairs(clones[id]) do
-      if (not activeTriggerState[cloneId] or not activeTriggerState[cloneId].show) then
+      if not activeTriggerState[cloneId] then
         clone:Collapse()
       end
     end
-    if (not activeTriggerState[""] or not activeTriggerState[""].show) then
+    if not activeTriggerState[""] then
       if Private.regions[id] and Private.regions[id].region then
         Private.regions[id].region:Collapse()
       end
@@ -5061,12 +5082,10 @@ function Private.UpdatedTriggerState(id)
 
   for triggernum = 1, triggerState[id].numTriggers do
     for cloneId, state in pairs(triggerState[id][triggernum]) do
-      if (not state.show) then
-        triggerState[id][triggernum][cloneId] = nil;
-      end
       state.changed = false;
     end
   end
+
   -- once updatedTriggerStates is complete, and empty states removed, etc., then check for queued watched triggers update
   Private.SendDelayedWatchedTriggers()
 end
@@ -5275,7 +5294,7 @@ local function ValueForSymbol(symbol, region, customCache, regionState, regionSt
   triggerNum = triggerNum and tonumber(triggerNum)
   if triggerNum and sym then
     if regionStates[triggerNum] then
-      if (useHiddenStates or regionStates[triggerNum].show) then
+      if useHiddenStates or regionStates[triggerNum].show ~= false then
         if regionStates[triggerNum][sym] then
           local value = regionStates[triggerNum][sym]
           if formatters[symbol] then
@@ -5291,7 +5310,7 @@ local function ValueForSymbol(symbol, region, customCache, regionState, regionSt
     end
     return ""
   elseif regionState[symbol] then
-    if(useHiddenStates or regionState.show) then
+    if useHiddenStates or regionState.show ~= false then
       local value = regionState[symbol]
       if formatters[symbol] then
         return tostring(formatters[symbol](value, regionState, regionState.triggernum) or "") or ""
@@ -5301,7 +5320,7 @@ local function ValueForSymbol(symbol, region, customCache, regionState, regionSt
     end
     return ""
   else
-    local value = (useHiddenStates or regionState.show)
+    local value = (useHiddenStates or regionState.show ~= false)
                   and ReplaceValuePlaceHolders(symbol, region, customCache, regionState, formatters[symbol], regionState.triggernum)
     return value or ""
   end

@@ -462,15 +462,10 @@ function ConstructFunction(prototype, trigger)
   return table.concat(ret);
 end
 
-function Private.EndEvent(state)
-  if state then
-    if (state.show ~= false and state.show ~= nil) then
-      state.show = false;
-      state.changed = true;
-    end
-    return state.changed;
-  else
-    return false
+function Private.EndEvent(allStates, cloneId)
+  if allStates[cloneId] then
+    allStates[cloneId] = nil
+    return true
   end
 end
 
@@ -540,10 +535,6 @@ end
 ---@return state
 function Private.ActivateEvent(id, triggernum, data, state, errorHandler)
   local changed = state.changed or false;
-  if (state.show ~= true) then
-    state.show = true;
-    changed = true;
-  end
   if (data.duration) then
     local expirationTime = GetTime() + data.duration;
     if (state.expirationTime ~= expirationTime) then
@@ -681,6 +672,16 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           return
         end
       end
+      if data.fixUpShowNil then
+        for key, state in pairs(allStates) do
+          if state.show == nil then
+            state.show = false
+            local uid = WeakAuras.GetData(id).uid
+            Private.AuraWarnings.UpdateWarning(uid, "StateShowNil", "warning",
+              L["This aura is setting show to nil. This is deprecated and the behavior will change in the future."])
+          end
+        end
+      end
     elseif (data.statesParameter == "all") then
       local ok, returnValue
       if data.counter then
@@ -712,8 +713,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           unitForUnitTrigger = data.trigger.unit
           cloneIdForUnitTrigger = ""
         end
-        allStates[cloneIdForUnitTrigger] = allStates[cloneIdForUnitTrigger] or {};
-        local state = allStates[cloneIdForUnitTrigger];
+        local state = allStates[cloneIdForUnitTrigger] or {}
         local ok, returnValue
         if data.counter then
           ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, data.counter, event, unitForUnitTrigger, arg1, arg2, ...);
@@ -721,16 +721,21 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, unitForUnitTrigger, arg1, arg2, ...);
         end
         if (ok and returnValue) or optionsEvent then
+          if not allStates[cloneIdForUnitTrigger] then
+            -- New state
+            allStates[cloneIdForUnitTrigger] = state
+            state.changed = true
+            updateTriggerState = true
+          end
           if(Private.ActivateEvent(id, triggernum, data, state)) then
-            updateTriggerState = true;
+            updateTriggerState = true
           end
         else
           untriggerCheck = true;
         end
       end
     elseif (data.statesParameter == "one") then
-      allStates[""] = allStates[""] or {};
-      local state = allStates[""];
+      local state = allStates[""] or {}
       local ok, returnValue
       if data.counter then
         ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, data.counter, event, arg1, arg2, ...);
@@ -738,7 +743,15 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, arg1, arg2, ...);
       end
       if (ok and returnValue) or optionsEvent then
-        if(Private.ActivateEvent(id, triggernum, data, state, (optionsEvent and data.ignoreOptionsEventErrors) and ignoreErrorHandler or nil)) then
+        if not allStates[""] then
+          -- New state
+          allStates[""] = state
+          state.changed = true
+          updateTriggerState = true
+        end
+
+        local errorHandler = (optionsEvent and data.ignoreOptionsEventErrors) and ignoreErrorHandler or nil
+        if Private.ActivateEvent(id, triggernum, data, state, errorHandler) then
           updateTriggerState = true;
         end
       else
@@ -752,9 +765,16 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         ok, returnValue = xpcall(data.triggerFunc, errorHandler, event, arg1, arg2, ...);
       end
       if (ok and returnValue) or optionsEvent then
-        allStates[""] = allStates[""] or {};
-        local state = allStates[""];
-        if(Private.ActivateEvent(id, triggernum, data, state, (optionsEvent and data.ignoreOptionsEventErrors) and ignoreErrorHandler or nil)) then
+        local state = allStates[""] or {}
+        if not allStates[""] then
+          -- New state
+          allStates[""] = state
+          state.changed = true
+          updateTriggerState = true
+        end
+
+        local errorHandler = (optionsEvent and data.ignoreOptionsEventErrors) and ignoreErrorHandler or nil
+        if Private.ActivateEvent(id, triggernum, data, state, errorHandler) then
           updateTriggerState = true;
         end
       else
@@ -769,7 +789,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           if ok and returnValue then
             for id, state in pairs(allStates) do
               if (state.changed) then
-                if (Private.EndEvent(state)) then
+                if (Private.EndEvent(allStates, id)) then
                   updateTriggerState = true;
                 end
               end
@@ -783,17 +803,12 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
             if state then
               local ok, returnValue =  xpcall(data.untriggerFunc, errorHandler, state, event, unitForUnitTrigger, arg1, arg2, ...);
               if ok and returnValue then
-                if (Private.EndEvent(state)) then
+                if (Private.EndEvent(allStates, cloneIdForUnitTrigger)) then
                   updateTriggerState = true;
                 end
               end
             end
           end
-        end
-        if not updateTriggerState and not allStates[cloneIdForUnitTrigger].show then
-          -- We added this state automatically, but the trigger didn't end up using it,
-          -- so remove it again
-          allStates[cloneIdForUnitTrigger] = nil
         end
       elseif (data.statesParameter == "one") then
         allStates[""] = allStates[""] or {};
@@ -801,7 +816,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         if data.untriggerFunc then
           local ok, returnValue = xpcall(data.untriggerFunc, errorHandler, state, event, arg1, arg2, ...);
           if (ok and returnValue) then
-            if (Private.EndEvent(state)) then
+            if (Private.EndEvent(allStates, "")) then
               updateTriggerState = true;
             end
           end
@@ -812,7 +827,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           if ok and returnValue then
             allStates[""] = allStates[""] or {};
             local state = allStates[""];
-            if(Private.EndEvent(state)) then
+            if(Private.EndEvent(allStates, "")) then
               updateTriggerState = true;
             end
           end
@@ -1157,9 +1172,7 @@ function GenericTrigger.CreateFakeStates(id, triggernum)
 
   local shown = 0
   for id, state in pairs(allStates) do
-    if state.show then
-      shown = shown + 1
-    end
+    shown = shown + 1
 
     AddFakeInformation(data, triggernum, state, eventData)
   end
@@ -1662,6 +1675,7 @@ function GenericTrigger.Add(data, region)
         local automaticAutoHide
         local duration
         local counter
+        local fixUpShowNil
         if(Private.category_event_prototype[triggerType]) then
           if not(trigger.event) then
             error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
@@ -1771,6 +1785,7 @@ function GenericTrigger.Add(data, region)
             if not tsuConditionVariables then
               tsuConditionVariables = function() end
             end
+            fixUpShowNil = data.information.showNilIsFalse
           end
 
           if(trigger.custom_type == "status" or trigger.custom_type == "event" and trigger.custom_hide == "custom") then
@@ -1919,7 +1934,8 @@ function GenericTrigger.Add(data, region)
           tsuConditionVariables = tsuConditionVariables,
           prototype = prototype,
           ignoreOptionsEventErrors = data.information.ignoreOptionsEventErrors,
-          counter = counter
+          counter = counter,
+          fixUpShowNil = fixUpShowNil
         };
       end
     end
@@ -2893,14 +2909,16 @@ do
         end
 
         Private.CheckCooldownReady(spellId)
-        if itemSpellIdToItemId[spellId] then
-          for _, itemId in ipairs(itemSpellIdToItemId[spellId]) do
-            Private.CheckItemCooldown(itemId)
+        if spellId then
+          if itemSpellIdToItemId[spellId] then
+            for _, itemId in ipairs(itemSpellIdToItemId[spellId]) do
+              Private.CheckItemCooldown(itemId)
+            end
           end
-        end
-        if itemSlotsSpellIdToSlot[spellId] then
-          for _, slot in ipairs(itemSlotsSpellIdToSlot[spellId]) do
-            Private.CheckItemSlotCooldown(slot, itemSlots[slot])
+          if itemSlotsSpellIdToSlot[spellId] then
+            for _, slot in ipairs(itemSlotsSpellIdToSlot[spellId]) do
+              Private.CheckItemSlotCooldown(slot, itemSlots[slot])
+            end
           end
         end
       elseif(event == "SPELLS_CHANGED") then
@@ -5138,7 +5156,6 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
 end
 
 function GenericTrigger.CreateFallbackState(data, triggernum, state)
-  state.show = true;
   state.changed = true;
   local event = events[data.id][triggernum];
 
