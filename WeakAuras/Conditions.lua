@@ -411,13 +411,13 @@ local function CreateTestForCondition(data, input, allConditionsTemplate, usedSt
     elseif (cType == "string" and value) then
       if(op == "==") then
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable)
-                .. " == [[" .. value .. "]]";
+                .. string.format(" == %q", value)
       elseif (op  == "find('%s')") then
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable)
-                .. ":find([[" .. value .. "]], 1, true)";
+                .. string.format(":find(%q, 1, true)", value)
       elseif (op == "match('%s')") then
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]",  variable)
-                .. ":match([[" .. value .. "]], 1, true)";
+                .. string.format(":match(%q, 1, true)", value)
       end
     end
     -- If adding a new condition type, don't forget to adjust the validator in the options code
