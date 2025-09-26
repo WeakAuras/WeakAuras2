@@ -730,7 +730,6 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
   local debuffClassIcon = WeakAuras.EJIcons[bestMatch.debuffClass]
   if not triggerStates[cloneId] then
     triggerStates[cloneId] = {
-      show = true,
       changed = true,
       name = bestMatch.name,
       icon = bestMatch.icon,
@@ -803,11 +802,6 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
 
     if state.unitName ~= bestMatch.unitName then
       state.unitName = bestMatch.unitName
-      changed = true
-    end
-
-    if state.show ~= true then
-      state.show = true
       changed = true
     end
 
@@ -984,7 +978,6 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
   local fallbackName, fallbackIcon = BuffTrigger.GetNameAndIconSimple(WeakAuras.GetData(triggerInfo.id), triggerInfo.triggernum)
   if not triggerStates[cloneId] then
     triggerStates[cloneId] = {
-      show = true,
       changed = true,
       progressType = 'timed',
       duration = 0,
@@ -1015,11 +1008,6 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
     local state = triggerStates[cloneId]
     state.time = time
     local changed = false
-
-    if state.show ~= true then
-      state.show = true
-      changed = true
-    end
 
     if state.name ~= fallbackName then
       state.name = fallbackName
@@ -1181,11 +1169,8 @@ end
 local function RemoveState(triggerStates, cloneId)
   local state = triggerStates[cloneId]
   if state then
-    if state.show then
-      state.show = false
-      state.changed = true
-      return true
-    end
+    triggerStates[cloneId] = nil
+    return true
   end
 end
 
@@ -3625,7 +3610,7 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
       display = L["Aura(s) Found"],
       type = "bool",
       test = function(state, needle)
-        return state and state.show and ((state.active and true or false) == (needle == 1))
+        return state and ((state.active and true or false) == (needle == 1))
       end
     }
   end
@@ -3672,7 +3657,6 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
 end
 
 function BuffTrigger.CreateFallbackState(data, triggernum, state)
-  state.show = true
   state.changed = true
   state.progressType = "timed"
   state.duration = 0

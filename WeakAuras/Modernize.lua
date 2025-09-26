@@ -2489,6 +2489,10 @@ function Private.Modernize(data, oldSnapshot)
     end
   end
 
+  if data.internalVersion < 89 then
+    data.information.showNilIsFalse = true
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 
