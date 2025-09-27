@@ -1,0 +1,14 @@
+﻿## Interface: 90002
+
+## Title: Lib: Compress
+## Notes: Compression and Decompression library
+## Author: Galmok at Stormrage-EU (Horde) and JJSheets
+## Version: r86-release
+## X-Website: http://www.wowace.com/addons/libcompress/
+## X-Category: Library
+## X-eMail: galmok AT gmail DOT com, sheets DOT jeff AT gmail DOT com
+## X-License: GPL v2
+## LoadOnDemand: 1
+
+LibStub\LibStub.lua
+lib.xml

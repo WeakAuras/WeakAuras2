@@ -1,0 +1,14 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file="Internal.lua"/>
+	<Include file="Public.lua"/>
+	<Include file="StringManip.lua"/>
+
+	<Script>
+		local Chomp = LibStub:GetLibrary("Chomp", true)
+		local Internal = Chomp and Chomp.Internal or nil
+
+		if Chomp and Internal then
+			Internal.LOADING = nil
+		end
+	</Script>
+</Ui>

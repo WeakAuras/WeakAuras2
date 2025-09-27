@@ -1,0 +1,26 @@
+{
+  "version": "0.2",
+  "language": "en-US",
+  "ignoreRegExpList": [
+    "\\((.+?)\\)"
+  ],
+  "ignorePaths": [
+    ".luacheckrc"
+  ],
+  "words": [
+    "cffed",
+    "cffeda",
+    "curr",
+    "Egan",
+    "Hyldnir",
+    "Kiryn",
+    "Kyrian",
+    "Maldivia",
+    "Naaru",
+    "Tauren",
+    "tremove",
+    "Worgsaw",
+    "Zezzak",
+    "Zorbin"
+  ]
+}

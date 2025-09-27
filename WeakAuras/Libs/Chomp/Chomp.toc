@@ -1,0 +1,18 @@
+## Interface: 100100
+## Interface-Wrath: 30401
+## Interface-TBC: 20504
+## Interface-Vanilla: 11403
+## Title: Chomp Message Library
+## Author: Justin Snelgrove
+## Version: ef8538b
+## IconAtlas: minortalents-icon-book
+## Notes: Battle.net and in-game messaging library with smart addon whispers.
+## OptionalDeps: CallbackHandler-1.0, ChatThrottleLib, LibStub
+## X-Category: Library
+## X-License: ISC
+
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\ChatThrottleLib\ChatThrottleLib.xml
+
+Chomp.xml

@@ -1,0 +1,9 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="prototypes.lua" />
+	<Script file="FontWidget.lua" />
+	<Script file="SoundWidget.lua" />
+	<Script file="StatusbarWidget.lua" />
+	<Script file="BorderWidget.lua" />
+	<Script file="BackgroundWidget.lua" />
+</Ui>

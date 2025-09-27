@@ -1,0 +1,20 @@
+## Interface: 50500
+## Title: WeakAuras Templates
+## Author: The WeakAuras Team
+## Version: 5.20.4
+## Notes: Templates for WeakAuras
+## Notes-esES: Plantillas para WeakAuras
+## Notes-esMX: Plantillas para WeakAuras
+## X-Category: Interface Enhancements
+## Globe-Main: WeakAuras
+## DefaultState: Enabled
+## LoadOnDemand: 1
+## Dependencies: WeakAuras, WeakAurasOptions
+## AllowLoadGameType: mists
+
+locales.xml
+
+TriggerTemplates.lua
+TriggerTemplatesDataMists.lua
+
+AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua

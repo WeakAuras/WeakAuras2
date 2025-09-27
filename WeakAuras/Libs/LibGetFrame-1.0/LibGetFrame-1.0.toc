@@ -1,0 +1,13 @@
+## Interface: 90105
+## Title: Lib: GetFrame
+## Notes: Get unit frame for a unit
+## Author: Buds
+## X-Category: Library
+## X-License: BSD
+## Version: 0d449fa
+## DefaultState: Enabled
+## LoadOnDemand: 0
+
+LibStub\LibStub.lua
+
+LibGetFrame-1.0.xml

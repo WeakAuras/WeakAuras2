@@ -1,0 +1,11 @@
+<Bindings>
+  <Binding name="WEAKAURASTOGGLE" Category="BINDING_HEADER_WEAKAURAS">
+    WeakAuras.OpenOptions()
+  </Binding>
+  <Binding name="WEAKAURASPROFILINGTOGGLE" Category="BINDING_HEADER_WEAKAURAS">
+    WeakAurasProfilingFrame:Toggle()
+  </Binding>
+  <Binding name="WEAKAURASPRINTPROFILING" Category="BINDING_HEADER_WEAKAURAS">
+    WeakAuras.PrintProfile()
+  </Binding>
+</Bindings>

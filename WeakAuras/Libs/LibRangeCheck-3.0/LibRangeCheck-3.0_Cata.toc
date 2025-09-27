@@ -1,0 +1,14 @@
+## Interface: 40400
+## Title: Lib: RangeCheck-3.0
+## Notes: A library to determine estimated range.
+## Author: The WoWUIDev Community
+## Version: 11d86a9
+## LoadOnDemand: 1
+## X-Category: Library
+## X-Credits: mitch0
+## X-License: MIT
+## X-Website: https://www.curseforge.com/wow/addons/librangecheck-3-0
+
+LibStub-1.0\LibStub.lua
+CallbackHandler-1.0\CallbackHandler-1.0.xml
+LibRangeCheck-3.0\LibRangeCheck-3.0.lua

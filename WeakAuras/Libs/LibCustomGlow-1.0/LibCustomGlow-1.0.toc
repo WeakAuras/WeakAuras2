@@ -1,0 +1,12 @@
+## Interface: 110000, 110002
+## Title: Lib: CustomGlow
+## Notes: Creates custom glow functions
+## Author: deezo
+## X-Category: Library
+## X-License: BSD
+## Version: dc135fe
+## OptionalDeps: Masque
+
+LibStub\LibStub.lua
+
+LibCustomGlow-1.0.xml

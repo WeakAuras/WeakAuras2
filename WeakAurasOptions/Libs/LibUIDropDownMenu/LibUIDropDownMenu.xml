@@ -1,0 +1,24 @@
+<!-- $Id: LibUIDropDownMenu.xml 64 2020-11-18 13:13:15Z arithmandar $ -->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="LibUIDropDownMenu.lua"/>
+<!--	<Include file="LibUIDropDownMenuTemplates.xml"/>
+
+	<Button name="L_DropDownList1" toplevel="true" frameStrata="FULLSCREEN_DIALOG" inherits="L_UIDropDownListTemplate" hidden="true" id="1">
+		<Size>
+			<AbsDimension x="180" y="10"/>
+		</Size>
+		<Scripts>
+			<OnLoad>
+				local fontName, fontHeight, fontFlags = _G["L_DropDownList1Button1NormalText"]:GetFont();
+				L_UIDROPDOWNMENU_DEFAULT_TEXT_HEIGHT = fontHeight;
+			</OnLoad>
+		</Scripts>
+	</Button>
+	<Button name="L_DropDownList2" toplevel="true" frameStrata="FULLSCREEN_DIALOG" inherits="L_UIDropDownListTemplate" hidden="true" id="2">
+		<Size>
+			<AbsDimension x="180" y="10"/>
+		</Size>
+	</Button>
+-->
+</Ui>

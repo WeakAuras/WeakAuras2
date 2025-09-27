@@ -1,0 +1,20 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+  <Script file="Libs\LibStub\LibStub.lua"/>
+  <Include file="Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
+  <Include file="Libs\AceTimer-3.0\AceTimer-3.0.xml"/>
+  <Include file="Libs\AceSerializer-3.0\AceSerializer-3.0.xml"/>
+  <Include file="Libs\AceComm-3.0\AceComm-3.0.xml"/>
+  <Include file="Libs\Chomp\Chomp.xml"/>
+  <Include file="Libs\LibSharedMedia-3.0\lib.xml"/>
+  <Script file="Libs\LibCompress\LibCompress.lua"/>
+  <Script file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
+  <Script file="Libs\LibSpellRange-1.0\LibSpellRange-1.0.lua"/>
+  <Script file="Libs\LibRangeCheck-3.0\LibRangeCheck-3.0.lua"/>
+  <Script file="Libs\LibDeflate\LibDeflate.lua"/>
+  <Include file="Libs\LibCustomGlow-1.0\LibCustomGlow-1.0.xml"/>
+  <Script file="Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua"/>
+  <Script file="Libs\LibGetFrame-1.0\LibGetFrame-1.0.lua"/>
+  <Include file="Libs\Archivist\Archivist.xml"/>
+  <Include file="Libs\LibSerialize\lib.xml"/>
+</Ui>

@@ -1,0 +1,6 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+  <Script file = "LibStub\LibStub.lua"/>
+  <Include file ="CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
+  <Script file = "LibGetFrame-1.0.lua"/>
+</Ui>
