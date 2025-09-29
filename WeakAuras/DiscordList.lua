@@ -6,6 +6,7 @@ local Private = select(2, ...)
 Private.DiscordList = {
   [=[AcidWeb]=],
   [=[aelen]=],
+  [=[Alluneve]=],
   [=[Azortharion]=],
   [=[BadBrain]=],
   [=[Bart]=],
@@ -49,7 +50,6 @@ Private.DiscordList = {
   [=[pit]=],
   [=[Putro]=],
   [=[Reloe]=],
-  [=[Saaggs]=],
   [=[Spaten]=],
   [=[Tel]=],
   [=[Translit]=],
