@@ -11,7 +11,6 @@ Private.DiscordList = {
   [=[BadBrain]=],
   [=[Bart]=],
   [=[Boneshock]=],
-  [=[Boxthor]=],
   [=[Burlis]=],
   [=[Causese]=],
   [=[Chab]=],
@@ -19,6 +18,7 @@ Private.DiscordList = {
   [=[Desik]=],
   [=[despi]=],
   [=[Dodgen]=],
+  [=[Doomer Ipse]=],
   [=[exality]=],
   [=[Fatpala]=],
   [=[Fels]=],
@@ -29,6 +29,7 @@ Private.DiscordList = {
   [=[Ironi]=],
   [=[Jods]=],
   [=[kanegasi]=],
+  [=[Karalana]=],
   [=[Korvus]=],
   [=[Koxy]=],
   [=[Krazyito]=],
@@ -52,10 +53,11 @@ Private.DiscordList = {
   [=[Reloe]=],
   [=[Spaten]=],
   [=[Tel]=],
+  [=[Thorill]=],
   [=[Translit]=],
-  [=[update]=],
   [=[Wizeowel]=],
   [=[Xepheris]=],
+  [=[Zytech]=],
 }
 Private.DiscordListCJ = {
 }
