@@ -1,4 +1,4 @@
-## Interface: 50500
+## Interface: 50501
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@
