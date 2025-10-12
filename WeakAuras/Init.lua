@@ -478,6 +478,10 @@ function WeakAuras.IsTWW()
   return WeakAuras.BuildInfo >= 110000
 end
 
+function WeakAuras.IsMidnight()
+  return WeakAuras.BuildInfo >= 120000
+end
+
 ---@param ... string
 WeakAuras.prettyPrint = function(...)
   print("|cff9900ffWeakAuras:|r ", ...)
@@ -566,6 +570,13 @@ if not libsAreOk then
   C_Timer.After(1, function()
     WeakAuras.prettyPrint("WeakAuras is missing necessary libraries. Please reinstall a proper package.")
   end)
+end
+
+if WeakAuras.IsMidnight() then
+  C_Timer.After(1, function()
+    WeakAuras.prettyPrint("WeakAuras does not support Midnight due to Blizzard restricting addons. Read more at https://patreon.com/WeakAuras")
+  end)
+  libsAreOk = false
 end
 
 -- These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
