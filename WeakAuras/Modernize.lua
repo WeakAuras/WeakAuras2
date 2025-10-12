@@ -2455,6 +2455,18 @@ function Private.Modernize(data, oldSnapshot)
     end
   end
 
+  if data.internalVersion < 87 then
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if change.property == "icon_visible" then
+            change.property = "icon"
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 
