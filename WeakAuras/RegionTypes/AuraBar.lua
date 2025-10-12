@@ -94,7 +94,7 @@ local properties = {
     setter = "SetGradientEnabled",
     type = "bool",
   },
-  icon_visible = {
+  icon = {
     display = {L["Icon"], L["Visibility"]},
     setter = "SetIconVisible",
     type = "bool"
