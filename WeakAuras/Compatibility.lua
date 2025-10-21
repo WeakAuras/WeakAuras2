@@ -75,7 +75,7 @@ else
   Private.ExecEnv.GetSpecializationInfoForClassID = GetSpecializationInfoForClassID
 end
 
-if C_SpecializationInfo and C_SpecializationInfo.GetTalentInfo then
+if C_SpecializationInfo and C_SpecializationInfo.GetTalentInfo and not WeakAuras.IsClassicEra() then
   -- copy pasta from Interface/AddOns/Blizzard_DeprecatedSpecialization/Deprecated_Specialization_Mists.lua
   Private.ExecEnv.GetTalentInfo = function(tabIndex, talentIndex, isInspect, isPet, groupIndex)
 		-- Note: tabIndex, talentIndex, and isPet are not supported parameters in 5.5.x and onward.

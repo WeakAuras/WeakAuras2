@@ -3,6 +3,11 @@ if not WeakAuras.IsLibsOK() then return end
 local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
+
+if C_Texture and C_Texture.GetAtlasElements then
+  return
+end
+
 Private.AtlasList = {
 "!Barbershop-MiddleTile",
 "!CharacterCreateDropdown-NineSlice-EdgeLeft",
