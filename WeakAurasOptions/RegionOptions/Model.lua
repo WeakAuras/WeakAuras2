@@ -299,7 +299,7 @@ end
 
 local function createIcon()
   local data = {
-    model_fileId = WeakAuras.IsClassic() and "165589" or "122968", -- spells/arcanepower_state_chest.m2 & Creature/Arthaslichking/arthaslichking.m2
+    model_fileId = "122968", -- spells/arcanepower_state_chest.m2 & Creature/Arthaslichking/arthaslichking.m2
     modelIsUnit = false,
     model_x = 0,
     model_y = 0,
