@@ -39,6 +39,7 @@ Private.DiscordList = {
   [=[Luckyone]=],
   [=[Luxthos]=],
   [=[m33shoq]=],
+  [=[Magic]=],
   [=[Manabanana]=],
   [=[Murph]=],
   [=[Mynze]=],
