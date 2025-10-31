@@ -125,7 +125,7 @@ local get = function(states, key, field)
     if field == nil then
       return state
     end
-    return state[field] or nil
+    return state[field]
   end
   return nil
 end
