@@ -45,7 +45,6 @@ Private.DiscordList = {
   [=[Mynze]=],
   [=[NoM0Re]=],
   [=[Nona]=],
-  [=[NostraDumAzz]=],
   [=[Oi]=],
   [=[Ora]=],
   [=[phoenix7700]=],
