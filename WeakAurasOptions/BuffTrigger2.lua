@@ -814,7 +814,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       width = WeakAuras.doubleWidth,
       hidden = function()
         return not (trigger.type == "aura2" and trigger.unit ~= "multi")
-               or WeakAuras.IsClassicEra()
+               or WeakAuras.IsClassicOrWrath()
       end
     },
     fetchRaidMark = {
