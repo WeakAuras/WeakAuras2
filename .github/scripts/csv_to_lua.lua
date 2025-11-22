@@ -7,6 +7,11 @@ local releases = {
     output = "ModelPathsClassic.lua",
     generate = true,
   },
+  wow_classic_titan = {
+    input = "wow_classic_titan.csv",
+    output = "ModelPathsWrath.lua",
+    generate = true,
+  },
   wow_classic = {
     input = "wow_classic.csv",
     output = "ModelPathsMists.lua",
@@ -22,7 +27,7 @@ local releases = {
 require("table")
 
 if not arg[1] or not releases[arg[1]] then
-  print(arg[0], "<wow|wow_classic|wow_classic_era>")
+  print(arg[0], "<wow|wow_classic_titan|wow_classic|wow_classic_era>")
   return
 end
 

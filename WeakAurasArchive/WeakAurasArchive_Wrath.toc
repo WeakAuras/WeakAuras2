@@ -1,0 +1,8 @@
+## Interface: 30405, 38000
+## Title: WeakAuras Archive
+## Author: The WeakAuras Team
+## Version: @project-version@
+## LoadOnDemand: 1
+## SavedVariables: WeakAurasArchive
+## Dependencies: WeakAuras
+## AllowLoadGameType: wrath, titan
