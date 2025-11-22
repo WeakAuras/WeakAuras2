@@ -43,7 +43,7 @@ jobs:
           -e "s/--@end-non-experimental@\]=====\]/--@end-non-experimental/" WeakAuras/Init.lua
 
       - name: Create Package
-        uses: BigWigsMods/packager@v2
+        uses: BigWigsMods/packager@master
         with:
           args: -d -z
 
