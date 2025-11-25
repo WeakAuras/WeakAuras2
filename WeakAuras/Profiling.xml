@@ -23,7 +23,7 @@
             </OnLeave>
           </Scripts>
         </FontString>
-        <FontString parentKey="time" font="Interface\AddOns\WeakAuras\Media\Fonts\FiraMono-Medium.ttf" justifyH="RIGHT">
+        <FontString parentKey="time" font="Interface\AddOns\WeakAuras\Media\Fonts\FiraMono-Medium.ttf" justifyH="RIGHT" inherits="GameFontNormal">
           <Size x="100" y="0"/>
           <FontHeight val="12"/>
           <Anchors>
@@ -51,7 +51,7 @@
         <BarTexture file="Interface\Addons\WeakAuras\Media\Textures\Square_FullWhite.tga"/>
         <Layers>
           <Layer level="OVERLAY">
-            <FontString parentKey="name" font="Interface\AddOns\WeakAuras\Media\Fonts\FiraMono-Medium.ttf" justifyH="LEFT" wordwrap="false">
+            <FontString parentKey="name" font="Interface\AddOns\WeakAuras\Media\Fonts\FiraMono-Medium.ttf" justifyH="LEFT" wordwrap="false"  inherits="GameFontNormal">
               <Color r="1.0" g="0.82" b="0"/>
               <FontHeight val="12"/>
               <Anchors>
