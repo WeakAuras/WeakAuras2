@@ -983,7 +983,7 @@ local function CreateTalentCache()
 
   Private.talent_types_specific[player_class] = Private.talent_types_specific[player_class] or {};
 
-  if WeakAuras.IsClassicOrCata() then
+  if WeakAuras.IsClassicOrCata() or WeakAuras.IsTBC() then
     for tab = 1, GetNumTalentTabs() do
       for num_talent = 1, GetNumTalents(tab) do
         local talentName, talentIcon = Private.ExecEnv.GetTalentInfo(tab, num_talent);
