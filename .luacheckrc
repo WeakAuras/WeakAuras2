@@ -89,6 +89,7 @@ globals = {
 	"C_DateAndTime",
 	"C_EditMode",
 	"ChatFrame_AddMessageEventFilter",
+	"ChatFrameUtil",
 	"Clamp",
 	"COMBAT_TEXT_SCROLL_FUNCTION",
 	"CombatLogGetCurrentEventInfo",

@@ -429,6 +429,10 @@ end
 -- save compatibility with old auras
 WeakAuras.IsClassic = WeakAuras.IsClassicEra
 
+function WeakAuras.IsTBC()
+  return flavor == 2
+end
+
 ---@return boolean result
 function WeakAuras.IsWrathClassic()
   return flavor == 3

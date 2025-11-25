@@ -76,7 +76,25 @@ else
 end
 
 if C_SpecializationInfo and C_SpecializationInfo.GetTalentInfo and not WeakAuras.IsClassicEra() then
-  if WeakAuras.IsWrathClassic() then
+  if WeakAuras.IsTBC() then
+    Private.ExecEnv.GetTalentInfo = function(tabIndex, talentIndex, isInspect, isPet, groupIndex)
+      local talentInfoQuery = {};
+      talentInfoQuery.specializationIndex = tabIndex;
+      talentInfoQuery.talentIndex = talentIndex;
+      talentInfoQuery.isInspect = isInspect;
+      talentInfoQuery.isPet = isPet;
+      talentInfoQuery.groupIndex = groupIndex;
+      local talentInfo = C_SpecializationInfo.GetTalentInfo(talentInfoQuery);
+      if not talentInfo then
+        return nil;
+      end
+
+      return talentInfo.name, talentInfo.icon, talentInfo.tier, talentInfo.column, talentInfo.rank,
+        talentInfo.maxRank, talentInfo.meetsPrereq, talentInfo.previewRank,
+        talentInfo.meetsPreviewPrereq, talentInfo.isExceptional, talentInfo.hasGoldBorder,
+        talentInfo.talentID;
+    end
+  elseif WeakAuras.IsWrathClassic() then
     -- copy pasta from Interface/AddOns/Blizzard_DeprecatedSpecialization/Deprecated_Specialization_Wrath.lua
     Private.ExecEnv.GetTalentInfo = function(tabIndex, talentIndex, isInspect, isPet, groupIndex)
       local talentInfoQuery = {}
