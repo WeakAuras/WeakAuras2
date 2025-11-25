@@ -430,6 +430,11 @@ end
 WeakAuras.IsClassic = WeakAuras.IsClassicEra
 
 ---@return boolean result
+function WeakAuras.IsTBC()
+  return flavor == 2
+end
+
+---@return boolean result
 function WeakAuras.IsCataClassic()
   return flavor == 4
 end
