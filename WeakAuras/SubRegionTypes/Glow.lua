@@ -205,7 +205,9 @@ local funcs = {
 
     if MSQ and self.parentType == "icon" then
       if (visible) then
-        self.__MSQ_Shape = self:GetParent().button.__MSQ_Shape
+        local button = self:GetParent().button
+        local mcfg = button._MSQ_CFG
+        self.__MSQ_Shape = (mcfg and mcfg.Shape) or button.__MSQ_Shape
         self:Show()
         glowStart(self, self, color)
       else
