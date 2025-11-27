@@ -5,7 +5,7 @@ end
 local L = WeakAuras.L
 
 -- WeakAuras
-L[ [=[ Filter formats: 'Name', 'Name-Realm', '-Realm'. 
+L[ [=[ Filter formats: 'Name', 'Name-Realm', '-Realm'.
 
 Supports multiple entries, separated by commas
 Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，'-服务器'。
@@ -1332,10 +1332,10 @@ L["Supports multiple entries, separated by commas. Escape ',' with \\. Prefix wi
 L["Supports multiple entries, separated by commas. Escape with \\. Prefix with '-' for negation."] = "支持多个条目，由英文逗号分隔。用 \\ 转义编码，用 '-' 前缀表示否定。"
 L["Supports multiple entries, separated by commas. Prefix with '-' for negation."] = "支持多个条目，由英文逗号分隔。用 '-' 前缀表示否定。"
 L[ [=[Supports multiple entries, separated by commas. To include child zone ids, prefix with 'c', e.g. 'c2022'.
-Group Zone IDs must be prefixed with 'g', e.g. 'g277'. 
-Supports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. 
+Group Zone IDs must be prefixed with 'g', e.g. 'g277'.
+Supports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'.
 Supports Instance IDs prefixed with 'i'.
-Entries can be prefixed with '-' to negate.]=] ] = [=[支持多个条目，由英文逗号分隔。若要包含子区域 ID，则前缀为 'c'，如 'c2022'。组区域 ID 必须以 
+Entries can be prefixed with '-' to negate.]=] ] = [=[支持多个条目，由英文逗号分隔。若要包含子区域 ID，则前缀为 'c'，如 'c2022'。组区域 ID 必须以
  'g' 为前缀，如 'g277'。支持的区域 ID 以 'a' 为前缀，详见表格： https://wago.tools/db2/AreaTable 。条目可用 '-' 前缀表示否定。]=]
 L["Swing"] = "近战攻击"
 L["Swing Timer"] = "近战攻击计时器"
