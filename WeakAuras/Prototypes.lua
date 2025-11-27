@@ -1807,6 +1807,7 @@ Private.load_prototype = {
       test = "WeakAuras.IsGlyphActive(%s)",
       events = {"GLYPH_ADDED", "GLYPH_REMOVED", "GLYPH_UPDATED", "USE_GLYPH"},
       enable = WeakAuras.IsMists(),
+      hidden = not WeakAuras.IsMists(),
     },
     {
       name = "spellknown",
