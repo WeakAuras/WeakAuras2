@@ -15,123 +15,18 @@ function Private.InitializeEncounterAndZoneLists()
   end
   local raids = {
     {
-      L["Vault of Archavon"],
+      L["Molten Core"],
       {
-        { L["Archavon the Stone Watcher"], 772 },
-        { L["Emalon the Storm Watcher"], 774 },
-        { L["Koralon the Flame Watcher"], 776 },
-        { L["Toravon the Ice Watcher"], 885 },
-      }
-    },
-    {
-      L["Naxxramas"],
-      {
-        -- The Arachnid Quarter
-        { L["Anub'Rekhan"], 1107 },
-        { L["Grand Widow Faerlina"], 1110 },
-        { L["Maexxna"], 1116 },
-        -- The Plague Quarter
-        { L["Noth the Plaguebringer"], 1117 },
-        { L["Heigan the Unclean"], 1112 },
-        { L["Loatheb"], 1115 },
-        -- The Military Quarter
-        { L["Instructor Razuvious"], 1113 },
-        { L["Gothik the Harvester"], 1109 },
-        { L["The Four Horsemen"], 1121 },
-        -- The Construct Quarter
-        { L["Patchwerk"], 1118 },
-        { L["Grobbulus"], 1111 },
-        { L["Gluth"], 1108 },
-        { L["Thaddius"], 1120 },
-        -- Frostwyrm Lair
-        { L["Sapphiron"], 1119 },
-        { L["Kel'Thuzad"], 1114 }
-      }
-    },
-    {
-      L["The Obsidian Sanctum"],
-      {
-        { L["Tenebron"], 736 },
-        { L["Shadron"], 738 },
-        { L["Vesperon"], 740 },
-        { L["Sartharion"], 742 },
-      }
-    },
-    {
-      L["The Eye of Eternity"],
-      {
-        { L["Malygos"], 734 },
-      }
-    },
-    {
-      L["Ulduar"],
-      {
-        -- The Siege of Ulduar
-        { L["Flame Leviathan"], 744 },
-        { L["Ignis the Furnace Master"], 745 },
-        { L["Razorscale"], 746 },
-        { L["XT-002 Deconstructor"], 747 },
-        -- The Antechamber of Ulduar
-        { L["Assembly of Iron"], 748 },
-        { L["Kologarn"], 749 },
-        { L["Auriaya"], 750 },
-        -- The Keepers of Ulduar
-        { L["Freya"], 753 },
-        { L["Hodir"], 751 },
-        { L["Mimiron"], 754 },
-        { L["Thorim"], 752 },
-        -- The Descent into Madness
-        { L["General Vezax"], 755 },
-        { L["Yogg-Saron"], 756 },
-        -- Celestial Planetarium
-        { L["Algalon the Observer"], 757 },
-      }
-    },
-    {
-      L["Trial of the Crusader"],
-      {
-        { L["Northrend Beasts"], 629 },
-        { L["Lord Jaraxxus"], 633 },
-        { L["Faction Champions"], 637 },
-        { L["Val'kyr Twins"], 641 },
-        { L["Anub'arak"], 645 },
-      }
-    },
-    {
-      L["Onyxia's Lair"],
-      {
-        { L["Onyxia"], 1084 },
-      }
-    },
-    {
-      L["Icecrown Citadel"],
-      {
-        -- The Lower Spire
-        { L["Lord Marrowgar"], 845 },
-        { L["Lady Deathwhisper"], 846 },
-        { L["Gunship Battle"], 847 },
-        { L["Deathbringer Saurfang"], 848 },
-        -- The Plagueworks
-        { L["Festergut"], 849 },
-        { L["Rotface"], 850 },
-        { L["Professor Putricide"], 851 },
-        -- The Crimson Hall
-        { L["Blood Prince Council"], 852 },
-        { L["Blood-Queen Lana'thel"], 853 },
-        -- The Frostwing Halls
-        { L["Valithria Dreamwalker"], 854 },
-        { L["Sindragosa"], 855 },
-        -- The Frozen Throne
-        { L["The Lich King"], 856 },
-      }
-    },
-    {
-      L["The Ruby Sanctum"],
-      {
-        { L["Baltharus the Warborn"], 890 },
-        { L["General Zarithrian"], 893 },
-        { L["Saviana Ragefire"], 891 },
-        { L["Halion"], 887 },
+        { L["Lucifron"], 663 },
+        { L["Magmadar"], 664 },
+        { L["Gehennas"], 665 },
+        { L["Garr"], 666 },
+        { L["Shazzrah"], 667 },
+        { L["Baron Geddon"], 668 },
+        { L["Golemagg the Incinerator"], 669 },
+        { L["Sulfuron Harbinger"], 670 },
+        { L["Majordomo Executus"], 671 },
+        { L["Ragnaros"], 672 },
       }
     },
   }

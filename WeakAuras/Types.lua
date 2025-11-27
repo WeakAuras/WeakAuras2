@@ -1411,12 +1411,18 @@ if WeakAuras.IsRetail() then
 end
 
 ---@type table<string, string>
-Private.faction_group = {
-  Alliance = L["Alliance"],
-  Horde = L["Horde"],
-  Neutral = L["Neutral"]
-}
-
+if WeakAuras.IsClassicOrWrath() then
+  Private.faction_group = {
+    Alliance = L["Alliance"],
+    Horde = L["Horde"]
+  }
+else
+  Private.faction_group = {
+    Alliance = L["Alliance"],
+    Horde = L["Horde"],
+    Neutral = L["Neutral"]
+  }
+end
 ---@type table<number, string>
 Private.form_types = {};
 local function update_forms()
@@ -4529,7 +4535,6 @@ WeakAuras.StopMotion.texture_types.Basic = {
 }
 
 WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion"] = { count = 64, rows = 8, columns = 8 }
-
 
 WeakAuras.StopMotion.animation_types = {
   loop = L["Loop"],

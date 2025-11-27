@@ -1746,7 +1746,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
 
   local pvp = false
   if WeakAuras.IsWrathClassic() then
-    pvp = UnitIsPVPFreeForAll("player") or UnitIsPVP("player")
+    pvp = UnitIsPVP("player")
   end
 
   local changed = 0;
@@ -2441,10 +2441,18 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_REPAIR"] = {
     local AutomaticRepairText = L["WeakAuras has detected that it has been downgraded.\nYour saved auras may no longer work properly.\nWould you like to run the |cffff0000EXPERIMENTAL|r repair tool? This will overwrite any changes you have made since the last database upgrade.\nLast upgrade: %s\n\n|cffff0000You should BACKUP your WTF folder BEFORE pressing this button.|r"]
     local ManualRepairText = L["Are you sure you want to run the |cffff0000EXPERIMENTAL|r repair tool?\nThis will overwrite any changes you have made since the last database upgrade.\nLast upgrade: %s"]
 
-    if self.data.reason == "user" then
-      self.text:SetText(ManualRepairText:format(LastUpgrade()))
+    if IsWrathClassic() then
+      if self.data.reason == "user" then
+        self.Text:SetText(ManualRepairText:format(LastUpgrade()))
+      else
+        self.Text:SetText(AutomaticRepairText:format(LastUpgrade()))
+      end
     else
-      self.text:SetText(AutomaticRepairText:format(LastUpgrade()))
+      if self.data.reason == "user" then
+        self.text:SetText(ManualRepairText:format(LastUpgrade()))
+      else
+        self.text:SetText(AutomaticRepairText:format(LastUpgrade()))
+      end
     end
   end,
   OnCancel = function(self)
