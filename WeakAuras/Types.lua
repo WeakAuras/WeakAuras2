@@ -4580,6 +4580,7 @@ if WeakAuras.IsWrathOrCata() then
   Private.talent_extra_option_types[2] = nil
 
   if WeakAuras.IsWrathClassic() then
+    Private.faction_group.Neutral = nil
     Private.item_slot_types[0] = AMMOSLOT
     Private.item_slot_types[18] = RANGEDSLOT
 
