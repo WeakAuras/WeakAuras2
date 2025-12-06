@@ -37,6 +37,7 @@ body:
       - Mists of Pandaria Classic
       - Cataclysm Classic
       - Titan Reforged
+      - Burning Crusade Anniversary
       - Classic Era
   validations:
     required: true

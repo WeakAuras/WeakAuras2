@@ -9,7 +9,7 @@ local L = WeakAuras.L;
 
 -- Default settings
 local default = {
-  model_fileId = "122968", -- spells/arcanepower_state_chest.m2 & Creature/Arthaslichking/arthaslichking.m2
+  model_fileId = WeakAuras.IsTBC() and "124614" or "122968", -- Creature/illidan/illidandark.m2 / Creature/Arthaslichking/arthaslichking.m2
   modelIsUnit = false,
   api = false, -- false ==> SetPosition + SetFacing; true ==> SetTransform
   model_x = 0,

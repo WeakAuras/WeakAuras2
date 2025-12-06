@@ -1,7 +1,8 @@
-## Interface: 205505
+## Interface: 20505
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
 ## Version: @project-version@
+## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-esMX: Opciones para WeakAuras
@@ -105,7 +106,7 @@ AceGUI-Widgets\AceGUIWidget-WeakAurasExpandAnchor.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSpacer.lua
 AceGUI-Widgets\AceGuiWidget-WeakAurasProgressBar.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSpinBox.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasMiniTalent_Mists.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasMiniTalent_Wrath.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasScrollArea.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasInput.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasInputFocus.lua

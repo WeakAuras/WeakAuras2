@@ -1,4 +1,5 @@
 local AddonName, TemplatePrivate = ...
+---@class WeakAuras
 local WeakAuras = WeakAuras
 if not WeakAuras.IsTBC() then return end
 local L = WeakAuras.L

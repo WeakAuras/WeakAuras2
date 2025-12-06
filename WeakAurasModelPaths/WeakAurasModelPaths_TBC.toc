@@ -1,7 +1,8 @@
-## Interface: 205505
+## Interface: 20505
 ## Title: WeakAuras Model Paths
 ## Author: The WeakAuras Team
 ## Version: @project-version@
+## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
 ## Notes: Model paths for WeakAuras
 ## Notes-esES: Las rutas de modelos para WeakAuras
 ## Notes-esMX: Las rutas de modelos para WeakAuras
@@ -15,4 +16,4 @@
 ## Dependencies: WeakAuras, WeakAurasOptions
 ## AllowLoadGameType: tbc
 
-ModelPathsBCC.lua
+ModelPathsTBC.lua

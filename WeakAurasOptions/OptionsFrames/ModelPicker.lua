@@ -356,7 +356,7 @@ local function ConstructModelPicker(frame)
     self.path = path
     self.selectedValues = {}
 
-    self.selectedValues.model_fileId = GetAll(baseObject, path, "model_fileId", "122968")
+    self.selectedValues.model_fileId = GetAll(baseObject, path, "model_fileId", WeakAuras.IsTBC() and "124614" or "122968")
 
     WeakAuras.SetModel(self.model, nil, self.selectedValues.model_fileId)
 

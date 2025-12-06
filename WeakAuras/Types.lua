@@ -1370,7 +1370,7 @@ do
     [6] = true,
     [7] = true,
     [8] = true,
-    [9] = not WeakAuras.IsClassicOrWrath() and true or nil, -- Goblin
+    [9] = not WeakAuras.IsClassicOrTBCOrWrath() and true or nil, -- Goblin
     [10] = true,
     [11] = true,
     [22] = true,
@@ -1684,8 +1684,8 @@ elseif WeakAuras.IsCataClassic() then
   for _, k in ipairs{8, 12, 13, 16, 17, 18} do
     Private.power_types[k] = nil
   end
-elseif WeakAuras.IsWrathClassic() then
-  for k = 7, 18 do
+elseif WeakAuras.IsTBCOrWrath() then
+  for k = (WeakAuras.IsTBC() and 6 or 7), 18 do
     Private.power_types[k] = nil
   end
 end
@@ -1812,7 +1812,7 @@ if WeakAuras.IsRetail() then
   Private.GetCurrencyIDFromLink = C_CurrencyInfo.GetCurrencyIDFromLink
   Private.ExpandCurrencyList = C_CurrencyInfo.ExpandCurrencyList
   Private.GetCurrencyListInfo = C_CurrencyInfo.GetCurrencyListInfo
-elseif WeakAuras.IsWrathOrCataOrMists() then
+elseif WeakAuras.IsTBCOrWrathOrCataOrMists() then
   Private.GetCurrencyListSize = GetCurrencyListSize
   ---@type fun(currencyLink: string): number?
   Private.GetCurrencyIDFromLink = function(currencyLink)
@@ -2576,7 +2576,7 @@ if WeakAuras.IsClassicEra() then -- Classic
       runes[tostring(v)] = nil
     end
   end
-elseif WeakAuras.IsWrathClassic() then
+elseif WeakAuras.IsTBCOrWrath() then
   Private.texture_types["Blizzard Alerts"] = nil
   do
     local beams = Private.texture_types["Beams"]
@@ -2880,7 +2880,7 @@ Private.weapon_types = {
   ["main"] = MAINHANDSLOT,
   ["off"] = SECONDARYHANDSLOT
 }
-if WeakAuras.IsCataClassic() then
+if WeakAuras.IsClassicOrTBCOrWrathOrCata() then
   Private.weapon_types.ranged = RANGEDSLOT
 end
 
@@ -2890,7 +2890,7 @@ Private.swing_types = {
   ["off"] = SECONDARYHANDSLOT
 }
 
-if WeakAuras.IsClassicOrWrath() then
+if WeakAuras.IsClassicOrTBCOrWrath() then
   Private.swing_types["ranged"] = RANGEDSLOT
 end
 
@@ -3131,7 +3131,7 @@ Private.instance_types = {
   ratedarena = L["Rated Arena"]
 }
 
-if WeakAuras.IsClassicOrWrath() then
+if WeakAuras.IsClassicOrTBCOrWrath() then
   Private.instance_types["ratedpvp"] = nil
   Private.instance_types["ratedarena"] = nil
   Private.instance_types["flexible"] = nil
@@ -3276,7 +3276,7 @@ elseif WeakAuras.IsWrathClassic() then
 end
 
 ---@type table<string, string>
-if WeakAuras.IsClassicOrWrathOrCataOrMists() then
+if WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists() then
   Private.raid_role_types = {
     MAINTANK = "|TInterface\\GroupFrame\\UI-Group-maintankIcon:16:16|t "..MAINTANK,
     MAINASSIST = "|TInterface\\GroupFrame\\UI-Group-mainassistIcon:16:16|t "..MAINASSIST,
@@ -3309,7 +3309,7 @@ Private.classification_types = {
   minus = L["Minus (Small Nameplate)"]
 }
 
-if WeakAuras.IsWrathOrMistsOrRetail() then
+if WeakAuras.IsTBCOrWrathOrMistsOrRetail() then
   ---@type table<number, string>
   Private.creature_type_types = {}
   for _, creatureID in ipairs(C_CreatureInfo.GetCreatureTypeIDs()) do
@@ -3677,7 +3677,7 @@ Private.pet_behavior_types = {
   assist = PET_MODE_ASSIST
 }
 
-if WeakAuras.IsClassicOrWrath() then
+if WeakAuras.IsClassicOrTBCOrWrath() then
   Private.pet_behavior_types.aggressive = PET_MODE_AGGRESSIVE
   Private.pet_behavior_types.assist = nil
 end
@@ -4323,7 +4323,7 @@ Private.glow_types = {
   buttonOverlay = L["Action Button Glow"],
 }
 
-if WeakAuras.IsMistsOrRetail() then
+if WeakAuras.IsTBCOrMistsOrRetail() then
   Private.glow_types.Proc = L["Proc Glow"]
 end
 
@@ -4384,7 +4384,7 @@ for i = 1, 4 do
   Private.multiUnitUnits.party["partypet"..i] = true
 end
 
-if WeakAuras.IsWrathOrCataOrMistsOrRetail() then
+if WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail() then
   for i = 1, 10 do
     Private.baseUnitId["boss"..i] = true
     Private.multiUnitUnits.boss["boss"..i] = true
@@ -4504,7 +4504,7 @@ skippedWeaponTypes[11] = true -- Bear Claws
 skippedWeaponTypes[12] = true -- Cat Claws
 skippedWeaponTypes[14] = true -- Misc
 skippedWeaponTypes[17] = true -- Spears
-if WeakAuras.IsClassicOrWrathOrCataOrMists() then
+if WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists() then
   skippedWeaponTypes[9] = true -- Glaives
 else
   skippedWeaponTypes[16] = true -- Thrown
@@ -4571,14 +4571,14 @@ if WeakAuras.IsClassicEra() then
   end
 end
 
-if WeakAuras.IsWrathOrCata() then
+if WeakAuras.IsTBCOrWrathOrCata() then
   for slot = 20, 28 do
     Private.item_slot_types[slot] = nil
   end
   Private.talent_extra_option_types[0] = nil
   Private.talent_extra_option_types[2] = nil
 
-  if WeakAuras.IsWrathClassic() then
+  if WeakAuras.IsTBCOrWrath() then
     Private.faction_group.Neutral = nil
     Private.item_slot_types[0] = AMMOSLOT
     Private.item_slot_types[18] = RANGEDSLOT
@@ -4611,6 +4611,7 @@ if WeakAuras.IsWrathOrCata() then
     for _, spellid in ipairs(reset_ranged_swing_spell_list) do
       Private.reset_ranged_swing_spells[spellid] = true
     end
+
   else -- Cata
     Private.item_slot_types[18] = RELICSLOT
   end

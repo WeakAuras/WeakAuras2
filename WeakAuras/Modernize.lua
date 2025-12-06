@@ -2468,7 +2468,7 @@ function Private.Modernize(data, oldSnapshot)
   end
 
   if data.internalVersion < 88 then
-    if WeakAuras.IsWrathClassic() then
+    if WeakAuras.IsTBCOrWrath() then
       for _, triggerData in ipairs(data.triggers) do
         local trigger = triggerData.trigger
         if trigger and trigger.event == "Talent Known" and trigger.talent then

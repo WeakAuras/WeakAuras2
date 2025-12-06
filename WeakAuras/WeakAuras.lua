@@ -993,7 +993,7 @@ local function CreateTalentCache()
         end
       end
     end
-  elseif WeakAuras.IsWrathOrMists() then
+  elseif WeakAuras.IsTBCOrWrathOrMists() then
     -- unused
   else
     local spec = GetSpecialization()
@@ -1678,6 +1678,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   --- @type boolean
   local inEncounter = encounter_id ~= 0;
   local alive = not UnitIsDeadOrGhost('player')
+  local pvp = UnitIsPVPFreeForAll("player") or UnitIsPVP("player") or false
   local raidMemberType = 0
 
   if UnitIsGroupLeader("player") then
@@ -1689,15 +1690,15 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   end
 
   local mounted = IsMounted()
-  if WeakAuras.IsClassicOrWrathOrCataOrMists() then
+  if WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists() then
     local raidID = UnitInRaid("player")
     if raidID then
       raidRole = select(10, GetRaidRosterInfo(raidID))
     end
-    role = "none"
-    if WeakAuras.IsWrathClassic() then
+    role = "NONE"
+    if WeakAuras.IsTBCOrWrath() then
       role = UnitGroupRolesAssigned("player")
-      if role == "NONE" then
+      if WeakAuras.IsWrathClassic() and role == "NONE" then
         role = GetTalentGroupRole(GetActiveTalentGroup()) or "NONE"
       end
     end
@@ -1705,7 +1706,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   if WeakAuras.IsClassicEra() then
     vehicle = UnitOnTaxi('player')
   end
-  if WeakAuras.IsWrathOrCataOrMistsOrRetail() then
+  if WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail() then
     vehicle = UnitInVehicle('player') or UnitOnTaxi('player') or false
     vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar() or HasVehicleActionBar() or false
   end
@@ -1744,11 +1745,6 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     runeEngraving = C_Engraving.IsEngravingEnabled()
   end
 
-  local pvp = false
-  if WeakAuras.IsWrathClassic() then
-    pvp = UnitIsPVPFreeForAll("player") or UnitIsPVP("player")
-  end
-
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
   local parentsToCheck = {}
@@ -1761,20 +1757,23 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
       if WeakAuras.IsClassicEra() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, vehicle, mounted, hardcore, runeEngraving, class, player, realm, guild, race, faction, playerLevel, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size)
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, vehicle, mounted, hardcore, runeEngraving, class, player, realm, guild, race, faction, playerLevel, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size)
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, pvp, vehicle, mounted, hardcore, runeEngraving, class, player, realm, guild, race, faction, playerLevel, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size)
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, pvp, vehicle, mounted, hardcore, runeEngraving, class, player, realm, guild, race, faction, playerLevel, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size)
+      elseif WeakAuras.IsTBC() then
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, pvp, vehicle, vehicleUi, mounted, class, player, realm, guild, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, pvp, vehicle, vehicleUi, mounted, class, player, realm, guild, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
       elseif WeakAuras.IsWrathClassic() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, pvp, vehicle, vehicleUi, mounted, class, player, realm, guild, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, pvp, vehicle, vehicleUi, mounted, class, player, realm, guild, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
       elseif WeakAuras.IsCataClassic() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, vehicle, vehicleUi, mounted, class, specId, player, realm, guild, race, faction, playerLevel, role, position, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, vehicle, vehicleUi, mounted, class, specId, player, realm, guild, race, faction, playerLevel, role, position, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, pvp, vehicle, vehicleUi, mounted, class, specId, player, realm, guild, race, faction, playerLevel, role, position, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, pvp, vehicle, vehicleUi, mounted, class, specId, player, realm, guild, race, faction, playerLevel, role, position, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
       elseif WeakAuras.IsMists() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, inPetBattle, vehicle, vehicleUi, mounted, class, specId, player, realm, guild, race, faction, playerLevel, role, position, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, inPetBattle, vehicle, vehicleUi, mounted, class, specId, player, realm, guild, race, faction, playerLevel, role, position, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, pvp, inPetBattle, vehicle, vehicleUi, mounted, class, specId, player, realm, guild, race, faction, playerLevel, role, position, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, pvp, inPetBattle, vehicle, vehicleUi, mounted, class, specId, player, realm, guild, race, faction, playerLevel, role, position, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
       elseif WeakAuras.IsRetail() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, mounted, specId, player, realm, guild, race, faction, playerLevel, effectiveLevel, role, position, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex, affixes)
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, mounted, specId, player, realm, guild, race, faction, playerLevel, effectiveLevel, role, position, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex, affixes)
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, pvp, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, mounted, specId, player, realm, guild, race, faction, playerLevel, effectiveLevel, role, position, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex, affixes)
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, pvp, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, mounted, specId, player, realm, guild, race, faction, playerLevel, effectiveLevel, role, position, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex, affixes)
       end
 
       if(shouldBeLoaded and not loaded[id]) then
@@ -1875,7 +1874,7 @@ else
   loadFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 end
 
-if WeakAuras.IsWrathOrCataOrMists() then
+if WeakAuras.IsTBCOrWrathOrCataOrMists() then
   loadFrame:RegisterEvent("VEHICLE_UPDATE");
   loadFrame:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR")
   loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
@@ -1915,7 +1914,7 @@ local unitLoadFrame = CreateFrame("Frame");
 Private.frames["Display Load Handling 2"] = unitLoadFrame;
 
 unitLoadFrame:RegisterUnitEvent("UNIT_FLAGS", "player");
-if WeakAuras.IsWrathOrCataOrMistsOrRetail() then
+if WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail() then
   unitLoadFrame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
   unitLoadFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
   unitLoadFrame:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", "player");
