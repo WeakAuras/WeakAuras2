@@ -34,9 +34,10 @@ body:
     description: What version of World of Warcraft are are you running?
     options:
       - Retail (Default)
-      - Beta (WoW 11.0)
-      - Classic Era
+      - Mists of Pandaria Classic
       - Cataclysm Classic
+      - Titan Reforged
+      - Classic Era
   validations:
     required: true
 
