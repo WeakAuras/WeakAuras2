@@ -30,6 +30,12 @@ function Private.InitializeEncounterAndZoneLists()
       }
     },
     {
+      L["Vault of Archavon"],
+      {
+        { L["Archavon the Stone Watcher"], 772 },
+      }
+    },
+    {
       L["World Bosses"],
       {
         { L["Azuregos"], 3440 },

@@ -1405,8 +1405,8 @@ Private.load_prototype = {
       init = WeakAuras.IsMistsOrRetail() and "arg" or nil,
       width = WeakAuras.normalWidth,
       optional = true,
-      enable = WeakAuras.IsWrathOrMistsOrRetail(),
-      hidden = not WeakAuras.IsWrathOrMistsOrRetail(),
+      enable = WeakAuras.IsMistsOrRetail(),
+      hidden = not WeakAuras.IsMistsOrRetail(),
       events = {"PET_BATTLE_OPENING_START", "PET_BATTLE_CLOSE"}
     },
     {
@@ -4165,7 +4165,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsClassicOrCataOrMists() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsClassicOrWrathOrCataOrMists() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -4464,7 +4464,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsClassicOrCataOrMists() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsClassicOrWrathOrCataOrMists() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -6972,8 +6972,12 @@ Private.event_prototypes = {
     force_events = (WeakAuras.IsRetail() and "TRAIT_CONFIG_UPDATED") or "CHARACTER_POINTS_CHANGED",
     name = L["Talent Known"],
     init = function(trigger)
-      local inverse = trigger.use_inverse and not WeakAuras.IsMistsOrRetail()
+      local inverse = trigger.use_inverse and not WeakAuras.IsWrathOrMistsOrRetail()
       local ret = {}
+      table.insert(ret, [[
+        local active = true
+        local activeName, activeIcon, _
+      ]])
       if (trigger.use_talent) then
         -- Single selection
         local index = trigger.talent and trigger.talent.single;
@@ -6982,7 +6986,7 @@ Private.event_prototypes = {
         table.insert(ret, ([[
           local tier = %s;
           local column = %s;
-          local active = false
+          active = false
           local name, icon, _, _, rank = Private.ExecEnv.GetTalentInfo(tier, column)
           if rank and rank > 0 then
             active = true;
@@ -6996,11 +7000,8 @@ Private.event_prototypes = {
           ]])
         end
       elseif (trigger.use_talent == false) then
+        -- Multi selection
         if (trigger.talent.multi) then
-          table.insert(ret, [[
-            local active = true
-            local activeIcon, activeName, _
-          ]])
           if WeakAuras.IsRetail() then
             table.insert(ret, [[
               local index
@@ -7013,7 +7014,7 @@ Private.event_prototypes = {
             ]])
           end
           for index, value in pairs(trigger.talent.multi) do
-            if WeakAuras.IsClassicOrWrathOrCata() then
+            if WeakAuras.IsClassicOrCata() then
               local tier = index and ceil(index / MAX_NUM_TALENTS)
               local column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
               table.insert(ret, ([[
@@ -7021,13 +7022,26 @@ Private.event_prototypes = {
                   tier = %s
                   column = %s
                   local name, icon, _, _, rank = Private.ExecEnv.GetTalentInfo(tier, column)
-                  if rank > 0 then
+                  if rank and rank > 0 then
                     active = true;
                     activeName = name;
                     activeIcon = icon;
                   end
                 end
               ]]):format(tier, column))
+            elseif WeakAuras.IsWrathClassic() then
+              local tier = index and math.ceil(index / MAX_NUM_TALENTS)
+              local column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
+              table.insert(ret, ([[
+                tier = %s
+                column = %s
+                local shouldBeActive = %s
+                local rank
+                activeName, activeIcon, _, _, rank = Private.ExecEnv.GetTalentInfo(tier, column)
+                if ((rank and rank > 0) ~= shouldBeActive) then
+                  active = false
+                end
+              ]]):format(tier, column, value and "true" or "false"))
             elseif WeakAuras.IsMists() then
               local tier = index and math.ceil(index / 3)
               local column = index and (index - 1) % 3 + 1
@@ -7051,7 +7065,7 @@ Private.event_prototypes = {
                 if talentId then
                   activeName, activeIcon, _, rank = WeakAuras.GetTalentById(talentId)
                   if activeName ~= nil then
-                    if rank > 0 ~= shouldBeActive then
+                    if ((rank and rank > 0) ~= shouldBeActive) then
                       active = false
                     end
                   end
@@ -7066,11 +7080,11 @@ Private.event_prototypes = {
           end
         end
       end
+      -- Hero Talents
       if (WeakAuras.IsTWW() and trigger.use_herotalent == false) then
         if (trigger.herotalent.multi) then
           table.insert(ret, [[
             local heroActive = true
-            local activeIcon, activeName, _
             local index
           ]])
           for index, value in pairs(trigger.herotalent.multi) do
@@ -7080,7 +7094,7 @@ Private.event_prototypes = {
               if talentId then
                 activeName, activeIcon, _, rank = WeakAuras.GetTalentById(talentId)
                 if activeName ~= nil then
-                  if rank > 0 ~= shouldBeActive then
+                  if ((rank and rank > 0) ~= shouldBeActive) then
                     heroActive = false
                   end
                 end
@@ -7151,7 +7165,7 @@ Private.event_prototypes = {
               end
             end
             return {}
-          elseif WeakAuras.IsMists() then
+          elseif WeakAuras.IsWrathOrMists() then
             return Private.talentInfo[class]
           else
             if Private.talent_types_specific[class] then
@@ -7161,11 +7175,11 @@ Private.event_prototypes = {
             end
           end
         end,
-        multiUseControlWhenFalse = WeakAuras.IsMistsOrRetail(),
-        multiAll = WeakAuras.IsMistsOrRetail(),
-        multiNoSingle = WeakAuras.IsMistsOrRetail(),
-        multiTristate = WeakAuras.IsMistsOrRetail(), -- values can be true/false/nil
-        control = WeakAuras.IsMistsOrRetail() and "WeakAurasMiniTalent" or nil,
+        multiUseControlWhenFalse = WeakAuras.IsWrathOrMistsOrRetail(),
+        multiAll = WeakAuras.IsWrathOrMistsOrRetail(),
+        multiNoSingle = WeakAuras.IsWrathOrMistsOrRetail(),
+        multiTristate = WeakAuras.IsWrathOrMistsOrRetail(), -- values can be true/false/nil
+        control = WeakAuras.IsWrathOrMistsOrRetail() and "WeakAurasMiniTalent" or nil,
         multiConvertKey = WeakAuras.IsRetail() and function(trigger, key)
           local classId
           for i = 1, GetNumClasses() do
@@ -7279,8 +7293,8 @@ Private.event_prototypes = {
         display = L["Inverse"],
         type = "toggle",
         test = "true",
-        enable = not WeakAuras.IsMistsOrRetail(),
-        hidden = WeakAuras.IsMistsOrRetail(),
+        enable = not WeakAuras.IsWrathOrMistsOrRetail(),
+        hidden = WeakAuras.IsWrathOrMistsOrRetail(),
       },
       {
         hidden = true,
@@ -9181,12 +9195,14 @@ Private.event_prototypes = {
         desc = function()
           if WeakAuras.IsRetail() then
             return L["Set IDs can be found on websites such as wowhead.com/item-sets"]
-          elseif WeakAuras.IsClassicEra() then
-            return L["Set IDs can be found on websites such as wowhead.com/classic/item-sets"]
-          elseif WeakAuras.IsCataClassic() then
-            return L["Set IDs can be found on websites such as wowhead.com/cata/item-sets"]
           elseif WeakAuras.IsMists() then
             return L["Set IDs can be found on websites such as wowhead.com/mop-classic/item-sets"]
+          elseif WeakAuras.IsCataClassic() then
+            return L["Set IDs can be found on websites such as wowhead.com/cata/item-sets"]
+          elseif WeakAuras.IsWotLKClassic() then
+            return L["Set IDs can be found on websites such as wowhead.com/wotlk/item-sets"]
+          elseif WeakAuras.IsClassicEra() then
+            return L["Set IDs can be found on websites such as wowhead.com/classic/item-sets"]
           end
         end
       },
@@ -9631,7 +9647,7 @@ Private.event_prototypes = {
         name = "lockoutSchool",
         display = L["Interrupted School Text"],
         hidden = true,
-        init = "lockoutSchool and lockoutSchool > 0 and GetSchoolString(lockoutSchool) or nil",
+        init = "lockoutSchool and lockoutSchool > 0 and C_Spell.GetSchoolString(lockoutSchool) or nil",
         store = true,
         test = "true",
       },
@@ -10043,7 +10059,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsClassicOrCataOrMists() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsClassicOrWrathOrCataOrMists() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
                  and not trigger.use_inverse
         end
       },
@@ -10715,8 +10731,8 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
-        enable = WeakAuras.IsClassicOrCataOrMists(),
-        hidden = not WeakAuras.IsClassicOrCataOrMists(),
+        enable = WeakAuras.IsClassicOrWrathOrCataOrMists(),
+        hidden = not WeakAuras.IsClassicOrWrathOrCataOrMists(),
       },
       {
         type = "header",
@@ -11049,7 +11065,7 @@ Private.event_prototypes = {
         name = "resistanceHeader",
         display = L["Resistances"],
         hidden = WeakAuras.IsRetail(),
-        enable = WeakAuras.IsClassicOrCataOrMists(),
+        enable = WeakAuras.IsClassicOrWrathOrCataOrMists(),
       },
       {
         name = "resistanceholy",
@@ -12351,10 +12367,13 @@ if C_AssistedCombat and C_AssistedCombat.GetNextCastSpell then
 end
 
 if WeakAuras.IsClassicEra() then
-  Private.event_prototypes["Death Knight Rune"] = nil
-  Private.event_prototypes["Currency"] = nil
   Private.event_prototypes["Alternate Power"] = nil
+  Private.event_prototypes["Currency"] = nil
+  Private.event_prototypes["Death Knight Rune"] = nil
   Private.event_prototypes["Spell Activation Overlay"] = nil
+end
+if WeakAuras.IsWrathClassic() then
+  Private.event_prototypes["Alternate Power"] = nil
 end
 if WeakAuras.IsCataOrMists() then
   Private.event_prototypes["Swing Timer"] = nil
@@ -12363,16 +12382,16 @@ if WeakAuras.IsClassicOrWrathOrCata() then
   if not UnitDetailedThreatSituation then
     Private.event_prototypes["Threat Situation"] = nil
   end
-  Private.event_prototypes["Evoker Essence"] = nil
-  Private.event_prototypes["Equipment Set"] = nil
-  Private.event_prototypes["PvP Talent Selected"] = nil
   Private.event_prototypes["Class/Spec"] = nil
+  Private.event_prototypes["Equipment Set"] = nil
+  Private.event_prototypes["Evoker Essence"] = nil
   Private.event_prototypes["Loot Specialization"] = nil
+  Private.event_prototypes["PvP Talent Selected"] = nil
 end
 if WeakAuras.IsMists() then
   Private.event_prototypes["Evoker Essence"] = nil
-  Private.event_prototypes["PvP Talent Selected"] = nil
   Private.event_prototypes["Loot Specialization"] = nil
+  Private.event_prototypes["PvP Talent Selected"] = nil
 end
 if WeakAuras.IsRetail() then
   Private.event_prototypes["Queued Action"] = nil
