@@ -25,6 +25,7 @@ Private.DiscordList = {
   [=[Fliyin]=],
   [=[Gameaholic]=],
   [=[Guffin]=],
+  [=[Hekili]=],
   [=[Ironi]=],
   [=[Jods]=],
   [=[kanegasi]=],
