@@ -2469,29 +2469,21 @@ function Private.Modernize(data, oldSnapshot)
 
   if data.internalVersion < 88 then
     if WeakAuras.IsWrathClassic() then
-      if data.triggers then
-        for _, triggerData in ipairs(data.triggers) do
-          local trigger = triggerData.trigger
-          if trigger and trigger.event == "Talent Known" then
-            if trigger.use_inverse == true then
-              if trigger.use_talent == true and trigger.talent.single then
-                trigger.talent.multi = {}
-                trigger.talent.multi[trigger.talent.single] = false
-                trigger.use_talent = false
-              elseif trigger.use_talent == false and trigger.talent.multi then
-                for talentIndex in pairs(trigger.talent.multi) do
-                  trigger.talent.multi[talentIndex] = false
-                end
-              end
-              trigger.use_inverse = nil
-            else
-              if trigger.use_talent == true and trigger.talent.single then
-                trigger.talent.multi = {}
-                trigger.talent.multi[trigger.talent.single] = false
-                trigger.use_talent = false
-              end
+      for _, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        if trigger and trigger.event == "Talent Known" and trigger.talent then
+          if trigger.use_talent and trigger.talent.single then
+            trigger.talent.multi = {}
+            trigger.talent.multi[trigger.talent.single] = false
+            trigger.use_talent = false
+          end
+          if trigger.use_inverse and trigger.talent.multi then
+            for talentIndex in pairs(trigger.talent.multi) do
+              trigger.talent.multi[talentIndex] = false
             end
           end
+          trigger.talent.single = nil
+          trigger.use_inverse = nil
         end
       end
     end
