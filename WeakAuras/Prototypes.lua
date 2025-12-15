@@ -11064,8 +11064,8 @@ Private.event_prototypes = {
         type = "header",
         name = "resistanceHeader",
         display = L["Resistances"],
-        hidden = WeakAuras.IsRetail(),
         enable = WeakAuras.IsClassicOrWrathOrCataOrMists(),
+        hidden = not WeakAuras.IsClassicOrWrathOrCataOrMists(),
       },
       {
         name = "resistanceholy",
@@ -11073,9 +11073,9 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 1))",
         store = true,
-        enable = WeakAuras.IsClassicOrWrathOrCataOrMists(),
+        enable = false,
         conditionType = "number",
-        hidden = WeakAuras.IsRetail(),
+        hidden = true,
         multiEntry = {
           operator = "and",
           limit = 2
