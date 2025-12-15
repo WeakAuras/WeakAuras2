@@ -47,7 +47,7 @@ jobs:
         with:
           args: -d -z
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         if: ${{ needs.permission_check.outputs.require-result == 'true' && contains(github.event.pull_request.labels.*.name, '🆕 Feature Preview')}}
         id: upload-artifact
         with:
