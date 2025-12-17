@@ -1,13 +1,6 @@
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
-
 if not WeakAuras.IsLibsOK() then
   return
 end
-
-local keepOpenForReload = {}
 
 local widgetType, widgetVersion = "WeakAurasMiniTalent", 3
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
@@ -199,7 +192,6 @@ end
 local methods = {
   OnAcquire = function(self)
     self:SetDisabled(false)
-    self.acquired = true
   end,
 
   OnRelease = function(self)
@@ -207,7 +199,6 @@ local methods = {
     self:SetMultiselect(false)
     self.value = nil
     self.list = nil
-    self.acquired = false
   end,
 
   SetList = function(self, list)
@@ -329,30 +320,6 @@ local function Constructor()
     widget[method] = func
   end
   talentFrame.obj = widget
-
-  local function OnBeforeReload()
-    if widget.acquired then
-      local user = widget:GetUserDataTable()
-      if user and user.path then
-        keepOpenForReload[user.path[#user.path]] = widget.open
-      end
-    end
-  end
-
-  local function OnAfterReload()
-    if widget.acquired then
-      local user = widget:GetUserDataTable()
-      if user and user.path then
-        if keepOpenForReload[user.path[#user.path]] then
-          widget:ToggleView(true)
-          keepOpenForReload[user.path[#user.path]] = nil
-        end
-      end
-    end
-  end
-
-  OptionsPrivate.Private.callbacks:RegisterCallback("BeforeReload", OnBeforeReload)
-  OptionsPrivate.Private.callbacks:RegisterCallback("AfterReload", OnAfterReload)
 
   return AceGUI:RegisterAsWidget(widget)
 end
