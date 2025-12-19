@@ -1670,8 +1670,8 @@ Private.power_types = {
   [18] = POWER_TYPE_PAIN
 }
 if WeakAuras.IsRetail() then
-  Private.power_types[99] = STAGGER
   Private.power_types[19] = POWER_TYPE_ESSENCE
+  Private.power_types[99] = STAGGER
 elseif WeakAuras.IsMists() then
   for _, k in ipairs{8, 13, 16, 17, 18} do
     Private.power_types[k] = nil
@@ -3234,15 +3234,15 @@ end
 
 ---@type table<number, string>
 Private.TocToExpansion = {
-   [1] = L["Classic"],
-   [2] = L["Burning Crusade"],
-   [3] = L["Wrath of the Lich King"],
-   [4] = L["Cataclysm"],
-   [5] = L["Mists of Pandaria"],
-   [6] = L["Warlords of Draenor"],
-   [7] = L["Legion"],
-   [8] = L["Battle for Azeroth"],
-   [9] = L["Shadowlands"],
+  [1] = L["Classic"],
+  [2] = L["Burning Crusade"],
+  [3] = L["Wrath of the Lich King"],
+  [4] = L["Cataclysm"],
+  [5] = L["Mists of Pandaria"],
+  [6] = L["Warlords of Draenor"],
+  [7] = L["Legion"],
+  [8] = L["Battle for Azeroth"],
+  [9] = L["Shadowlands"],
   [10] = L["Dragonflight"],
   [11] = L["The War Within"]
 }
@@ -4529,7 +4529,6 @@ WeakAuras.StopMotion.texture_types.Basic = {
 }
 
 WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion"] = { count = 64, rows = 8, columns = 8 }
-
 
 WeakAuras.StopMotion.animation_types = {
   loop = L["Loop"],

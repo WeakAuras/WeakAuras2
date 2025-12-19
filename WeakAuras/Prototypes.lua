@@ -11064,8 +11064,8 @@ Private.event_prototypes = {
         type = "header",
         name = "resistanceHeader",
         display = L["Resistances"],
-        hidden = WeakAuras.IsRetail(),
         enable = WeakAuras.IsClassicOrWrathOrCataOrMists(),
+        hidden = WeakAuras.IsRetail(),
       },
       {
         name = "resistanceholy",
