@@ -1,4 +1,4 @@
-## Interface: 110205
+## Interface: 110207
 ## Title: WeakAuras Archive
 ## Author: The WeakAuras Team
 ## Version: @project-version@
