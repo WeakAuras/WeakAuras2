@@ -16,7 +16,6 @@ Private.DiscordList = {
   [=[Continuity]=],
   [=[Desik]=],
   [=[despi]=],
-  [=[Dodgen]=],
   [=[Doomer Ipse]=],
   [=[exality]=],
   [=[Fatpala]=],
