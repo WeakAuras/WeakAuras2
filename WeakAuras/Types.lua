@@ -220,7 +220,7 @@ if gameLocale == "koKR" or gameLocale == "zhCN" or gameLocale == "zhTW" then
     end
     return tostring(value);
   end
-elseif WeakAuras.IsClassicOrWrathOrCataOrMists() then
+elseif WeakAuras.IsClassicEra() or WeakAuras.IsWrathOrCataOrMists() then
   local NUMBER_ABBREVIATION_DATA_FIXED = {
         -- Work around another bug in NUMBER_ABBREVIATION_DATA, https://github.com/WeakAuras/WeakAuras2/issues/6061
         { breakpoint = 10000000,        abbreviation = SECOND_NUMBER_CAP_NO_SPACE,      significandDivisor = 1000000,   fractionDivisor = 1 },
@@ -4323,7 +4323,7 @@ Private.glow_types = {
   buttonOverlay = L["Action Button Glow"],
 }
 
-if WeakAuras.IsTBCOrMistsOrRetail() then
+if WeakAuras.IsTBC() or WeakAuras.IsMistsOrRetail() then
   Private.glow_types.Proc = L["Proc Glow"]
 end
 

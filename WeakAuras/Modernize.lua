@@ -2015,7 +2015,7 @@ function Private.Modernize(data, oldSnapshot)
   end
 
   if data.internalVersion < 72 then
-    if WeakAuras.IsClassic() then
+    if WeakAuras.IsClassicEra() then
       if data.model_path and data.modelIsUnit then
         data.model_fileId = data.model_path
       end

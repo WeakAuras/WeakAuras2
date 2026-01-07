@@ -489,23 +489,8 @@ function WeakAuras.IsClassicOrCata()
 end
 
 ---@return boolean result
-function WeakAuras.IsClassicOrWrathOrCata()
-  return WeakAuras.IsClassicEra() or WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic()
-end
-
----@return boolean result
 function WeakAuras.IsClassicOrTBCOrWrathOrCata()
   return WeakAuras.IsClassicEra() or WeakAuras.IsTBC() or WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic()
-end
-
----@return boolean result
-function WeakAuras.IsClassicOrCataOrMists()
-  return WeakAuras.IsClassicOrCata() or WeakAuras.IsMists()
-end
-
----@return boolean result
-function WeakAuras.IsClassicOrWrathOrCataOrMists()
-  return WeakAuras.IsClassicEra() or WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic() or WeakAuras.IsMists()
 end
 
 ---@return boolean result
@@ -559,11 +544,6 @@ function WeakAuras.IsWrathOrMistsOrRetail()
 end
 
 ---@return boolean result
-function WeakAuras.IsTBCOrMistsOrRetail()
-  return WeakAuras.IsTBC() or WeakAuras.IsMists() or WeakAuras.IsRetail()
-end
-
----@return boolean result
 function WeakAuras.IsTBCOrWrathOrMistsOrRetail()
   return WeakAuras.IsTBC() or WeakAuras.IsWrathClassic() or WeakAuras.IsMists() or WeakAuras.IsRetail()
 end
@@ -571,11 +551,6 @@ end
 ---@return boolean result
 function WeakAuras.IsCataOrMists()
   return WeakAuras.IsCataClassic() or WeakAuras.IsMists()
-end
-
----@return boolean result
-function WeakAuras.IsCataOrRetail()
-  return WeakAuras.IsCataClassic() or WeakAuras.IsRetail()
 end
 
 ---@return boolean result
