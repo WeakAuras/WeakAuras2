@@ -26,7 +26,7 @@ local default = function(parentType)
     model_st_rz = 0,
     model_st_us = 40,
 
-    model_fileId = "235338",
+    model_fileId = WeakAuras.IsTBC() and "124614" or "235338",
     bar_model_attach = true
   }
 end

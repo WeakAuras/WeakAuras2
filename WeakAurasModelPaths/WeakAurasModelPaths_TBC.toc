@@ -1,4 +1,4 @@
-## Interface: 30405, 38000
+## Interface: 20505
 ## Title: WeakAuras Model Paths
 ## Author: The WeakAuras Team
 ## Version: @project-version@
@@ -14,6 +14,6 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 1
 ## Dependencies: WeakAuras, WeakAurasOptions
-## AllowLoadGameType: wrath, titan
+## AllowLoadGameType: tbc
 
-ModelPathsWrath.lua
+ModelPathsTBC.lua

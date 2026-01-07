@@ -1998,7 +1998,7 @@ end
 do
   local mh = GetInventorySlotInfo("MainHandSlot")
   local oh = GetInventorySlotInfo("SecondaryHandSlot")
-  local ranged = WeakAuras.IsClassicOrWrath() and GetInventorySlotInfo("RangedSlot")
+  local ranged = WeakAuras.IsClassicOrTBCOrWrath() and GetInventorySlotInfo("RangedSlot")
 
   local swingTimerFrame;
   local lastSwingMain, lastSwingOff, lastSwingRange;
@@ -2193,7 +2193,7 @@ do
         end)
       end
       if Private.reset_ranged_swing_spells[spell] then
-        if WeakAuras.IsClassicOrWrath() then
+        if WeakAuras.IsClassicOrTBCOrWrath() then
           swingStart("ranged")
         else
           swingStart("main")
@@ -2226,7 +2226,7 @@ do
       swingTimerFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
       swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK_SPEED", "player");
       swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
-      if WeakAuras.IsClassicOrWrath() then
+      if WeakAuras.IsClassicOrTBCOrWrath() then
         swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
         swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
         swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
@@ -2288,7 +2288,7 @@ do
   local function CheckGCD()
     local event;
     local startTime, duration, _, modRate
-    if WeakAuras.IsClassicOrWrath() then
+    if WeakAuras.IsClassicOrTBCOrWrath() then
       startTime, duration = GetSpellCooldown(29515);
       shootStart, shootDuration = GetSpellCooldown(5019)
     elseif GetSpellCooldown then
@@ -2407,7 +2407,7 @@ do
 
     if duration > 0 then
       if (startTime == gcdStart and duration == gcdDuration)
-          or (WeakAuras.IsClassicOrWrath() and duration == shootDuration and startTime == shootStart)
+          or (WeakAuras.IsClassicOrTBCOrWrath() and duration == shootDuration and startTime == shootStart)
       then
         -- GCD cooldown, this could mean that the spell reset!
         if self.expirationTime[id] and self.expirationTime[id] > endTime and self.expirationTime[id] ~= 0 then
@@ -3764,7 +3764,7 @@ function WeakAuras.WatchUnitChange(unit)
     end
 
     local roleUpdate
-    if WeakAuras.IsClassicOrWrath() then
+    if WeakAuras.IsClassicOrTBCOrWrath() then
       function roleUpdate(unit, eventsToSend)
         -- For classic check both raid role and group role
         local oldRaidRole = watchUnitChange.unitRaidRole[unit]
@@ -4039,7 +4039,7 @@ function Private.ExecEnv.CheckTotemSpellId(spellId, triggerSpellId, followoverri
 end
 
 -- Queueable Spells
-if WeakAuras.IsClassicOrWrath() then
+if WeakAuras.IsClassicOrTBCOrWrath() then
   local queueableSpells
   local classQueueableSpells = {
     ["WARRIOR"] = {
@@ -4098,7 +4098,7 @@ local GetSpellPowerCost = GetSpellPowerCost or C_Spell and C_Spell.GetSpellPower
 ---@return number? cost
 function WeakAuras.GetSpellCost(powerTypeToCheck)
   local spellID = select(9, WeakAuras.UnitCastingInfo("player"))
-  if WeakAuras.IsClassicOrWrath() and not spellID then
+  if WeakAuras.IsClassicOrTBCOrWrath() and not spellID then
     spellID = WeakAuras.GetQueuedSpell()
   end
   if spellID then
@@ -4116,7 +4116,7 @@ end
 
 -- Weapon Enchants
 do
-  local isCata = WeakAuras.IsCataClassic()
+  local hasRanged = WeakAuras.IsClassicOrTBCOrWrathOrCata()
 
   local mh = GetInventorySlotInfo("MainHandSlot")
   local oh = GetInventorySlotInfo("SecondaryHandSlot")
@@ -4131,7 +4131,7 @@ do
 
   local rw, rw_icon, rw_exp, rw_dur, rw_name, rw_shortenedName, rw_charges, rw_EnchantID;
   ---@type string?
-  if isCata then
+  if hasRanged then
     rw = GetInventorySlotInfo("RANGEDSLOT")
     rw_icon = GetInventoryItemTexture("player", rw) or "Interface\\Icons\\INV_Misc_QuestionMark"
   end
@@ -4149,7 +4149,7 @@ do
         tenchFrame:RegisterEvent("WEAPON_ENCHANT_CHANGED")
       end
       tenchFrame:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", "player")
-      if WeakAuras.IsClassicOrWrath() then
+      if WeakAuras.IsClassicOrTBCOrWrath() then
         tenchFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
       end
 
@@ -4182,11 +4182,11 @@ do
             if(v:GetObjectType() == "FontString") then
               local text = v:GetText();
               if(text) then
-                local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+%D+%)$");
+                local _, _, name, shortenedName = text:find("^((.-) ?+?[XVI%d]*) ?%(%d+%D+%)$");
                 if(name and name ~= "") then
                   return name, shortenedName;
                 end
-                _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.%D%）$");
+                _, _, name, shortenedName = text:find("^((.-) ?+?[XVI%d]*)%（%d+.%D%）$");
                 if(name and name ~= "") then
                   return name, shortenedName;
                 end
@@ -4226,7 +4226,7 @@ do
           end
           oh_icon = GetInventoryItemTexture("player", oh)
         end
-        if isCata then
+        if hasRanged then
           if(math.abs((rw_exp or 0) - (rw_exp_new or 0)) > 1) then
             rw_exp = rw_exp_new;
             rw_dur = rw_rem and rw_rem / 1000;

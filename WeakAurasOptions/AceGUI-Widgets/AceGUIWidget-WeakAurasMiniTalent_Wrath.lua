@@ -9,7 +9,7 @@ end
 
 local keepOpenForReload = {}
 
-local widgetType, widgetVersion = "WeakAurasMiniTalent", 4
+local widgetType, widgetVersion = "WeakAurasMiniTalent", 5
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(widgetType) or 0) >= widgetVersion then
   return
@@ -184,11 +184,15 @@ local function TalentFrame_Update(self)
     local backgroundIndex = MAX_NUM_TALENTS * GetNumTalentTabs() + 1
     for tab = 1, GetNumTalentTabs() do
       local background = self.backgrounds[tab]
-      local texture = self.list[backgroundIndex][tab]
-      local base = "Interface\\TalentFrame\\" .. texture .. "-"
-      background:SetTexture(base .. "TopLeft")
-      if self.open then
-        background:Show()
+      local texture = self.list[backgroundIndex] and self.list[backgroundIndex][tab]
+      if texture then
+        local base = "Interface\\TalentFrame\\" .. texture .. "-"
+        background:SetTexture(base .. "TopLeft")
+        if self.open then
+          background:Show()
+        else
+          background:Hide()
+        end
       else
         background:Hide()
       end

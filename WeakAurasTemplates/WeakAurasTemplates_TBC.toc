@@ -1,4 +1,4 @@
-## Interface: 40402
+## Interface: 20505
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
@@ -11,11 +11,11 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 1
 ## Dependencies: WeakAuras, WeakAurasOptions
-## AllowLoadGameType: cata
+## AllowLoadGameType: tbc
 
 locales.xml
 
 TriggerTemplates.lua
-TriggerTemplatesDataCataclysm.lua
+TriggerTemplatesDataTBC.lua
 
 AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua
