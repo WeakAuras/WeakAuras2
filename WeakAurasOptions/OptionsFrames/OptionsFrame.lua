@@ -1613,5 +1613,28 @@ function OptionsPrivate.CreateFrame()
   local left, right, top, bottom = w/2,-w/2, 0, h-25
   frame:SetClampRectInsets(left, right, top, bottom)
 
+  if WeakAuras.IsTWW() then
+    local midnightWarning = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+    midnightWarning:SetBackdrop({
+      bgFile = "Interface\\Addons\\WeakAuras\\Media\\Textures\\Square_FullWhite.tga",
+      edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+      tile = true,
+      tileSize = 16,
+      edgeSize = 16,
+      insets = { left = 4, right = 4, top = 4, bottom = 4 }
+    })
+
+    midnightWarning:SetBackdropBorderColor(1, 0, 0, 1);
+    midnightWarning:SetBackdropColor(0, 0, 0, 1)
+
+    midnightWarning:SetPoint("TOPLEFT", frame, "BOTTOMLEFT")
+    midnightWarning:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT")
+    midnightWarning:SetHeight(50)
+
+    local text = midnightWarning:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    text:SetPoint("LEFT", midnightWarning, "LEFT", 10, 0)
+    text:SetText(L["WeakAuras will not support Midnight. On release of the prepatch, WeakAuras will be disabled.\nRead more on our Patreon page https://patreon.com/WeakAuras"])
+  end
+
   return frame
 end
