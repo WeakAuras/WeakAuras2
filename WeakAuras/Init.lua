@@ -669,7 +669,7 @@ elseif WeakAuras.IsMidnight() then
   libsAreOk = false
 elseif WeakAuras.IsTWW() then
   C_Timer.After(1, function()
-    WeakAuras.prettyPrint("WeakAuras does not support Midnight due to Blizzard restricting addons. Read more at https://patreon.com/WeakAuras")
+    WeakAuras.prettyPrint("WeakAuras does not support Midnight due to Blizzard's new addon restrictions. Read more at https://patreon.com/WeakAuras")
   end)
 end
 
