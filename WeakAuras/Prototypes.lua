@@ -703,13 +703,7 @@ if WeakAuras.IsClassicOrTBCOrWrathOrCata() then
     local num_talent = (index - 1) % MAX_NUM_TALENTS + 1
     local name, _, _, _, rank  = Private.ExecEnv.GetTalentInfo(tab, num_talent)
     if name == nil then
-      if not Private.ExecEnv.GetTalentInfo(1, 1) then
-        -- No talents at all, likely to early to grab
-        return nil
-      end
-      -- Talent doesn't exist; ignore it
-      -- Should be cleared if missing, but struc doesn't exist yet
-      return extraOption ~= 5
+      return nil
     end
     local result = rank and rank > 0
     if extraOption == 4 then
@@ -728,13 +722,7 @@ if WeakAuras.IsMists() then
       column = (index - 1) % 3 + 1
     })
     if talentInfo == nil then
-      if not Private.ExecEnv.GetTalentInfo(1, 1) then
-        -- No talents at all, likely to early to grab
-        return nil
-      end
-      -- Talent doesn't exist; ignore it
-      -- Should be cleared if missing, but struc doesn't exist yet
-      return extraOption ~= 5
+      return nil
     end
     local result = talentInfo.selected
     if extraOption == 4 then
