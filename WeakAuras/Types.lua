@@ -3211,6 +3211,7 @@ if not WeakAuras.IsClassicEra() then
     [231] = unused, -- normal raid dungeon
     [232] = unused, -- event party
     [236] = L["Lorewalking"],
+    [241] = L["Lorewalking"],
     [237] = WeakAuras.IsMists() and L["Dungeon (Celestial)"] or unused,
     [244] = L["25 Player Raid (Titan Reforged)"],
   }
