@@ -30,9 +30,32 @@ function Private.InitializeEncounterAndZoneLists()
       }
     },
     {
+      L["Coilfang: Serpentshrine Cavern"],
+      {
+        { L["Hydross the Unstable"], 623 },
+        { L["The Lurker Below"], 624 },
+        { L["Leotheras the Blind"], 625 },
+        { L["Fathom-Lord Karathress"], 626 },
+        { L["Morogrim Tidewalker"], 627 },
+        { L["Lady Vashj"], 628 },
+      }
+    },
+    {
+      L["Tempest Keep"],
+      {
+        { L["Al'ar"], 730 },
+        { L["Void Reaver"], 731 },
+        { L["High Astromancer Solarian"], 732 },
+        { L["Kael'thas Sunstrider"], 733 },
+      }
+    },
+    {
       L["Vault of Archavon"],
       {
         { L["Archavon the Stone Watcher"], 772 },
+        { L["Emalon the Storm Watcher"], 774 },
+        { L["Koralon the Flame Watcher"], 776 },
+        { L["Toravon the Ice Watcher"], 885 },
       }
     },
     {
@@ -40,6 +63,8 @@ function Private.InitializeEncounterAndZoneLists()
       {
         { L["Azuregos"], 3440 },
         { L["Lord Kazzak"], 3437 },
+        { L["Doomwalker"], 3443 },
+        { L["Doom Lord Kazzak"], 3444 },
       }
     },
   }
