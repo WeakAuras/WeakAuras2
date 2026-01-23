@@ -21,6 +21,8 @@ local SendChatMessage, UnitInBattleground, UnitInRaid, UnitInParty, GetTime
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
   = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
 local debugstack = debugstack
+local canaccessvalue = canaccessvalue or function () return true end
+local getaccessiblevalue = function (a, b) if canaccessvalue(a) then return a else return b end end
 local GetNumTalentTabs, GetNumTalents = GetNumTalentTabs, GetNumTalents
 local MAX_NUM_TALENTS = MAX_NUM_TALENTS or 20
 
@@ -1098,6 +1100,11 @@ function Private.CountWagoUpdates()
   return updatedSlugsCount
 end
 
+-- TODO: Temporary fix for LibGetFrame issues
+local function GetUnitFrame(...)
+  return select(2, pcall(WeakAuras.GetUnitFrame, ...))
+end
+
 local function tooltip_draw(isAddonCompartment, blizzardTooltip)
   local tooltip
   if isAddonCompartment then
@@ -1525,9 +1532,9 @@ local function StoreBossGUIDs()
   if (WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.boss_guids) then
     for i = 1, 10 do
       if (UnitExists ("boss" .. i)) then
-        local guid = UnitGUID ("boss" .. i)
-        if (guid) then
-          WeakAuras.CurrentEncounter.boss_guids [guid] = true
+        local guid = getaccessiblevalue(UnitGUID("boss" .. i))
+        if guid then
+          WeakAuras.CurrentEncounter.boss_guids[guid] = true
         end
       end
     end
@@ -1720,6 +1727,15 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     dragonriding = Private.IsDragonriding()
   end
 
+  local restricted = false
+  if WeakAuras.IsRetail() then
+    for _,t in pairs(Enum.AddOnRestrictionType) do
+      if C_RestrictedActions.GetAddOnRestrictionState(t) ~= Enum.AddOnRestrictionState.Inactive then
+        restricted = true break
+      end
+    end
+  end
+
   local size, difficulty, instanceType, instanceId, difficultyIndex = GetInstanceTypeAndSize()
 
   if (WeakAuras.CurrentEncounter) then
@@ -1772,8 +1788,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, pvp, inPetBattle, vehicle, vehicleUi, mounted, class, specId, player, realm, guild, race, faction, playerLevel, role, position, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, pvp, inPetBattle, vehicle, vehicleUi, mounted, class, specId, player, realm, guild, race, faction, playerLevel, role, position, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
       elseif WeakAuras.IsRetail() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, pvp, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, mounted, specId, player, realm, guild, race, faction, playerLevel, effectiveLevel, role, position, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex, affixes)
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, pvp, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, mounted, specId, player, realm, guild, race, faction, playerLevel, effectiveLevel, role, position, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex, affixes)
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, pvp, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, mounted, restricted, specId, player, realm, guild, race, faction, playerLevel, effectiveLevel, role, position, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex, affixes)
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, pvp, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, mounted, restricted, specId, player, realm, guild, race, faction, playerLevel, effectiveLevel, role, position, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex, affixes)
       end
 
       if(shouldBeLoaded and not loaded[id]) then
@@ -1868,6 +1884,7 @@ if WeakAuras.IsRetail() then
   loadFrame:RegisterEvent("CHALLENGE_MODE_START")
   loadFrame:RegisterEvent("TRAIT_CONFIG_CREATED")
   loadFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
+  loadFrame:RegisterEvent("ADDON_RESTRICTION_STATE_CHANGED")
 else
   loadFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
   loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
@@ -3704,7 +3721,7 @@ do
         or ((data.frame == frame) and FRAME_UNIT_REMOVED)
         then
           if not new_frame then
-            new_frame = WeakAuras.GetUnitFrame(unit)
+            new_frame = GetUnitFrame(unit)
           end
           if new_frame ~= data.frame then
             local id = region.id .. (region.cloneId or "")
@@ -3730,12 +3747,12 @@ do
     end
     if type(anchor_unitframe_monitor) == "table" then
       for region, data in pairs(anchor_unitframe_monitor) do
-        if region.state and type(region.state.unit) == "string" and UnitIsUnit(region.state.unit, unit)
+        if region.state and type(region.state.unit) == "string" and getaccessiblevalue(UnitIsUnit(region.state.unit, unit))
         and ((data.frame ~= frame) and (FRAME_UNIT_ADDED or FRAME_UNIT_UPDATE))
         or ((data.frame == frame) and FRAME_UNIT_REMOVED)
         then
           if not new_frame then
-            new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
+            new_frame = GetUnitFrame(unit) or WeakAuras.HiddenFrames
           end
           if new_frame ~= data.frame then
             Private.AnchorFrame(data.data, region, data.parent)
@@ -3744,12 +3761,12 @@ do
       end
     end
     for regionData, data_frame in pairs(Private.dyngroup_unitframe_monitor) do
-      if regionData.region.state and type(regionData.region.state.unit) == "string" and UnitIsUnit(regionData.region.state.unit, unit)
+      if regionData.region.state and type(regionData.region.state.unit) == "string" and getaccessiblevalue(UnitIsUnit(regionData.region.state.unit, unit))
       and ((data_frame ~= frame) and (FRAME_UNIT_ADDED or FRAME_UNIT_UPDATE))
       or ((data_frame == frame) and FRAME_UNIT_REMOVED)
       then
         if not new_frame then
-          new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
+          new_frame = GetUnitFrame(unit) or WeakAuras.HiddenFrames
         end
         if new_frame and new_frame ~= data_frame then
           dynamicGroupsToUpdate[regionData.parent] = true
@@ -3794,7 +3811,7 @@ function Private.HandleGlowAction(actions, region)
         should_glow_frame = true
       end
     elseif actions.glow_frame_type == "UNITFRAME" and region.state.unit then
-      glow_frame = WeakAuras.GetUnitFrame(region.state.unit)
+      glow_frame = GetUnitFrame(region.state.unit)
       should_glow_frame = true
     elseif actions.glow_frame_type == "NAMEPLATE" and region.state.unit then
       glow_frame = WeakAuras.GetUnitNameplate(region.state.unit)
@@ -6050,7 +6067,7 @@ local function GetAnchorFrame(data, region, parent)
   if (anchorFrameType == "UNITFRAME") then
     local unit = region.state and region.state.unit
     if unit then
-      local frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
+      local frame = GetUnitFrame(unit) or WeakAuras.HiddenFrames
       if frame then
         anchor_unitframe_monitor = anchor_unitframe_monitor or {}
         anchor_unitframe_monitor[region] = {
@@ -6389,7 +6406,7 @@ function Private.ExecEnv.ParseNameCheck(name)
       end
     end,
     Check = function(self, name, realm)
-      if not name or not realm then
+      if not getaccessiblevalue(name) or not getaccessiblevalue(realm) then
         return false
       end
       return self.name[name] or self.realm[realm] or self.full[name .. "-" .. realm]
@@ -6537,12 +6554,12 @@ function Private.ExecEnv.CreateSpellChecker()
       self.spellIds[spellId] = true
     end,
     Check = function(self, spellId)
-      if spellId then
+      if getaccessiblevalue(spellId) then
         return self.spellIds[spellId] or self.names[Private.ExecEnv.GetSpellName(spellId)]
       end
     end,
     CheckName = function(self, name)
-      return self.names[name]
+      return canaccessvalue(name) and self.names[name]
     end
   }
   return matcher

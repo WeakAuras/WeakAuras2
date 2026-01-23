@@ -85,6 +85,8 @@ end
 local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
 local UnitAura = UnitAura
+local canaccessvalue = canaccessvalue or function () return true end
+local getaccessiblevalue = function (a, b) if canaccessvalue(a) then return a else return b end end
 
 local newAPI = WeakAuras.IsRetail()
 
@@ -462,6 +464,8 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, auraInstance
   end
   local key = index or auraInstanceID
   local debuffClassIcon = WeakAuras.EJIcons[debuffClass]
+  local casterName = unitCaster and getaccessiblevalue(GetUnitName(unitCaster, false)) or ""
+  local unitName = getaccessiblevalue(GetUnitName(unit, false)) or ""
   if not matchData[unit][filter][key] then
     matchData[unit][filter][key] = {
       name = name,
@@ -473,10 +477,10 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, auraInstance
       expirationTime = expirationTime,
       modRate = modRate,
       unitCaster = unitCaster,
-      casterName = unitCaster and GetUnitName(unitCaster, false) or "",
+      casterName = casterName,
       spellId = spellId,
       unit = unit,
-      unitName = GetUnitName(unit, false) or "",
+      unitName = unitName,
       isStealable = isStealable,
       isBossDebuff = isBossDebuff,
       isCastByPlayer = isCastByPlayer,
@@ -541,7 +545,6 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, auraInstance
     changed = true
   end
 
-  local casterName = unitCaster and GetUnitName(unitCaster, false) or ""
   if data.casterName ~= casterName then
     data.casterName = casterName
     changed = true
@@ -567,7 +570,6 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, auraInstance
     changed = true
   end
 
-  local unitName = GetUnitName(unit, false) or ""
   if data.unitName ~= unitName then
     data.unitName = unitName
     changed = true
@@ -1447,7 +1449,7 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
-  if triggerInfo.npcId and not triggerInfo.npcId:Check(select(6, strsplit('-', UnitGUID(unit) or ''))) then
+  if triggerInfo.npcId and not triggerInfo.npcId:Check(select(6, strsplit('-', getaccessiblevalue(UnitGUID(unit)) or ''))) then
     return false
   end
 
@@ -1468,11 +1470,12 @@ local function FormatAffectedUnaffected(triggerInfo, matchedUnits)
   local affectedUnits, unaffectedUnits = {}, {}
   for unit in GetAllUnits(triggerInfo.unit, nil, triggerInfo.includePets) do
     if activeGroupScanFuncs[unit] and activeGroupScanFuncs[unit][triggerInfo] then
+      local unitName = getaccessiblevalue(GetUnitName(unit, false)) or unit
       if matchedUnits[unit] then
-        affected = affected .. (GetUnitName(unit, false) or unit) .. ", "
+        affected = affected .. unitName .. ", "
         tinsert(affectedUnits, unit)
       else
-        unaffected = unaffected .. (GetUnitName(unit, false) or unit) .. ", "
+        unaffected = unaffected .. unitName .. ", "
         tinsert(unaffectedUnits, unit)
       end
     end
@@ -1771,7 +1774,7 @@ do
   local _time, _unit, _filter
 
   local function HandleAura(aura)
-    if (not aura or not aura.name) then
+    if (not aura or not getaccessiblevalue(aura.name)) then
       return
     end
     local debuffClass = FixDebuffClass(aura.dispelName, aura.spellId)
@@ -1892,7 +1895,7 @@ do
   local _matchDataChanged, _time, _unit, _filter, _scanFuncNameGroup, _scanFuncSpellIdGroup, _scanFuncGeneralGroup, _scanFuncName, _scanFuncSpellId, _scanFuncGeneral
 
   local function HandleAura(aura)
-    if (not aura or not aura.name) then
+    if not aura or not getaccessiblevalue(aura.name) then
       return
     end
     local debuffClass = FixDebuffClass(aura.dispelName, aura.spellId)
@@ -1929,7 +1932,7 @@ do
           -- incremental
           if unitAuraUpdateInfo.addedAuras ~= nil then
             for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
-              if (aura.isHelpful and filter == "HELPFUL") or (aura.isHarmful and filter == "HARMFUL") then
+              if (getaccessiblevalue(aura.isHelpful) and filter == "HELPFUL" or getaccessiblevalue(aura.isHarmful) and filter == "HARMFUL") then
                 HandleAura(aura)
               end
             end
@@ -1938,7 +1941,7 @@ do
           if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
             for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
               local aura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID)
-              if aura and ((aura.isHelpful and filter == "HELPFUL") or (aura.isHarmful and filter == "HARMFUL")) then
+              if aura and (getaccessiblevalue(aura.isHelpful) and filter == "HELPFUL" or getaccessiblevalue(aura.isHarmful) and filter == "HARMFUL") then
                 HandleAura(aura)
               end
             end
@@ -2035,7 +2038,7 @@ local function ScanRaidMarkScanFunc(matchDataChanged)
 end
 
 local function ScanGroupUnit(time, matchDataChanged, unitType, unit, unitAuraUpdateInfo)
-  local unitExists = UnitExistsFixed(unit)
+  local unitExists = getaccessiblevalue(UnitExistsFixed(unit), false)
   if existingUnits[unit] ~= unitExists then
     existingUnits[unit] = unitExists
 
@@ -4077,13 +4080,13 @@ local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, de
     changed = true
   end
 
-  local casterName = GetUnitName(unitCaster, false) or ""
+  local casterName = getaccessiblevalue(GetUnitName(unitCaster, false)) or ""
   if matchData.casterName ~= casterName then
     matchData.casterName = casterName
     changed = true
   end
 
-  local unitName = GetUnitName(unit, false) or ""
+  local unitName = getaccessiblevalue(GetUnitName(unit, false)) or ""
   if matchData.unitName ~= unitName then
     matchData.unitName = unitName
     changed = true
@@ -4100,7 +4103,7 @@ local AugmentMatchDataMulti
 do
   local _matchData, _unit, _sourceGUID, _nameKey, _spellKey
   local function HandleAura(aura)
-    if (not aura or not aura.name) then
+    if (not aura or not getaccessiblevalue(aura.name)) then
       return
     end
     local debuffClass = FixDebuffClass(aura.dispelName, aura.spellId)
@@ -4207,7 +4210,7 @@ local CheckAurasMulti
 do
   local _base, _unit
   local function HandleAura(aura)
-    if (not aura or not aura.name) then
+    if (not aura or not getaccessiblevalue(aura.name)) then
       return
     end
     local debuffClass = FixDebuffClass(aura.dispelName, aura.spellId)

@@ -59,6 +59,10 @@ local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo;
 
 -- WoW APIs
 local IsPlayerMoving = IsPlayerMoving
+local canaccessvalue = canaccessvalue or function () return true end
+local canaccessallvalues = canaccessallvalues or function () return true end
+local getaccessiblevalue = function (a, b) if canaccessvalue(a) then return a else return b end end
+local getaccessiblevalues = function (...) if canaccessallvalues(...) then return ... end end
 
 ---@class WeakAuras
 local WeakAuras = WeakAuras;
@@ -365,7 +369,10 @@ function ConstructFunction(prototype, trigger)
   local debug = {};
   local store = {};
   local init;
-  local preambles = "\n"
+  local preambles = [=[
+    local canaccessvalue = canaccessvalue or function () return true end
+    local getaccessiblevalue = function (a, b) if canaccessvalue(a) then return a else return b end end
+  ]=]
   local orConjunctionGroups = {}
   local preambleGroups = {}
   if(prototype.init) then
@@ -452,7 +459,7 @@ function ConstructFunction(prototype, trigger)
   end
 
   for _, v in ipairs(store) do
-    table.insert(ret, "    if (state." .. v .. " ~= " .. v .. ") then\n")
+    table.insert(ret, "    if (canaccessvalue(" .. v .. ") and state." .. v .. " ~= " .. v .. ") then\n")
     table.insert(ret, "      state." .. v .. " = " .. v .. "\n")
     table.insert(ret, "      state.changed = true\n")
     table.insert(ret, "    end\n")
@@ -1255,10 +1262,9 @@ local brokenUnitMap = {
 
 function HandleUnitEvent(frame, event, unit, ...)
   Private.StartProfileSystem("generictrigger " .. event .. " " .. unit);
-  if not(WeakAuras.IsPaused()) then
-    if UnitIsUnit(unit, frame.unit)
-       or (brokenUnitMap[unit] == frame.unit and not UnitExists(unit))
-    then
+  if not(WeakAuras.IsPaused()) and canaccessallvalues(frame.unit, unit) then
+    if getaccessiblevalue(UnitIsUnit(unit, frame.unit))
+       or (brokenUnitMap[unit] == frame.unit and not getaccessiblevalue(UnitExists(unit))) then
       Private.ScanUnitEvents(event, frame.unit, ...);
     end
   end
@@ -3241,14 +3247,14 @@ do
     else
       local spellCooldownInfo = C_Spell.GetSpellCooldown(id);
       if spellCooldownInfo then
-        startTimeCooldown = spellCooldownInfo.startTime
-        durationCooldown = spellCooldownInfo.duration
-        enabled = spellCooldownInfo.isEnabled
-        modRate = spellCooldownInfo.modRate
+        startTimeCooldown = getaccessiblevalue(spellCooldownInfo.startTime)
+        durationCooldown = getaccessiblevalue(spellCooldownInfo.duration)
+        enabled = getaccessiblevalue(spellCooldownInfo.isEnabled, false)
+        modRate = getaccessiblevalue(spellCooldownInfo.modRate)
       end
     end
 
-    local charges, maxCharges, startTimeCharges, durationCharges, modRateCharges = GetSpellCharges(id);
+    local charges, maxCharges, startTimeCharges, durationCharges, modRateCharges = getaccessiblevalues(GetSpellCharges(id));
 
     startTimeCooldown = startTimeCooldown or 0;
     durationCooldown = durationCooldown or 0;
@@ -3314,7 +3320,7 @@ do
       end
     end
 
-    local count = GetSpellCount(id)
+    local count = getaccessiblevalue(GetSpellCount(id), 0)
 
     return charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
            startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
@@ -3695,6 +3701,9 @@ function WeakAuras.WatchUnitChange(unit)
       local oldGUID = watchUnitChange.unitIdToGUID[unitA]
       local newGUID = WeakAuras.UnitExistsFixed(unitA) and UnitGUID(unitA)
       local unitExists = UnitExists(unitA) -- UnitExistsFixed check both UnitExists and UnitGUID, but in edge cases we are interested in UnitExists
+
+      if not canaccessallvalues(unitA, oldGUID, newGUID, unitExists) then return end
+
       if oldGUID ~= newGUID or oldUnitExists ~= unitExists then
         eventsToSend["UNIT_CHANGED_" .. unitA] = unitA
         if watchUnitChange.GUIDToUnitIds[oldGUID] then
@@ -3731,7 +3740,7 @@ function WeakAuras.WatchUnitChange(unit)
 
     local function markerUpdate(unit, eventsToSend)
       local oldMarker = watchUnitChange.raidmark[unit]
-      local newMarker = GetRaidTargetIndex(unit) or 0
+      local newMarker = getaccessiblevalue(GetRaidTargetIndex(unit)) or 0
       if newMarker ~= oldMarker then
         eventsToSend["UNIT_CHANGED_" .. unit] = unit
         watchUnitChange.raidmark[unit] = newMarker
@@ -3739,7 +3748,7 @@ function WeakAuras.WatchUnitChange(unit)
     end
 
     local function markerInit(unit)
-      watchUnitChange.raidmark[unit] = GetRaidTargetIndex(unit) or 0
+      watchUnitChange.raidmark[unit] = getaccessiblevalue(GetRaidTargetIndex(unit)) or 0
     end
 
     local function markerClear(unit)
@@ -3894,7 +3903,7 @@ function WeakAuras.WatchUnitChange(unit)
   if watchUnitChange.trackedUnits[unit] then
     return
   end
-  local guid = UnitGUID(unit)
+  local guid = getaccessiblevalue(UnitGUID(unit))
   watchUnitChange.trackedUnits[unit] = true
   watchUnitChange.unitIdToGUID[unit] = WeakAuras.UnitExistsFixed(unit) and UnitGUID(unit)
   watchUnitChange.unitExists[unit] = UnitExists(unit)

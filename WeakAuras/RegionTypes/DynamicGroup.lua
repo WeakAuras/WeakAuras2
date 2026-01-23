@@ -405,7 +405,7 @@ local anchorers = {
       for _, regionData in ipairs(activeRegions) do
         local unit = regionData.region.state and regionData.region.state.unit
         if unit then
-          local frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
+          local frame = select(2, pcall(WeakAuras.GetUnitFrame, unit)) or WeakAuras.HiddenFrames
           if frame then
             frames[frame] = frames[frame] or {}
             tinsert(frames[frame], regionData)

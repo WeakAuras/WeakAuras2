@@ -1447,6 +1447,17 @@ Private.load_prototype = {
       events = {"PLAYER_MOUNT_DISPLAY_CHANGED"}
     },
     {
+      name = "restricted",
+      display = WeakAuras.newFeatureString .. L["Restricted"],
+      type = "tristate",
+      width = WeakAuras.normalWidth,
+      init = WeakAuras.IsRetail() and "arg" or nil,
+      optional = true,
+      enable = WeakAuras.IsRetail(),
+      hidden = not WeakAuras.IsRetail(),
+      events = {"ADDON_RESTRICTION_STATE_CHANGED"}
+    },
+    {
       name = "hardcore",
       display = L["Hardcore"],
       type = "tristate",
@@ -2572,7 +2583,7 @@ Private.event_prototypes = {
         store = true,
         hidden = true,
         test = "true",
-        init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
+        init = "getaccessiblevalue(raidMarkIndex, 0) > 0 and '{rt'..raidMarkIndex..'}' or ''"
       },
       {
         name = "dead",
@@ -2670,7 +2681,7 @@ Private.event_prototypes = {
         type = "string",
         multiline = true,
         store = true,
-        init = "select(6, strsplit('-', UnitGUID(unit) or ''))",
+        init = "select(6, strsplit('-', getaccessiblevalue(UnitGUID(unit)) or ''))",
         conditionType = "string",
         preamble = "local npcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
         test = "npcIdChecker:Check(npcId)",
@@ -3499,7 +3510,7 @@ Private.event_prototypes = {
         type = "string",
         multiline = true,
         store = true,
-        init = "select(6, strsplit('-', UnitGUID(unit) or ''))",
+        init = "select(6, strsplit('-', getaccessiblevalue(UnitGUID(unit)) or ''))",
         conditionType = "string",
         preamble = "local npcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
         test = "npcIdChecker:Check(npcId)",
@@ -3575,7 +3586,7 @@ Private.event_prototypes = {
         store = true,
         hidden = true,
         test = "true",
-        init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
+        init = "getaccessiblevalue(raidMarkIndex, 0) > 0 and '{rt'..raidMarkIndex..'}' or ''"
       },
       {
         type = "header",
@@ -4103,7 +4114,7 @@ Private.event_prototypes = {
         type = "string",
         multiline = true,
         store = true,
-        init = "select(6, strsplit('-', UnitGUID(unit) or ''))",
+        init = "select(6, strsplit('-', getaccessiblevalue(UnitGUID(unit)) or ''))",
         conditionType = "string",
         preamble = "local npcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
         test = "npcIdChecker:Check(npcId)",
@@ -4179,7 +4190,7 @@ Private.event_prototypes = {
         store = true,
         hidden = true,
         test = "true",
-        init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
+        init = "getaccessiblevalue(raidMarkIndex, 0) > 0 and '{rt'..raidMarkIndex..'}' or ''"
       },
       {
         type = "header",
@@ -4478,7 +4489,7 @@ Private.event_prototypes = {
         store = true,
         hidden = true,
         test = "true",
-        init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
+        init = "getaccessiblevalue(raidMarkIndex, 0) > 0 and '{rt'..raidMarkIndex..'}' or ''"
       },
       {
         type = "header",
@@ -4609,7 +4620,7 @@ Private.event_prototypes = {
         display = L["Source NPC Id"],
         type = "string",
         multiline = true,
-        init = "select(6, strsplit('-', sourceGUID or ''))",
+        init = "select(6, strsplit('-', getaccessiblevalue(sourceGUID) or ''))",
         store = true,
         conditionType = "string",
         preamble = "local sourceNpcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
@@ -4751,7 +4762,7 @@ Private.event_prototypes = {
         display = L["Destination NPC Id"],
         type = "string",
         multiline = true,
-        init = "select(6, strsplit('-', destGUID or ''))",
+        init = "select(6, strsplit('-', getaccessiblevalue(destGUID) or ''))",
         store = true,
         conditionType = "string",
         preamble = "local destNpcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
@@ -9490,7 +9501,7 @@ Private.event_prototypes = {
         type = "string",
         multiline = true,
         store = true,
-        init = "select(6, strsplit('-', UnitGUID(unit) or ''))",
+        init = "select(6, strsplit('-', getaccessiblevalue(UnitGUID(unit)) or ''))",
         conditionType = "string",
         preamble = "local npcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
         test = "npcIdChecker:Check(npcId)",
@@ -9739,8 +9750,8 @@ Private.event_prototypes = {
         local destUnit = unit .. '-target'
         local sourceName, sourceRealm = WeakAuras.UnitNameWithRealm(unit)
         local destName, destRealm = WeakAuras.UnitNameWithRealm(destUnit)
-        destName = destName or ""
-        destRealm = destRealm or ""
+        destName = getaccessiblevalue(destName) or ""
+        destRealm = getaccessiblevalue(destRealm) or ""
         local smart = %s
         local remainingCheck = %s
         local inverseTrigger = %s
@@ -9781,9 +9792,9 @@ Private.event_prototypes = {
         if empowered and showChargedDuration then
           endTime = endTime + GetUnitEmpowerHoldAtMaxTime(unit)
         end
-        interruptible = not interruptible
-        expirationTime = endTime and endTime > 0 and (endTime / 1000) or 0
-        remaining = expirationTime - GetTime()
+        if canaccessvalue(interruptible) then interruptible = not interruptible end
+        expirationTime = getaccessiblevalue(endTime) and endTime > 0 and (endTime / 1000) or 0
+        remaining =  expirationTime - GetTime()
 
         if remainingCheck and remaining >= remainingCheck and remaining > 0 then
           Private.ExecEnv.ScheduleCastCheck(expirationTime - remainingCheck, unit)
@@ -9962,7 +9973,7 @@ Private.event_prototypes = {
       {
         name = "duration",
         hidden = true,
-        init = "endTime and startTime and (endTime - startTime)/1000 or 0",
+        init = "getaccessiblevalue(endTime) and getaccessiblevalue(startTime) and (endTime - startTime)/1000 or 0",
         test = "true",
         store = true
       },
@@ -10008,7 +10019,7 @@ Private.event_prototypes = {
         type = "string",
         multiline = true,
         store = true,
-        init = "select(6, strsplit('-', UnitGUID(unit) or ''))",
+        init = "select(6, strsplit('-', getaccessiblevalue(UnitGUID(unit)) or ''))",
         conditionType = "string",
         preamble = "local npcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
         test = "npcIdChecker:Check(npcId)",
@@ -10077,7 +10088,7 @@ Private.event_prototypes = {
         store = true,
         hidden = true,
         test = "true",
-        init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
+        init = "getaccessiblevalue(raidMarkIndex, 0) > 0 and '{rt'..raidMarkIndex..'}' or ''"
       },
       {
         name = "nameplateType",
