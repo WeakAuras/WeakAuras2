@@ -102,7 +102,7 @@ jobs:
     steps:
       - name: Mastodon Notification
         id: mastodon
-        uses: cbrgm/mastodon-github-action@v2.1.22
+        uses: cbrgm/mastodon-github-action@v2.1.23
         with:
           access-token: ${{ secrets.MASTODON_ACCESS_TOKEN }} # access token
           url: ${{ secrets.MASTODON_URL }} # https://example.social
