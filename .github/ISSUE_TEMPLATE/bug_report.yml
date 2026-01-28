@@ -33,7 +33,6 @@ body:
     label: World of Warcraft Flavor
     description: What version of World of Warcraft are are you running?
     options:
-      - Retail (Default)
       - Mists of Pandaria Classic
       - Cataclysm Classic
       - Titan Reforged

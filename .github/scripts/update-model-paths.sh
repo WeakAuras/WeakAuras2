@@ -32,7 +32,7 @@ update_model_paths() {
 
 download_file "https://wago.tools/api/builds/latest" ".wago_tools.json"
 
-branches=("wow" "wow_classic_titan" "wow_classic" "wow_classic_era")
+branches=("wow_classic_titan" "wow_classic" "wow_classic_era")
 
 for branch in "${branches[@]}"
 do
