@@ -4376,6 +4376,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7678039",
+      text = "horsedragonmount_classic.m2",
+      value = "horsedragonmount_classic.m2",
+     },
+    },
+    text = "horsedragonmount_classic",
+    value = "horsedragonmount_classic",
+   },
+   {
+    children = {
+     {
       fileId = "124437",
       text = "hufmcitizenlow.m2",
       value = "hufmcitizenlow.m2",
@@ -7094,6 +7105,28 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7675681",
+      text = "quilinflyingmount_classic.m2",
+      value = "quilinflyingmount_classic.m2",
+     },
+    },
+    text = "quilinflyingmount_classic",
+    value = "quilinflyingmount_classic",
+   },
+   {
+    children = {
+     {
+      fileId = "7671957",
+      text = "quilinflyingmount_cn.m2",
+      value = "quilinflyingmount_cn.m2",
+     },
+    },
+    text = "quilinflyingmount_cn",
+    value = "quilinflyingmount_cn",
+   },
+   {
+    children = {
+     {
       fileId = "125497",
       text = "quillboar.m2",
       value = "quillboar.m2",
@@ -7647,6 +7680,17 @@ WeakAuras.ModelPaths = {
     },
     text = "salamander",
     value = "salamander",
+   },
+   {
+    children = {
+     {
+      fileId = "7673776",
+      text = "sandbox_horsefire_classic.m2",
+      value = "sandbox_horsefire_classic.m2",
+     },
+    },
+    text = "sandbox_horsefire_classic",
+    value = "sandbox_horsefire_classic",
    },
    {
     children = {
@@ -9594,6 +9638,17 @@ WeakAuras.ModelPaths = {
     },
     text = "wingedhorse",
     value = "wingedhorse",
+   },
+   {
+    children = {
+     {
+      fileId = "7442554",
+      text = "wingedhorse_nonflying_cn.m2",
+      value = "wingedhorse_nonflying_cn.m2",
+     },
+    },
+    text = "wingedhorse_nonflying_cn",
+    value = "wingedhorse_nonflying_cn",
    },
    {
     children = {
@@ -52901,24 +52956,74 @@ WeakAuras.ModelPaths = {
  {
   children = {
    {
+    fileId = "5323461",
+    text = "10fx_custom_storm_summon_precast.m2",
+    value = "10fx_custom_storm_summon_precast.m2",
+   },
+   {
+    fileId = "5370000",
+    text = "10fx_dragon_green_creature_shader_particles.m2",
+    value = "10fx_dragon_green_creature_shader_particles.m2",
+   },
+   {
     fileId = "4507696",
-    text = "10fx_bronzedungeon_morchie_sandblast_cast.m2",
-    value = "10fx_bronzedungeon_morchie_sandblast_cast.m2",
+    text = "10fx_generic_dragon_bronze_cast_hand_low.m2",
+    value = "10fx_generic_dragon_bronze_cast_hand_low.m2",
+   },
+   {
+    fileId = "4507691",
+    text = "10fx_generic_dragon_green_precast_hand_low.m2",
+    value = "10fx_generic_dragon_green_precast_hand_low.m2",
+   },
+   {
+    fileId = "4417914",
+    text = "10fx_generic_dragon_red_missilehigh.m2",
+    value = "10fx_generic_dragon_red_missilehigh.m2",
+   },
+   {
+    fileId = "4215764",
+    text = "10fx_generic_fire_precasthand_high.m2",
+    value = "10fx_generic_fire_precasthand_high.m2",
+   },
+   {
+    fileId = "5372693",
+    text = "10fx_generic_fire_verticalimpact_low.m2",
+    value = "10fx_generic_fire_verticalimpact_low.m2",
    },
    {
     fileId = "4499235",
-    text = "10fx_voti_sennarth_apexofice_channel.m2",
-    value = "10fx_voti_sennarth_apexofice_channel.m2",
+    text = "10fx_generic_frost_precast_base.m2",
+    value = "10fx_generic_frost_precast_base.m2",
    },
    {
     fileId = "4390034",
-    text = "10fx_voti_theprimalcouncil_slashingblaze_precast.m2",
-    value = "10fx_voti_theprimalcouncil_slashingblaze_precast.m2",
+    text = "10fx_generic_lava_precast_base.m2",
+    value = "10fx_generic_lava_precast_base.m2",
+   },
+   {
+    fileId = "4527715",
+    text = "10fx_generic_wind_precast_base.m2",
+    value = "10fx_generic_wind_precast_base.m2",
+   },
+   {
+    fileId = "5319072",
+    text = "10fx_hearthstone_storm_precast_base.m2",
+    value = "10fx_hearthstone_storm_precast_base.m2",
    },
    {
     fileId = "5927961",
     text = "11fx_lightcircle02.m2",
     value = "11fx_lightcircle02.m2",
+   },
+   {
+    fileId = "3088467",
+    text = "8fx_wrathion_fireimpact_vertical.m2",
+    value = "8fx_wrathion_fireimpact_vertical.m2",
+   },
+   {
+    fileId = "3087411",
+    text = "8fx_wrathion_molteneruption_groundstate.m2",
+    value = "8fx_wrathion_molteneruption_groundstate.m2",
    },
    {
     fileId = "165529",
@@ -53951,11 +54056,6 @@ WeakAuras.ModelPaths = {
     value = "catmark_yellow.m2",
    },
    {
-    fileId = "4507691",
-    text = "cfx_evoker_dreamprojection_precast.m2",
-    value = "cfx_evoker_dreamprojection_precast.m2",
-   },
-   {
     fileId = "1623387",
     text = "cfx_mage_fireprecast_precasthandleft.m2",
     value = "cfx_mage_fireprecast_precasthandleft.m2",
@@ -53964,11 +54064,6 @@ WeakAuras.ModelPaths = {
     fileId = "1375559",
     text = "cfx_paladin_shieldofvengeance_castchest.m2",
     value = "cfx_paladin_shieldofvengeance_castchest.m2",
-   },
-   {
-    fileId = "4527715",
-    text = "cfx_shaman_vespertotem_aura.m2",
-    value = "cfx_shaman_vespertotem_aura.m2",
    },
    {
     fileId = "165779",
@@ -56367,39 +56462,9 @@ WeakAuras.ModelPaths = {
     value = "frostycircle.m2",
    },
    {
-    fileId = "5323461",
-    text = "fx_algarianstormrider_precast.m2",
-    value = "fx_algarianstormrider_precast.m2",
-   },
-   {
-    fileId = "5319072",
-    text = "fx_deepdwellersearthenhearthstone_precast01.m2",
-    value = "fx_deepdwellersearthenhearthstone_precast01.m2",
-   },
-   {
-    fileId = "5370000",
-    text = "fx_dreamtether_aura.m2",
-    value = "fx_dreamtether_aura.m2",
-   },
-   {
-    fileId = "4215764",
-    text = "fx_fireshield_precast.m2",
-    value = "fx_fireshield_precast.m2",
-   },
-   {
-    fileId = "4417914",
-    text = "fx_makegem_aura.m2",
-    value = "fx_makegem_aura.m2",
-   },
-   {
     fileId = "5928236",
     text = "fx_payline_aura.m2",
     value = "fx_payline_aura.m2",
-   },
-   {
-    fileId = "5372693",
-    text = "fx_pollenburn_impact.m2",
-    value = "fx_pollenburn_impact.m2",
    },
    {
     fileId = "166222",
@@ -96630,34 +96695,6 @@ WeakAuras.ModelPaths = {
     },
     text = "expansion06",
     value = "expansion06",
-   },
-   {
-    children = {
-     {
-      children = {
-       {
-        children = {
-         {
-          fileId = "3088467",
-          text = "8fx_wrathion_fireimpact_vertical.m2",
-          value = "8fx_wrathion_fireimpact_vertical.m2",
-         },
-         {
-          fileId = "3087411",
-          text = "8fx_wrathion_molteneruption_groundstate.m2",
-          value = "8fx_wrathion_molteneruption_groundstate.m2",
-         },
-        },
-        text = "fx",
-        value = "fx",
-       },
-      },
-      text = "doodads",
-      value = "doodads",
-     },
-    },
-    text = "expansion07",
-    value = "expansion07",
    },
    {
     children = {

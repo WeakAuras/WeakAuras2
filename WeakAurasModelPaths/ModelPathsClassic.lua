@@ -2379,6 +2379,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "5519021",
+      text = "hydraboss01_classic.m2",
+      value = "hydraboss01_classic.m2",
+     },
+    },
+    text = "hydrabossclassic",
+    value = "hydrabossclassic",
+   },
+   {
+    children = {
+     {
       fileId = "124601",
       text = "hyena.m2",
       value = "hyena.m2",
@@ -16122,6 +16133,16 @@ WeakAuras.ModelPaths = {
         text = "rshoulder_robe_raidwarlock_c_01.m2",
         value = "rshoulder_robe_raidwarlock_c_01.m2",
        },
+       {
+        fileId = "5837941",
+        text = "shoulder_leather_olivescale_b_01_l.m2",
+        value = "shoulder_leather_olivescale_b_01_l.m2",
+       },
+       {
+        fileId = "5837942",
+        text = "shoulder_leather_olivescale_b_01_r.m2",
+        value = "shoulder_leather_olivescale_b_01_r.m2",
+       },
       },
       text = "shoulder",
       value = "shoulder",
@@ -16477,6 +16498,11 @@ WeakAuras.ModelPaths = {
         fileId = "144914",
         text = "axe_2h_war_a_03.m2",
         value = "axe_2h_war_a_03.m2",
+       },
+       {
+        fileId = "5779366",
+        text = "axe_2h_war_axeofcenarius_a_01.m2",
+        value = "axe_2h_war_axeofcenarius_a_01.m2",
        },
        {
         fileId = "144918",
@@ -18229,6 +18255,11 @@ WeakAuras.ModelPaths = {
         value = "stave_2h_blackwing_a_02.m2",
        },
        {
+        fileId = "5757210",
+        text = "stave_2h_crescentmoon_b_01.m2",
+        value = "stave_2h_crescentmoon_b_01.m2",
+       },
+       {
         fileId = "5937379",
         text = "stave_2h_druid_a_01.m2",
         value = "stave_2h_druid_a_01.m2",
@@ -19395,19 +19426,14 @@ WeakAuras.ModelPaths = {
  {
   children = {
    {
-    fileId = "4703540",
-    text = "10fx_aberrus_rashok_shatteredconduit_travel.m2",
-    value = "10fx_aberrus_rashok_shatteredconduit_travel.m2",
-   },
-   {
-    fileId = "5332404",
-    text = "10fx_amirdrassil_larodar_firewhirl.m2",
-    value = "10fx_amirdrassil_larodar_firewhirl.m2",
-   },
-   {
     fileId = "4681252",
     text = "10fx_generic_shadow_empoweredarea.m2",
     value = "10fx_generic_shadow_empoweredarea.m2",
+   },
+   {
+    fileId = "5098022",
+    text = "10fx_raid2_shadowflame_largering.m2",
+    value = "10fx_raid2_shadowflame_largering.m2",
    },
    {
     fileId = "5076825",
@@ -19415,24 +19441,44 @@ WeakAuras.ModelPaths = {
     value = "10fx_raid2_shadowflameelemental_fire_meteor.m2",
    },
    {
-    fileId = "5649562",
-    text = "11fx_holy_hammer_missile01.m2",
-    value = "11fx_holy_hammer_missile01.m2",
+    fileId = "5193729",
+    text = "10gfx_dragon_bronze_precastcone_state_base.m2",
+    value = "10gfx_dragon_bronze_precastcone_state_base.m2",
    },
    {
-    fileId = "5739870",
-    text = "11fx_holy_impact01.m2",
-    value = "11fx_holy_impact01.m2",
+    fileId = "5332404",
+    text = "10gfx_fire_tornado_state.m2",
+    value = "10gfx_fire_tornado_state.m2",
+   },
+   {
+    fileId = "4703540",
+    text = "10gfx_shadowflame_rl_targetcenter_state_decal.m2",
+    value = "10gfx_shadowflame_rl_targetcenter_state_decal.m2",
    },
    {
     fileId = "5679913",
-    text = "11fx_nyalothathewakingcity_drestagath_dismemberment_impact.m2",
-    value = "11fx_nyalothathewakingcity_drestagath_dismemberment_impact.m2",
+    text = "11gfx_enchant_voidskardyn_generic.m2",
+    value = "11gfx_enchant_voidskardyn_generic.m2",
+   },
+   {
+    fileId = "5566977",
+    text = "11gfx_holy_debuff_chest.m2",
+    value = "11gfx_holy_debuff_chest.m2",
+   },
+   {
+    fileId = "5536353",
+    text = "11gfx_holy_pickup_state.m2",
+    value = "11gfx_holy_pickup_state.m2",
    },
    {
     fileId = "5552700",
     text = "11gfx_shadow_barrier_state.m2",
     value = "11gfx_shadow_barrier_state.m2",
+   },
+   {
+    fileId = "5763802",
+    text = "11gfx_weaponenchant_holyfire_generic.m2",
+    value = "11gfx_weaponenchant_holyfire_generic.m2",
    },
    {
     fileId = "1087046",
@@ -20225,9 +20271,19 @@ WeakAuras.ModelPaths = {
     value = "cfx_paladin_hammerofjustice_impact.m2",
    },
    {
+    fileId = "5649562",
+    text = "cfx_paladin_lightsmith_mace_missile.m2",
+    value = "cfx_paladin_lightsmith_mace_missile.m2",
+   },
+   {
     fileId = "1375559",
     text = "cfx_paladin_shieldofvengeance_castchest.m2",
     value = "cfx_paladin_shieldofvengeance_castchest.m2",
+   },
+   {
+    fileId = "5739870",
+    text = "cfx_paladin_templar_vertical_impact.m2",
+    value = "cfx_paladin_templar_vertical_impact.m2",
    },
    {
     fileId = "165780",
@@ -20328,6 +20384,116 @@ WeakAuras.ModelPaths = {
     fileId = "6641990",
     text = "classic_fx_light_yellow.m2",
     value = "classic_fx_light_yellow.m2",
+   },
+   {
+    fileId = "5593602",
+    text = "classic_fx_shadowpriest_legendary.m2",
+    value = "classic_fx_shadowpriest_legendary.m2",
+   },
+   {
+    fileId = "5593581",
+    text = "classic_fx_weaponglow_black_high.m2",
+    value = "classic_fx_weaponglow_black_high.m2",
+   },
+   {
+    fileId = "5593579",
+    text = "classic_fx_weaponglow_black_low.m2",
+    value = "classic_fx_weaponglow_black_low.m2",
+   },
+   {
+    fileId = "5593580",
+    text = "classic_fx_weaponglow_black_mid.m2",
+    value = "classic_fx_weaponglow_black_mid.m2",
+   },
+   {
+    fileId = "5593587",
+    text = "classic_fx_weaponglow_blue_high.m2",
+    value = "classic_fx_weaponglow_blue_high.m2",
+   },
+   {
+    fileId = "5593585",
+    text = "classic_fx_weaponglow_blue_low.m2",
+    value = "classic_fx_weaponglow_blue_low.m2",
+   },
+   {
+    fileId = "5593586",
+    text = "classic_fx_weaponglow_blue_mid.m2",
+    value = "classic_fx_weaponglow_blue_mid.m2",
+   },
+   {
+    fileId = "5593590",
+    text = "classic_fx_weaponglow_green_high.m2",
+    value = "classic_fx_weaponglow_green_high.m2",
+   },
+   {
+    fileId = "5593589",
+    text = "classic_fx_weaponglow_green_mid.m2",
+    value = "classic_fx_weaponglow_green_mid.m2",
+   },
+   {
+    fileId = "5593597",
+    text = "classic_fx_weaponglow_purple_high.m2",
+    value = "classic_fx_weaponglow_purple_high.m2",
+   },
+   {
+    fileId = "5593599",
+    text = "classic_fx_weaponglow_purple_low.m2",
+    value = "classic_fx_weaponglow_purple_low.m2",
+   },
+   {
+    fileId = "5593598",
+    text = "classic_fx_weaponglow_purple_mid.m2",
+    value = "classic_fx_weaponglow_purple_mid.m2",
+   },
+   {
+    fileId = "5593596",
+    text = "classic_fx_weaponglow_red_high.m2",
+    value = "classic_fx_weaponglow_red_high.m2",
+   },
+   {
+    fileId = "5593594",
+    text = "classic_fx_weaponglow_red_low.m2",
+    value = "classic_fx_weaponglow_red_low.m2",
+   },
+   {
+    fileId = "5593595",
+    text = "classic_fx_weaponglow_red_mid.m2",
+    value = "classic_fx_weaponglow_red_mid.m2",
+   },
+   {
+    fileId = "5593600",
+    text = "classic_fx_weaponglow_undead_1.m2",
+    value = "classic_fx_weaponglow_undead_1.m2",
+   },
+   {
+    fileId = "5593601",
+    text = "classic_fx_weaponglow_undead_2.m2",
+    value = "classic_fx_weaponglow_undead_2.m2",
+   },
+   {
+    fileId = "5593584",
+    text = "classic_fx_weaponglow_white_high.m2",
+    value = "classic_fx_weaponglow_white_high.m2",
+   },
+   {
+    fileId = "5593582",
+    text = "classic_fx_weaponglow_white_low.m2",
+    value = "classic_fx_weaponglow_white_low.m2",
+   },
+   {
+    fileId = "5593583",
+    text = "classic_fx_weaponglow_white_mid.m2",
+    value = "classic_fx_weaponglow_white_mid.m2",
+   },
+   {
+    fileId = "5593591",
+    text = "classic_fx_weaponglow_yellow_high.m2",
+    value = "classic_fx_weaponglow_yellow_high.m2",
+   },
+   {
+    fileId = "5593593",
+    text = "classic_fx_weaponglow_yellow_low.m2",
+    value = "classic_fx_weaponglow_yellow_low.m2",
    },
    {
     fileId = "165795",
@@ -21670,31 +21836,6 @@ WeakAuras.ModelPaths = {
     fileId = "382340",
     text = "frostycircle_shadow.m2",
     value = "frostycircle_shadow.m2",
-   },
-   {
-    fileId = "5763802",
-    text = "fx_ancientweaponoil_aura.m2",
-    value = "fx_ancientweaponoil_aura.m2",
-   },
-   {
-    fileId = "5193729",
-    text = "fx_bronzeexhalation_precast.m2",
-    value = "fx_bronzeexhalation_precast.m2",
-   },
-   {
-    fileId = "5098022",
-    text = "fx_centerconduitactivatevisual.m2",
-    value = "fx_centerconduitactivatevisual.m2",
-   },
-   {
-    fileId = "5566977",
-    text = "fx_draughtofshockingrevelations_aura.m2",
-    value = "fx_draughtofshockingrevelations_aura.m2",
-   },
-   {
-    fileId = "5536353",
-    text = "fx_holylance_channel01.m2",
-    value = "fx_holylance_channel01.m2",
    },
    {
     fileId = "166237",
@@ -30832,6 +30973,23 @@ WeakAuras.ModelPaths = {
      {
       children = {
        {
+        fileId = "5519023",
+        text = "classic_orangebird01.m2",
+        value = "classic_orangebird01.m2",
+       },
+      },
+      text = "classic",
+      value = "classic",
+     },
+    },
+    text = "doodad",
+    value = "doodad",
+   },
+   {
+    children = {
+     {
+      children = {
+       {
         children = {
          {
           fileId = "190755",
@@ -33156,15 +33314,9 @@ WeakAuras.ModelPaths = {
      {
       children = {
        {
-        children = {
-         {
-          fileId = "5098673",
-          text = "10dg_magicbookcase.m2",
-          value = "10dg_magicbookcase.m2",
-         },
-        },
-        text = "dragon",
-        value = "dragon",
+        fileId = "5098673",
+        text = "10xp_generic_toy_bookshelf01.m2",
+        value = "10xp_generic_toy_bookshelf01.m2",
        },
        {
         children = {
