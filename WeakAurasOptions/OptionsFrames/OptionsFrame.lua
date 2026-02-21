@@ -1107,6 +1107,17 @@ function OptionsPrivate.CreateFrame()
   end
 
   frame.ClearAndUpdateOptions = function(self, id, clearChildren)
+    if not id then
+      if type(self.pickedDisplay) == "table" then
+        id = tempGroup.id
+      else
+        id = self.pickedDisplay
+      end
+      if not id then
+        return
+      end
+    end
+
     frame:ClearOptions(id)
 
     if clearChildren then
