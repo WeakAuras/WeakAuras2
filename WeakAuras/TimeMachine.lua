@@ -240,10 +240,25 @@ function TimeMachine:StartTransaction()
   self.transaction = true
 end
 
+local function FormatPayload(payload)
+  if type(payload) == "table" then
+    local result = {}
+    for k, v in pairs(payload) do
+      if type(v) == "table" then
+        tinsert(result, k .. ": (table)")
+      else
+        tinsert(result, k .. ":" .. tostring(v))
+      end
+    end
+    return table.concat(result, ", ")
+  end
+  return payload
+end
+
 ---@param record actionRecord
 function TimeMachine:Append(record)
   local action = self.actions[record.actionType]
-  Private.DebugPrint("Forward action", record.actionType, "for", record.uid, "at", keyPathToString(record.path), "with", record.payload)
+  Private.DebugPrint("Forward action", record.actionType, "for", record.uid, "at", keyPathToString(record.path), "with", FormatPayload(record.payload))
   if not action then
     error("No action for actionType: " .. record.actionType)
   end
@@ -261,7 +276,7 @@ function TimeMachine:Append(record)
     suppressAutoEffects = record.suppressAutoEffects and CopyTable(record.suppressAutoEffects) or nil,
     effects = record.effects and invertEffects(record.effects) or nil,
   }
-  Private.DebugPrint("Backward action", actionType, "for", record.uid, "at", keyPathToString(path), "with", payload)
+  Private.DebugPrint("Backward action", actionType, "for", record.uid, "at", keyPathToString(path), "with", FormatPayload(payload))
   table.insert(self.next.forward, record)
   table.insert(self.next.backward, 1, inverseRecord)
   if not self.transaction then

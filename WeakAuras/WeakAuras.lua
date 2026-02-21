@@ -2883,6 +2883,10 @@ local function validateUserConfig(data, options, config)
           end
         elseif option.type == "multiselect" then
           local multiselect = config[key]
+          if type(multiselect) ~= "table" then
+            config[key] = {}
+            multiselect = config[key]
+          end
           for i, v in ipairs(multiselect) do
             if option.default[i] ~= nil then
               if type(v) ~= "boolean" then
@@ -2892,12 +2896,18 @@ local function validateUserConfig(data, options, config)
               multiselect[i] = nil
             end
           end
+          if type(option.default) ~= "table" then
+            option.default = {}
+          end
           for i, v in ipairs(option.default) do
             if type(multiselect[i]) ~= "boolean" then
               multiselect[i] = v
             end
           end
         elseif option.type == "color" then
+          if type(config[key]) ~= "table" then
+            config[key] = {}
+          end
           for i = 1, 4 do
             local c = config[key][i]
             if type(c) ~= "number" or c < 0 or c > 1 then
