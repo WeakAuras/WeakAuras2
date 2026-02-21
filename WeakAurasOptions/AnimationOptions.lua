@@ -13,9 +13,7 @@ local replaceValuesFuncs = OptionsPrivate.commonOptions.replaceValuesFuncs
 local disabledAll = OptionsPrivate.commonOptions.CreateDisabledAll("animation")
 local hiddenAll = OptionsPrivate.commonOptions.CreateHiddenAll("animation")
 local getAll = OptionsPrivate.commonOptions.CreateGetAll("animation")
-local setAll = OptionsPrivate.commonOptions.CreateSetAll("animation", getAll)
-
-
+local setAll = OptionsPrivate.commonOptions.CreateSetAllTimeMachine("animation", getAll)
 
 local function filterAnimPresetTypes(intable, id)
   local ret = {};
@@ -79,9 +77,14 @@ function OptionsPrivate.GetAnimationOptions(data)
     set = function(info, v)
       local split = info[#info]:find("_");
       local field, value = info[#info]:sub(1, split-1), info[#info]:sub(split+1);
-      data.animation = data.animation or {};
-      data.animation[field] = data.animation[field] or {};
-      data.animation[field][value] = v;
+
+      OptionsPrivate.Private.TimeMachine:Append({
+        uid = data.uid,
+        actionType = "set",
+        path = {"animation", field, value},
+        payload = v
+      })
+
       if(field == "main") then
         local region = OptionsPrivate.Private.EnsureRegion(id)
         OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, region, false, nil, true);
@@ -92,7 +95,6 @@ function OptionsPrivate.GetAnimationOptions(data)
           end
         end
       end
-      WeakAuras.Add(data);
     end,
     disabled = function(info, v)
       local split = info[#info]:find("_");
@@ -383,10 +385,33 @@ function OptionsPrivate.GetAnimationOptions(data)
             data.animation.start.colorA or 1;
         end,
         set = function(info, r, g, b, a)
-          data.animation.start.colorR = r;
-          data.animation.start.colorG = g;
-          data.animation.start.colorB = b;
-          data.animation.start.colorA = a;
+          OptionsPrivate.Private.TimeMachine:AppendMany(
+          {
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "start", "colorR"},
+              payload = r
+            },
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "start", "colorG"},
+              payload = g
+            },
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "start", "colorB"},
+              payload = b
+            },
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "start", "colorA"},
+              payload = a
+            },
+          })
         end
       },
       main_header = {
@@ -647,10 +672,33 @@ function OptionsPrivate.GetAnimationOptions(data)
             data.animation.main.colorA or 1;
         end,
         set = function(info, r, g, b, a)
-          data.animation.main.colorR = r;
-          data.animation.main.colorG = g;
-          data.animation.main.colorB = b;
-          data.animation.main.colorA = a;
+          OptionsPrivate.Private.TimeMachine:AppendMany(
+          {
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "finish", "colorR"},
+              payload = r
+            },
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "finish", "colorG"},
+              payload = g
+            },
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "finish", "colorB"},
+              payload = b
+            },
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "finish", "colorA"},
+              payload = a
+            },
+          })
         end
       },
       finish_header = {
@@ -1064,11 +1112,6 @@ function OptionsPrivate.GetAnimationOptions(data)
     animation.get = function(info, ...) return getAll(data, info, ...); end;
     animation.set = function(info, ...)
       setAll(data, info, ...);
-      if(type(data.id) == "string") then
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
-        OptionsPrivate.ResetMoverSizer();
-      end
     end
     animation.hidden = function(info, ...) return hiddenAll(data, info, ...); end;
     animation.disabled = function(info, ...) return disabledAll(data, info, ...); end;
