@@ -298,6 +298,13 @@ function TimeMachine:Commit(instant)
     WeakAuras.prettyPrint("If you're reading this, a time machine transaction was committed, but there was no transaction in progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
     return
   end
+
+  if next(self.next.forward) == nil then
+    -- No actual changes, probably because of old code
+    self.transaction = false
+    return
+  end
+
   while self.index < #self.changes do
     table.remove(self.changes)
   end
