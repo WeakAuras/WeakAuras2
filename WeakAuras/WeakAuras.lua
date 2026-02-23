@@ -1607,7 +1607,7 @@ local function GetInstanceTypeAndSize()
     end
     return size, difficulty, instanceType, instanceId, difficultyIndex
   end
-  return "none", "none", nil, nil, 0
+  return "none", "none", nil, instanceId, 0
 end
 
 ---@return string instanceType
@@ -6326,7 +6326,7 @@ do
 
   function WeakAuras.UnitNameWithRealmCustomName(unit)
     ownRealm = ownRealm or select(2, UnitFullName("player"))
-    local name, realm =  WeakAuras.UnitFullName(unit)
+    local name, realm = WeakAuras.UnitFullName(unit)
     return name or "", realm or ownRealm or ""
   end
 end

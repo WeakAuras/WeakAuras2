@@ -835,37 +835,22 @@ Private.format_types = {
 
       if realm == "never" then
         nameFunc = function(unit)
-          return unit and WeakAuras.UnitName(unit) or ""
+          return unit
         end
       elseif realm == "star" then
         nameFunc = function(unit)
-          if not unit then
-            return ""
-          end
-          local name, realm = WeakAuras.UnitName(unit)
-          if realm then
-            return name .. "*"
-          end
-          return name or ""
+          local _, realm = WeakAuras.UnitName(unit)
+          return realm and unit.."*" or unit
         end
       elseif realm == "differentServer" then
         nameFunc = function(unit)
-          if not unit then
-            return ""
-          end
-          local name, realm = WeakAuras.UnitName(unit)
-          if realm then
-            return name .. "-" .. realm
-          end
-          return name or ""
+          local _, realm = WeakAuras.UnitName(unit)
+          return realm and unit.."-"..realm or unit
         end
       elseif realm == "always" then
         nameFunc = function(unit)
-          if not unit then
-            return ""
-          end
-          local name, realm = WeakAuras.UnitNameWithRealmCustomName(unit)
-          return name .. "-" .. realm
+          local _, realm = WeakAuras.UnitNameWithRealmCustomName(unit)
+          return unit.."-"..realm
         end
       end
 
@@ -888,23 +873,62 @@ Private.format_types = {
       if colorFunc then
         if abbreviateFunc then
           return function(unit)
-            local name = abbreviateFunc(nameFunc(unit))
-            return colorFunc(unit, name)
+            if type(unit) == "string" then
+              unit = {strsplit(",", unit)}
+            end
+            if type(unit) == "table" then
+              local name = {}
+              for i = 1, #unit do
+                unit[i] = unit[i]:match("^%s*(.-)%s*$")
+                name[#name + 1] = UnitExists(unit[i]) and colorFunc(unit[i], abbreviateFunc(nameFunc(unit[i]))) or nil
+              end
+              return table.concat(name, ", ")
+            end
           end
         else
           return function(unit)
-            local name = nameFunc(unit)
-            return colorFunc(unit, name)
+            if type(unit) == "string" then
+              unit = {strsplit(",", unit)}
+            end
+            if type(unit) == "table" then
+              local name = {}
+              for i = 1, #unit do
+                unit[i] = unit[i]:match("^%s*(.-)%s*$")
+                name[#name + 1] = UnitExists(unit[i]) and colorFunc(unit[i], nameFunc(unit[i])) or nil
+              end
+              return table.concat(name, ", ")
+            end
           end
         end
       else
         if abbreviateFunc then
           return function(unit)
-            local name = nameFunc(unit)
-            return abbreviateFunc(name)
+            if type(unit) == "string" then
+              unit = {strsplit(",", unit)}
+            end
+            if type(unit) == "table" then
+              local name = {}
+              for i = 1, #unit do
+                unit[i] = unit[i]:match("^%s*(.-)%s*$")
+                name[#name + 1] = UnitExists(unit[i]) and abbreviateFunc(nameFunc(unit[i])) or nil
+              end
+              return table.concat(name, ", ")
+            end
           end
         else
-          return nameFunc
+          return function(unit)
+            if type(unit) == "string" then
+              unit = {strsplit(",", unit)}
+            end
+            if type(unit) == "table" then
+              local name = {}
+              for i = 1, #unit do
+                unit[i] = unit[i]:match("^%s*(.-)%s*$")
+                name[#name + 1] = UnitExists(unit[i]) and nameFunc(unit[i]) or nil
+              end
+              return table.concat(name, ", ")
+            end
+          end
         end
       end
     end

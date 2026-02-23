@@ -50,6 +50,46 @@ function Private.InitializeEncounterAndZoneLists()
       }
     },
     {
+      L["Naxxramas"],
+      {
+        -- The Arachnid Quarter
+        { L["Anub'Rekhan"], 1107 },
+        { L["Grand Widow Faerlina"], 1110 },
+        { L["Maexxna"], 1116 },
+        -- The Plague Quarter
+        { L["Noth the Plaguebringer"], 1117 },
+        { L["Heigan the Unclean"], 1112 },
+        { L["Loatheb"], 1115 },
+        -- The Military Quarter
+        { L["Instructor Razuvious"], 1113 },
+        { L["Gothik the Harvester"], 1109 },
+        { L["The Four Horsemen"], 1121 },
+        -- The Construct Quarter
+        { L["Patchwerk"], 1118 },
+        { L["Grobbulus"], 1111 },
+        { L["Gluth"], 1108 },
+        { L["Thaddius"], 1120 },
+        -- Frostwyrm Lair
+        { L["Sapphiron"], 1119 },
+        { L["Kel'Thuzad"], 1114 }
+      }
+    },
+    {
+      L["The Obsidian Sanctum"],
+      {
+        { L["Tenebron"], 736 },
+        { L["Shadron"], 738 },
+        { L["Vesperon"], 740 },
+        { L["Sartharion"], 742 },
+      }
+    },
+    {
+      L["The Eye of Eternity"],
+      {
+        { L["Malygos"], 734 },
+      }
+    },
+    {
       L["Vault of Archavon"],
       {
         { L["Archavon the Stone Watcher"], 772 },

@@ -2489,6 +2489,16 @@ function Private.Modernize(data, oldSnapshot)
     end
   end
 
+  if data.load.instance_type and data.load.instance_type.multi then
+    local multi = {}
+    for k, v in pairs(data.load.instance_type.multi) do
+      if tonumber(k) then
+        multi[tonumber(k)] = v
+      end
+    end
+    data.load.instance_type.multi = multi
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 
