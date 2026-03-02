@@ -59,7 +59,8 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: WeakAuras-DF
-          path: .release/
+          path: .release/*.zip
+          archive: false
 
       - name: Send Status to Discord
         uses: nebularg/actions-discord-webhook@v1
