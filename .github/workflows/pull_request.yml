@@ -52,8 +52,8 @@ jobs:
         id: upload-artifact
         with:
           name: WeakAuras-PR#${{ github.event.number }}-${{ github.sha }}
-          path:  .release/
-          include-hidden-files: true
+          path:  .release/*.zip
+          archive: false
 
   advertise:
     runs-on: ubuntu-latest
