@@ -294,6 +294,7 @@ function OptionsPrivate.GetActionOptions(data)
         disabled = function() return not data.actions.start.do_sound end,
         min = 0,
         softMax = 100,
+        step = 1,
       },
       start_sound_repeat_space = {
         type = "description",
