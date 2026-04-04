@@ -3615,7 +3615,9 @@ do
       itemCdEnabled[id] = 1
 
       local item = Item:CreateFromItemID(id)
-      local _, spellId = C_Item.GetItemSpell(id)
+      if not item:GetItemID() then
+        return
+      end
       item:ContinueOnItemLoad(function()
         local _, spellId = C_Item.GetItemSpell(id)
         if spellId then
@@ -3663,6 +3665,9 @@ do
 
       if itemId then
         local item = Item:CreateFromItemID(itemId)
+        if not item:GetItemID() then
+          return
+        end
         item:ContinueOnItemLoad(function()
           if itemSlots[id] ~= itemId then
             return
