@@ -53,6 +53,7 @@ jobs:
         with:
           name: WeakAuras-PR#${{ github.event.number }}-${{ github.sha }}
           path:  .release/*.zip
+          include-hidden-files: true
           archive: false
 
   advertise:
