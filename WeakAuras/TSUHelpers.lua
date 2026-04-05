@@ -88,6 +88,9 @@ end
 
 ---@type fun(states: states, key: key, newState: state): boolean
 local create = function(states, key, newState)
+  if newState.show == nil then
+    newState.show = true
+  end
   states[key] = newState
   states[key].changed = true
   states:SetChanged(true)
