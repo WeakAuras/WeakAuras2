@@ -2493,6 +2493,10 @@ function Private.Modernize(data, oldSnapshot)
     data.information.showNilIsFalse = true
   end
 
+  if data.internalVersion < 90 then
+    data.information.circularTextureInverseLegacy = true
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 

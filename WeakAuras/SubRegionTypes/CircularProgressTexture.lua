@@ -211,6 +211,9 @@ local funcs = {
           local progress
           if duration == 0 then
             progress = 0
+            if self.inverse and not self.inverseLegacy then
+              progress = 1 - progress
+            end
           else
             progress = remaining / self.progressData.duration
             if self.inverse then
@@ -224,6 +227,9 @@ local funcs = {
           local progress
           if duration == 0 then
             progress = 0
+            if self.inverse and not self.inverseLegacy then
+              progress = 1 - progress
+            end
           else
             progress = remaining / self.progressData.duration
             if self.inverse then
@@ -296,6 +302,7 @@ local function modify(parent, region, parentData, data, first)
   end
 
   region.inverse = data.circularTextureInverse
+  region.inverseLegacy = parentData.information.circularTextureInverseLegacy
 
   Private.CircularProgressTextureBase.modify(region.circularTexture, {
     crop_x = 1 + data.circularTextureCrop_x,

@@ -216,6 +216,9 @@ function OptionsPrivate.GetInformationOptions(data)
       name = L["Offset by 1px"],
       onParent = true,
       regionType = "group"
+    },
+    circularTextureInverseLegacy = {
+      name = L["Circular Texture: Skip inverse when duration is zero"]
     }
   }
 
@@ -224,7 +227,8 @@ function OptionsPrivate.GetInformationOptions(data)
     ignoreOptionsEventErrors = true,
     showNilIsFalse = true,
     forceEvents = true,
-    groupOffset = true
+    groupOffset = true,
+    circularTextureInverseLegacy = true
   }
 
   --- @type table<string, boolean>

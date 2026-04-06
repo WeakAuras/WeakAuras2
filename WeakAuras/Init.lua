@@ -256,6 +256,7 @@ Private.frames = {}
 --- @field ignoreOptionsEventErrors boolean|nil
 --- @field showNilIsFalse boolean|nil
 --- @field groupOffset boolean|nil
+--- @field circularTextureInverseLegacy boolean|nil
 
 --- @alias dynamicGroupCenterType
 --- | "LR"
