@@ -1826,31 +1826,32 @@ elseif WeakAuras.IsTBCOrWrathOrCataOrMists() then
   ---@type fun(index: number): CurrencyInfo
   Private.GetCurrencyListInfo = function(index)
     local name, isHeader, isExpanded, isUnused, isWatched, _, icon, _, hasWeeklyLimit, _, _, itemID = GetCurrencyListInfo(index)
-    local currentAmount, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity
     if itemID then
-      _, currentAmount, _, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity = GetCurrencyInfo(itemID)
+      local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(itemID)
+      if currencyInfo then
+        return currencyInfo
+      end
     end
-    local currencyInfo = {
+    return {
       name = name,
       description = "",
       isHeader = isHeader,
       isHeaderExpanded = isExpanded,
       isTypeUnused = isUnused,
       isShowInBackpack = isWatched,
-      quantity = currentAmount,
+      quantity = 0,
       trackedQuantity = 0,
       iconFileID = icon,
-      maxQuantity = totalMax,
+      maxQuantity = 0,
       canEarnPerWeek = hasWeeklyLimit,
-      quantityEarnedThisWeek = earnedThisWeek,
+      quantityEarnedThisWeek = 0,
       isTradeable = false,
-      quality = rarity,
-      maxWeeklyQuantity = weeklyMax,
+      quality = 0,
+      maxWeeklyQuantity = 0,
       totalEarned = 0,
-      discovered = isDiscovered,
+      discovered = true,
       useTotalEarnedForMaxQty = false,
     }
-    return currencyInfo
   end
 end
 
