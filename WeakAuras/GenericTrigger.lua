@@ -2897,7 +2897,6 @@ do
           local arg1, baseSpellID, category = ...
           if arg1 and type(arg1) == "number" then
             spellId = arg1
-            -- baseSpellId = arg2
           end
 
           mark_ACTIONBAR_UPDATE_COOLDOWN = nil
@@ -2907,7 +2906,6 @@ do
             -- are now also on cooldown. Unfortunately we don't reliably get events
             -- for those other spells. Thus update all spell cooldowns here
             Private.CheckCooldownReady()
-            Private.CheckItemSlotCooldowns()
             return
           end
         elseif event == "SPELL_UPDATE_USES" then
