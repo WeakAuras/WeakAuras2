@@ -9201,7 +9201,7 @@ Private.event_prototypes = {
             return L["Set IDs can be found on websites such as wowhead.com/mop-classic/item-sets"]
           elseif WeakAuras.IsCataClassic() then
             return L["Set IDs can be found on websites such as wowhead.com/cata/item-sets"]
-          elseif WeakAuras.IsWotLKClassic() then
+          elseif WeakAuras.IsWrathClassic() then
             return L["Set IDs can be found on websites such as wowhead.com/wotlk/item-sets"]
           elseif WeakAuras.IsTBC() then
             return L["Set IDs can be found on websites such as wowhead.com/tbc/item-sets"]
@@ -12309,7 +12309,7 @@ Private.event_prototypes = {
   },
 };
 
-if C_AssistedCombat and C_AssistedCombat.GetNextCastSpell then
+if not WeakAuras.IsWrathClassic() and C_AssistedCombat and C_AssistedCombat.GetNextCastSpell then
   Private.event_prototypes["Assisted Combat Next Cast"] = {
     type = "spell",
     events = { "SPELLS_CHANGED"},
