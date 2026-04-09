@@ -430,6 +430,7 @@ end
 -- save compatibility with old auras
 WeakAuras.IsClassic = WeakAuras.IsClassicEra
 
+---@return boolean result
 function WeakAuras.IsTBC()
   return flavor == 2
 end
