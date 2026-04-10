@@ -547,7 +547,7 @@ if not WeakAuras.IsMistsOrRetail() then
               else
                 local state = states[cloneId]
                 if state then
-                  statest[cloneId] = nil
+                  states[cloneId] = nil
                   changed = true
                 end
               end
