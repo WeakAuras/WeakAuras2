@@ -4325,7 +4325,7 @@ Private.glow_types = {
   buttonOverlay = L["Action Button Glow"],
 }
 
-if WeakAuras.IsTBC() or WeakAuras.IsMistsOrRetail() then
+if WeakAuras.IsTBCOrWrathOrMistsOrRetail() then
   Private.glow_types.Proc = L["Proc Glow"]
 end
 
