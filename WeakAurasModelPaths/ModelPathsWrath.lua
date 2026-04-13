@@ -1169,6 +1169,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7651317",
+      text = "batpetrevendreth2_classic.m2",
+      value = "batpetrevendreth2_classic.m2",
+     },
+    },
+    text = "batpetrevendreth2_classic",
+    value = "batpetrevendreth2_classic",
+   },
+   {
+    children = {
+     {
       fileId = "123040",
       text = "bear.m2",
       value = "bear.m2",
@@ -6827,6 +6838,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7792809",
+      text = "palanquinmount_classic.m2",
+      value = "palanquinmount_classic.m2",
+     },
+    },
+    text = "palanquinmount_classic",
+    value = "palanquinmount_classic",
+   },
+   {
+    children = {
+     {
       fileId = "309881",
       text = "jadepandacub.m2",
       value = "jadepandacub.m2",
@@ -7912,6 +7934,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7651315",
+      text = "shabeakypet_classic.m2",
+      value = "shabeakypet_classic.m2",
+     },
+    },
+    text = "shabeakypet_classic",
+    value = "shabeakypet_classic",
+   },
+   {
+    children = {
+     {
       fileId = "125854",
       text = "shade.m2",
       value = "shade.m2",
@@ -7935,6 +7968,17 @@ WeakAuras.ModelPaths = {
     },
     text = "shadrakemount",
     value = "shadrakemount",
+   },
+   {
+    children = {
+     {
+      fileId = "7651313",
+      text = "shaowlmount_classic.m2",
+      value = "shaowlmount_classic.m2",
+     },
+    },
+    text = "shaowlmount_classic",
+    value = "shaowlmount_classic",
    },
    {
     children = {
@@ -7984,6 +8028,17 @@ WeakAuras.ModelPaths = {
     },
     text = "shatigermountclassic",
     value = "shatigermountclassic",
+   },
+   {
+    children = {
+     {
+      fileId = "7651311",
+      text = "shawolfmount_classic.m2",
+      value = "shawolfmount_classic.m2",
+     },
+    },
+    text = "shawolfmount_classic",
+    value = "shawolfmount_classic",
    },
    {
     children = {
