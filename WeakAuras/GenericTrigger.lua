@@ -2918,14 +2918,12 @@ do
         Private.CheckCooldownReady(spellId)
         if spellId then
           if itemSpellIdToItemId[spellId] then
-            for _, itemId in ipairs(itemSpellIdToItemId[spellId]) do
-              Private.CheckItemCooldown(itemId)
-            end
+            Private.CheckItemCooldowns();
+            Private.CheckItemSlotCooldowns();
           end
           if itemSlotsSpellIdToSlot[spellId] then
-            for _, slot in ipairs(itemSlotsSpellIdToSlot[spellId]) do
-              Private.CheckItemSlotCooldown(slot, itemSlots[slot])
-            end
+            Private.CheckItemCooldowns();
+            Private.CheckItemSlotCooldowns();
           end
         end
       elseif(event == "SPELLS_CHANGED") then
