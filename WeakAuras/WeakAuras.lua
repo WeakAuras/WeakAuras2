@@ -5858,11 +5858,11 @@ function Private.ensurePRDFrame()
       end
       personalRessourceDisplayFrame.texture:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\PRDFrameKui");
     else
-      local namePlateVerticalScale = tonumber(GetCVar("NamePlateVerticalScale"));
+      local namePlateVerticalScale = tonumber(GetCVar("NamePlateVerticalScale")) or 1
       local zeroBasedScale = namePlateVerticalScale - 1.0;
       local clampedZeroBasedScale = Saturate(zeroBasedScale);
-      local horizontalScale = tonumber(GetCVar("NamePlateHorizontalScale"));
-      local baseNamePlateWidth = NamePlateDriverFrame.baseNamePlateWidth;
+      local horizontalScale = tonumber(GetCVar("NamePlateHorizontalScale")) or 1
+      local baseNamePlateWidth = NamePlateDriverFrame.baseNamePlateWidth or 200
       prdWidth = baseNamePlateWidth * horizontalScale * Lerp(1.1, 1.0, clampedZeroBasedScale) - 24;
       prdHeight = 4 * namePlateVerticalScale * Lerp(1.2, 1.0, clampedZeroBasedScale) * 2  + 1;
       personalRessourceDisplayFrame:SetScale(1 / UIParent:GetEffectiveScale());
