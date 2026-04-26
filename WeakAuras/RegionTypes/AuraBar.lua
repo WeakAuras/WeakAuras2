@@ -1326,11 +1326,18 @@ local function modify(parent, region, data)
     -- Create and enable tooltip-hover frame
     if not region.tooltipFrame then
       region.tooltipFrame = CreateFrame("Frame", nil, region);
-      region.tooltipFrame:SetAllPoints(icon);
       region.tooltipFrame:SetScript("OnEnter", function()
         Private.ShowMouseoverTooltip(region, region.tooltipFrame);
       end);
       region.tooltipFrame:SetScript("OnLeave", Private.HideTooltip);
+    end
+    region.tooltipFrame:ClearAllPoints()
+    if data.toolTipArea == "ICON" then
+      region.tooltipFrame:SetAllPoints(icon)
+    elseif data.toolTipArea == "BAR" then
+      region.tooltipFrame:SetAllPoints(bar)
+    else
+      region.tooltipFrame:SetAllPoints(region)
     end
     region.tooltipFrame:EnableMouseMotion(true);
     region.tooltipFrame:SetMouseClickEnabled(false);

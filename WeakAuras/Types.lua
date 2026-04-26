@@ -3806,6 +3806,13 @@ Private.absorb_modes = {
   OVERLAY_FROM_END_REVERSE = L["Attach to End, backwards"]
 }
 
+---@type table<string, string>
+Private.aurabar_tooltip_areas = {
+  ICON = L["Icon"],
+  BAR = L["Bar"],
+  ALL = L["Bar and Icon"]
+}
+
 ---@type table
 Private.mythic_plus_affixes = {}
 

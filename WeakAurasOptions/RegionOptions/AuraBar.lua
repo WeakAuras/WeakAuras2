@@ -131,7 +131,7 @@ local function createOptions(id, data)
     },
     smoothProgress = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.doubleWidth,
       name = L["Smooth Progress"],
       desc = L["Animates progress changes"],
       order = 37
@@ -142,6 +142,17 @@ local function createOptions(id, data)
       name = L["Tooltip on Mouseover"],
       hidden = function() return not OptionsPrivate.Private.CanHaveTooltip(data) end,
       order = 38
+    },
+    toolTipArea = {
+      type = "select",
+      values = OptionsPrivate.Private.aurabar_tooltip_areas,
+      width = WeakAuras.normalWidth,
+      name = L["Area"],
+      hidden = function()
+        return not (OptionsPrivate.Private.CanHaveTooltip(data) and data.useTooltip)
+      end,
+      order = 38.1,
+      default = "ALL"
     },
     bar_header = {
       type = "header",
