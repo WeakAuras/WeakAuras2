@@ -7765,6 +7765,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7673771",
+      text = "sandbox_horsefire_classic.m2",
+      value = "sandbox_horsefire_classic.m2",
+     },
+    },
+    text = "sandbox_horsefire",
+    value = "sandbox_horsefire",
+   },
+   {
+    children = {
+     {
       fileId = "7673776",
       text = "sandbox_horsefire_classic.m2",
       value = "sandbox_horsefire_classic.m2",
