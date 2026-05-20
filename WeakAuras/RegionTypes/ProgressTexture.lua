@@ -575,7 +575,7 @@ local funcs = {
   SetCropY = function(self, y)
     self.crop_y = 1 + y
     self:ForAllSpinners(self.foregroundSpinner.SetCropY, self.crop_y)
-    self:ForAllLinears(self.foreground.SetCropX, self.crop_x)
+    self:ForAllLinears(self.foreground.SetCropY, self.crop_y)
   end,
   UpdateEffectiveRotation = function(self)
     self.effectiveTexRotation = self.texAnimationRotation or self.texRotation
@@ -684,7 +684,7 @@ local funcs = {
   SetRegionHeight = function(self, height)
     self.height = height
     self:ForAllSpinners(self.foregroundSpinner.SetHeight, height)
-    self:ForAllSpinners(self.foreground.SetHeight, height)
+    self:ForAllLinears(self.foreground.SetHeight, height)
     self:Scale(self.scalex, self.scaley)
   end,
   Scale = function(self, scalex, scaley)
