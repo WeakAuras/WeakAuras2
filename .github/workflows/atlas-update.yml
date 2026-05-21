@@ -5,14 +5,20 @@ on:
     - cron: "0 10 * * 1"
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   atlasUpdate:
     if: github.repository == 'WeakAuras/WeakAuras2'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: leafo/gh-actions-lua@v12
-      - uses: leafo/gh-actions-luarocks@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+      - uses: leafo/gh-actions-lua@8c9e175e7a3d77e21f809eefbee34a19b858641b # v12
+      - uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
 
       - name: Install Luarocks
         run: |
@@ -30,7 +36,7 @@ jobs:
           rm -rf .luarocks
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
         with:
           branch: update-atlasfiles
           commit-message: Update Atlas File List from wago.tools

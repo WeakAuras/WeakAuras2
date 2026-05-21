@@ -5,13 +5,19 @@ on:
     - cron: "0 10 * * 1"
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   discordUpdate:
     if: github.repository == 'WeakAuras/WeakAuras2'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: '3.10'
       - name: Install discord pip
@@ -26,13 +32,13 @@ jobs:
           DISCORD_ACCESS_TOKEN: ${{ secrets.DISCORD_ACCESS_TOKEN}}
 
       - name: Save Commit Body in Variable
-        uses: Stanzilla/cat@2.0.2
+        uses: Stanzilla/cat@f55d9b16fad5c8e7dfb8b386bc182cf08960ddea # 2.0.2
         id: readCommitBody
         with:
           path: commit-body.txt
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
         with:
           branch: update-discordlist
           commit-message: Update Discord List
@@ -40,4 +46,3 @@ jobs:
           body: ${{ steps.readCommitBody.outputs.text }}
           delete-branch: true
           add-paths: WeakAuras/DiscordList.lua
-

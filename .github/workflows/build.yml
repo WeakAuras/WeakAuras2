@@ -9,21 +9,25 @@ on:
       - "!**-alpha**"
       - "!**-beta**"
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Hack around https://github.com/actions/checkout/issues/290
         run: |
           git fetch --tags --force
 
       - name: Install and run Luacheck
-        uses: nebularg/actions-luacheck@v1
+        uses: nebularg/actions-luacheck@f486e936b0689690db364c7407e2182876293aa8 # v1
         with:
           args: "--no-color -q"
           annotate: warning
@@ -46,7 +50,7 @@ jobs:
           -e "s/--@end-experimental@/--@end-experimental@\]=====\]/" WeakAuras/Init.lua
 
       - name: Create Package
-        uses: BigWigsMods/packager@v2
+        uses: BigWigsMods/packager@5abb6e1ddbd98c818ac5ee3692613cd372619dc9 # v2
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
@@ -54,7 +58,7 @@ jobs:
           WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
 
       - name: Send Status to Discord
-        uses: nebularg/actions-discord-webhook@v1
+        uses: nebularg/actions-discord-webhook@20353b77a76032fbc5b5a7a7e5a689d199b80f1e # v1
         with:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
           status: ${{ job.status }}

@@ -8,21 +8,25 @@ on:
       - "**-alpha**"
       - "**-beta**"
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Hack around https://github.com/actions/checkout/issues/290
         run: |
           git fetch --tags --force
 
       - name: Install and run Luacheck
-        uses: nebularg/actions-luacheck@v1
+        uses: nebularg/actions-luacheck@f486e936b0689690db364c7407e2182876293aa8 # v1
         with:
           args: "--no-color -q"
           annotate: warning
@@ -41,7 +45,7 @@ jobs:
 
       - name: Create Package
         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-        uses: BigWigsMods/packager@master
+        uses: BigWigsMods/packager@12e08b28e30e3df84cc508525ebfcdf3818ad86c # master
         with:
           args: -g retail
         env:
@@ -52,18 +56,18 @@ jobs:
 
       - name: Create Artifact
         if: github.event_name == 'push' && !contains(github.ref, 'refs/tags/')
-        uses: BigWigsMods/packager@master
+        uses: BigWigsMods/packager@12e08b28e30e3df84cc508525ebfcdf3818ad86c # master
         with:
           args: -zg retail
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: WeakAuras-DF
           path: .release/*.zip
           archive: false
 
       - name: Send Status to Discord
-        uses: nebularg/actions-discord-webhook@v1
+        uses: nebularg/actions-discord-webhook@20353b77a76032fbc5b5a7a7e5a689d199b80f1e # v1
         with:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
           status: ${{ job.status }}

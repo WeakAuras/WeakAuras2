@@ -5,6 +5,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
 jobs:
   release-notification-output:
     runs-on: ubuntu-latest
@@ -15,9 +18,10 @@ jobs:
 
     steps:
       - name: Clone Project
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0  # gets git history for changelogs
+          persist-credentials: false
 
       - name: Hack around https://github.com/actions/checkout/issues/290
         run: |
@@ -28,7 +32,7 @@ jobs:
         run: ./generate_changelog.sh
 
       - name: Save Changelog in Variable
-        uses: Stanzilla/cat@2.0.2
+        uses: Stanzilla/cat@f55d9b16fad5c8e7dfb8b386bc182cf08960ddea # 2.0.2
         id: readChanglog
         with:
           path: CHANGELOG.md
@@ -38,7 +42,7 @@ jobs:
         run: /usr/bin/env python3 .github/scripts/generate_twitter_post.py
 
       - name: Save Twitter Post in Variable
-        uses: Stanzilla/cat@2.0.2
+        uses: Stanzilla/cat@f55d9b16fad5c8e7dfb8b386bc182cf08960ddea # 2.0.2
         id: readTweet
         with:
             path: twitter_post.txt
@@ -53,7 +57,7 @@ jobs:
     steps:
       - name: Send Discord Notification
         id: discord
-        uses: tsickert/discord-webhook@v7.0.0
+        uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645 # v7.0.0
         if: success()
         with:
           webhook-url: ${{ secrets.RELEASE_WEBHOOK_URL }}
@@ -68,7 +72,7 @@ jobs:
     steps:
       - name: Send Twitter Notification
         id: twitter
-        uses: nearform-actions/github-action-notify-twitter@v1
+        uses: nearform-actions/github-action-notify-twitter@b3fa623c2f320117e8a08e20564c4ce0a5e67930 # v1
         with:
           message: ${{needs.release-notification-output.outputs.tweetText}}
           twitter-app-key: ${{ secrets.TWITTER_API_KEY }}
@@ -83,7 +87,7 @@ jobs:
     steps:
       - name: Send Mastodon Notification
         id: mastodon
-        uses: cbrgm/mastodon-github-action@v2.2.0
+        uses: cbrgm/mastodon-github-action@776364a15dd1171530479600c75363f7cbc89ef5 # v2.2.0
         with:
           access-token: ${{ secrets.MASTODON_ACCESS_TOKEN }}
           url: ${{ secrets.MASTODON_URL }}
@@ -96,7 +100,7 @@ jobs:
     steps:
       - name: Send Bluesky Notification
         id: bluesky
-        uses: myConsciousness/bluesky-post@v5
+        uses: myConsciousness/bluesky-post@96827d0a9604cb228b11b3095f6961196efba4a0 # v5
         with:
           text: ${{needs.release-notification-output.outputs.tweetText}}
           identifier: ${{ secrets.BLUESKY_IDENTIFIER }}

@@ -4,15 +4,21 @@ on:
   issues:
     types: [opened, edited]
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   auto_close_issues:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
 
       - name: "Automatically close issues that don't follow the issue template"
-        uses: damccorm/tag-ur-it@master
+        uses: damccorm/tag-ur-it@4689c0ef99e78276b2ff4851db5deec57bb3f615 # master
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           configuration-path: "./.github/issue-rules.yml"
