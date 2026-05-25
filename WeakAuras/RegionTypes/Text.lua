@@ -366,7 +366,7 @@ local function modify(parent, region, data)
 
   function region:SetTextHeight(size)
     local fontPath = SharedMedia:Fetch("font", data.font);
-    region.text:SetFont(fontPath, size, data.outline);
+    region.text:SetFont(fontPath, size, outline);
     region.text:SetTextHeight(size)
   end
 
@@ -394,7 +394,7 @@ local function fallbackmodify(parent, region, data)
   Private.regionPrototype.modify(parent, region, data);
   local text = region.text;
 
-  text:SetFont(STANDARD_TEXT_FONT, data.fontSize, data.outline and "OUTLINE" or nil);
+  text:SetFont(STANDARD_TEXT_FONT, data.fontSize, data.outline and "OUTLINE" or "");
   if text:GetFont() then
     text:SetText(WeakAuras.L["Region type %s not supported"]:format(data.regionType));
   end
