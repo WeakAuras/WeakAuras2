@@ -1062,6 +1062,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7813598",
+      text = "babyfaeriedragonblackclassic.m2",
+      value = "babyfaeriedragonblackclassic.m2",
+     },
+    },
+    text = "babyfaeriedragonblackclassic",
+    value = "babyfaeriedragonblackclassic",
+   },
+   {
+    children = {
+     {
       fileId = "122988",
       text = "babyhawkstrider.m2",
       value = "babyhawkstrider.m2",
@@ -1263,6 +1274,27 @@ WeakAuras.ModelPaths = {
     },
     text = "bearmountblizzard2",
     value = "bearmountblizzard2",
+   },
+   {
+    children = {
+     {
+      fileId = "7503162",
+      text = "bearmountutility_anvilclassic.m2",
+      value = "bearmountutility_anvilclassic.m2",
+     },
+     {
+      fileId = "7503166",
+      text = "bearmountutility_bagclassic.m2",
+      value = "bearmountutility_bagclassic.m2",
+     },
+     {
+      fileId = "7503165",
+      text = "bearmountutilityclassic.m2",
+      value = "bearmountutilityclassic.m2",
+     },
+    },
+    text = "bearmountutilityclassic",
+    value = "bearmountutilityclassic",
    },
    {
     children = {
@@ -2213,6 +2245,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7726443",
+      text = "dragonchromaticmount_classic.m2",
+      value = "dragonchromaticmount_classic.m2",
+     },
+    },
+    text = "dragonchromaticmount_classic",
+    value = "dragonchromaticmount_classic",
+   },
+   {
+    children = {
+     {
       fileId = "123500",
       text = "dragondarkshade.m2",
       value = "dragondarkshade.m2",
@@ -3084,6 +3127,11 @@ WeakAuras.ModelPaths = {
       fileId = "538457",
       text = "felhippogryphmount.m2",
       value = "felhippogryphmount.m2",
+     },
+     {
+      fileId = "7129624",
+      text = "felhippogryphmount_classic.m2",
+      value = "felhippogryphmount_classic.m2",
      },
     },
     text = "felhippogryph",
@@ -9672,6 +9720,17 @@ WeakAuras.ModelPaths = {
     },
     text = "waterelemental",
     value = "waterelemental",
+   },
+   {
+    children = {
+     {
+      fileId = "7672015",
+      text = "wealthcattoy_classic.m2",
+      value = "wealthcattoy_classic.m2",
+     },
+    },
+    text = "wealthcattoy_classic",
+    value = "wealthcattoy_classic",
    },
    {
     children = {
