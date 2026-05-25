@@ -844,7 +844,7 @@ local function ConstructTextEditor(frame)
   editorLine:SetAutoFocus(false)
 
   local editorLineText = group.frame:CreateFontString(nil, "OVERLAY")
-  editorLineText:SetFont(STANDARD_TEXT_FONT, 10)
+  editorLineText:SetFont(STANDARD_TEXT_FONT, 10, "")
   editorLineText:SetTextColor(1, 1, 1)
   editorLineText:SetText(L["Line"])
   editorLineText:SetPoint("RIGHT", editorLine, "LEFT", -8, 0)

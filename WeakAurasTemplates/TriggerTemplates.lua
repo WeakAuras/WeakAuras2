@@ -1758,7 +1758,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
   local batchModeLabel = CreateFrame("Frame", "batchModeLabel", newView.frame);
   batchModeLabel:SetSize(300, 20);
   local batchModeLabelString = batchModeLabel:CreateFontString(nil, "ARTWORK");
-  batchModeLabelString:SetFont(STANDARD_TEXT_FONT, 10); -- "OUTLINE"
+  batchModeLabelString:SetFont(STANDARD_TEXT_FONT, 10, ""); -- "OUTLINE"
   batchModeLabelString:SetTextColor(1,1,1,1);
   batchModeLabelString:SetText(L["Hold CTRL to create multiple auras at once"]);
   batchModeLabelString:SetJustifyH("LEFT")
