@@ -7,7 +7,6 @@ Private.DiscordList = {
   [=[AcidWeb]=],
   [=[aelen]=],
   [=[Azortharion]=],
-  [=[BadBrain]=],
   [=[Bart]=],
   [=[Boneshock]=],
   [=[Causese]=],
