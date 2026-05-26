@@ -27,7 +27,7 @@ jobs:
           git fetch --tags --force
 
       - name: Install and run Luacheck
-        uses: nebularg/actions-luacheck@f486e936b0689690db364c7407e2182876293aa8 # v1
+        uses: nebularg/actions-luacheck@d4137dd840545b28521ed21931e06913d93c0bc1 # v1
         with:
           args: "--no-color -q"
           annotate: warning
