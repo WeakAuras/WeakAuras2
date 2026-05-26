@@ -67,7 +67,7 @@ jobs:
           archive: false
 
       - name: Send Status to Discord
-        uses: nebularg/actions-discord-webhook@20353b77a76032fbc5b5a7a7e5a689d199b80f1e # v1
+        uses: nebularg/actions-discord-webhook@633ae6b03882743988dbc992eb147818ca96a93e # v1
         with:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
           status: ${{ job.status }}
