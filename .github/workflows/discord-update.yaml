@@ -32,7 +32,7 @@ jobs:
           DISCORD_ACCESS_TOKEN: ${{ secrets.DISCORD_ACCESS_TOKEN}}
 
       - name: Save Commit Body in Variable
-        uses: Stanzilla/cat@f55d9b16fad5c8e7dfb8b386bc182cf08960ddea # 2.0.2
+        uses: Stanzilla/cat@4737983ab91e824006d3763bd443cf4c066c9786 # 2.0.2
         id: readCommitBody
         with:
           path: commit-body.txt
