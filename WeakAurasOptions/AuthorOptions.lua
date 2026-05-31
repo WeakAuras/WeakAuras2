@@ -555,7 +555,7 @@ local function setUser(data, option)
       OptionsPrivate.Private.TimeMachine:Append({
         uid = childData.uid,
         actionType = "set",
-        path = expandUserPath(data, optionData.path),
+        path = expandUserPath(childData, optionData.path),
         payload = value
       })
     end
@@ -633,7 +633,7 @@ local function setUserNum(data, option)
         OptionsPrivate.Private.TimeMachine:Append({
           uid = childData.uid,
           actionType = "set",
-          path = expandUserPath(data, optionData.path),
+          path = expandUserPath(childData, optionData.path),
           payload = num
         })
       end
@@ -672,7 +672,7 @@ local function setUserColor(data, option)
       OptionsPrivate.Private.TimeMachine:Append({
         uid = childData.uid,
         actionType = "set",
-        path = expandUserPath(data, optionData.path),
+        path = expandUserPath(childData, optionData.path),
         payload = color
       })
     end
@@ -2656,7 +2656,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
               OptionsPrivate.Private.TimeMachine:Append({
                 uid = childData.uid,
                 actionType = "set",
-                path = expandUserPath(data, optionData.path),
+                path = expandUserPath(childData, optionData.path),
                 payload = {},
               })
             end
@@ -2680,7 +2680,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
                 local childConfigList = optionData.config[childOption.key]
                 local childData = optionData.data
                 if childOption.limitType == "none" or #childConfigList < childOption.size then
-                  local expandedPath = expandUserPath(data, optionData.path)
+                  local expandedPath = expandUserPath(childData, optionData.path)
                   -- expandUserPath adds the page at the end, which we don't need here
                   expandedPath[#expandedPath] = nil
                   local insertPos = #childConfigList + 1
@@ -2731,7 +2731,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
                 local childData = optionData.data
                 local page = getPage(id, optionData.path)
                 if #childConfigList ~= 0 then
-                  local expandedPath = expandUserPath(data, optionData.path)
+                  local expandedPath = expandUserPath(childData, optionData.path)
                   -- expandUserPath adds the page at the end, which we don't need here
                   expandedPath[#expandedPath] = nil
                   OptionsPrivate.Private.TimeMachine:Append({
@@ -2768,7 +2768,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
                 local childData = optionData.data
                 local childPage = getPage(id, optionData.path, #childConfigList)
                 if childConfigList[childPage] then
-                  local expandedPath = expandUserPath(data, optionData.path)
+                  local expandedPath = expandUserPath(childData, optionData.path)
                   -- expandUserPath adds the page at the end, which we don't need here
                   expandedPath[#expandedPath] = nil
                   OptionsPrivate.Private.TimeMachine:Append({
@@ -2807,7 +2807,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
                 local childData = optionData.data
                 local childPage = getPage(id, optionData.path, #childConfigList)
                 if childConfigList[childPage] then
-                  local expandedPath = expandUserPath(data, optionData.path)
+                  local expandedPath = expandUserPath(childData, optionData.path)
                   -- expandUserPath adds the page at the end, which we don't need here
                   expandedPath[#expandedPath] = nil
                   OptionsPrivate.Private.TimeMachine:Append({
