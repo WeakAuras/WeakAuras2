@@ -271,7 +271,7 @@ local function modifyThumbnail(parent, region, data)
   model:SetFrameStrata(region:GetParent():GetFrameStrata());
   model:SetWidth(region:GetWidth() - 2);
   model:SetHeight(region:GetHeight() - 2);
-  model:SetPoint("center", region, "center");
+  model:SetPoint("CENTER", region, "CENTER");
   WeakAuras.SetModel(model, nil, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
   model:SetScript("OnShow", function()
     WeakAuras.SetModel(model, nil, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
@@ -292,6 +292,7 @@ local function modifyThumbnail(parent, region, data)
       rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
       data.model_st_us / 1000);
   else
+    model:ClearTransform();
     model:SetPosition(data.model_z, data.model_x, data.model_y);
     model:SetFacing(rad(data.rotation));
   end
