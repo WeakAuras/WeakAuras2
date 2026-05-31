@@ -896,6 +896,12 @@ function WeakAuras.ShowOptions(msg)
 
   if firstLoad then
     frame:ShowTip()
+    for _, font in pairs(AceGUIWidgetLSMlists.font) do
+      local fs = frame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
+      local _, size, outline= fs:GetFont()
+      fs:SetPoint("TOP", UIParent, "TOP")
+      fs:SetFont(font, size, outline)
+    end
   end
 
 end

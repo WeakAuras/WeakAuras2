@@ -16,6 +16,8 @@ end
 
 local dynamicTextInputs = {}
 
+
+
 local function createOptions(id, data)
   local function hideCustomTextOption()
     if OptionsPrivate.Private.ContainsCustomPlaceHolder(data.displayText) then
