@@ -281,9 +281,9 @@ local function createOptions(id, data)
       width = WeakAuras.doubleWidth,
       name = function()
         if OmniCC then
-          return L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"]
+          return L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings."]
         elseif ElvUI then
-          return L["The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"]
+          return L["The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings."]
         else
           return L["Cooldown Numbers might be added by WoW. You can configure these in the game settings."]
         end

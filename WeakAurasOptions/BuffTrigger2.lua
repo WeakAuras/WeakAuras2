@@ -28,7 +28,7 @@ local function getAuraMatchesList(name, showSpellIdRecommendation)
     local playerSpells = {}
     local otherSpells = {}
 
-    for id, _ in pairs(ids) do
+    for id in pairs(ids) do
       numMatches = numMatches + 1
 
       if WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(id) then

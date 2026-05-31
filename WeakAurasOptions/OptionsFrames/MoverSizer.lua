@@ -4,7 +4,7 @@ local AddonName = ...
 ---@class OptionsPrivate
 local OptionsPrivate = select(2, ...)
 
-local createCenterLines = true --- Creates only the middle lines
+local createCenterLines = true -- Creates only the middle lines
 local showNormalLines = false -- Show all alignment lines all the time
 local highlightColor = { 1, 1, 0 } -- The color of lines that are we are currently aligned too
 local gridHighlightColor = { 0.3, 1, 0.3}
@@ -15,7 +15,7 @@ local gridColor = { 0.3, 0.6, 0.3 } -- The color of grid lines, if they aren't m
 local pairs = pairs
 
 -- WoW APIs
-local IsShiftKeyDown, CreateFrame =  IsShiftKeyDown, CreateFrame
+local IsShiftKeyDown, CreateFrame = IsShiftKeyDown, CreateFrame
 
 ---@class WeakAuras
 local WeakAuras = WeakAuras

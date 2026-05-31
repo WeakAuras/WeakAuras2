@@ -109,7 +109,7 @@ local function createOptions(parentData, data, index, subIndex)
       max = 360,
       bigStep = 1,
      },
-     circularTextureCrop_x = {
+    circularTextureCrop_x = {
       type = "range",
       control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,

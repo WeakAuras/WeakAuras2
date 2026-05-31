@@ -3258,7 +3258,7 @@ Private.group_types = {
 
 ---@type table<string, string>
 Private.difficulty_types = {
-  none   = L["None"],
+  none = L["None"],
   normal = PLAYER_DIFFICULTY1,
   heroic = PLAYER_DIFFICULTY2,
 }

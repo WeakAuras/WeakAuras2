@@ -1875,5 +1875,3 @@ Private.event_prototypes["Boss Mod Timer"] = {
   automaticrequired = true,
 }
 Private.category_event_prototype.addons["Boss Mod Timer"] = L["Boss Mod Timer"]
-
-

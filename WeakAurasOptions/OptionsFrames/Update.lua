@@ -364,14 +364,14 @@ local function BuildUidMap(data, children, type)
 
     -- Handle anchorFrameFrame
     if data.anchorFrameType == "SELECTFRAME"
-     and data.anchorFrameFrame
-     and data.anchorFrameFrame:sub(1, 10) == "WeakAuras:"
-  then
-    local target = data.anchorFrameFrame:sub(11)
-    if idToUid[target] then
-      uidMap.map[data.uid].anchorFrameFrame = idToUid[target]
+      and data.anchorFrameFrame
+      and data.anchorFrameFrame:sub(1, 10) == "WeakAuras:"
+    then
+      local target = data.anchorFrameFrame:sub(11)
+      if idToUid[target] then
+        uidMap.map[data.uid].anchorFrameFrame = idToUid[target]
+      end
     end
-  end
 
   end
 

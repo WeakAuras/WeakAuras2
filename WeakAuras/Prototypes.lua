@@ -11169,9 +11169,6 @@ Private.event_prototypes = {
         tinsert(events, "PLAYER_REGEN_DISABLED")
         tinsert(events, "PLAYER_ENTERING_WORLD")
       end
-      if trigger.use_pvpflagged ~= nil or trigger.use_afk ~= nil then
-        tinsert(events, "PLAYER_FLAGS_CHANGED")
-      end
       if trigger.use_pvpflagged ~= nil then
         tinsert(events, "UNIT_FACTION")
         tinsert(events, "ZONE_CHANGED")
@@ -11191,6 +11188,11 @@ Private.event_prototypes = {
       end
       local unit_events = {}
       local pet_unit_events = {}
+      if trigger.use_pvpflagged ~= nil
+         or trigger.use_afk ~= nil
+      then
+        tinsert(unit_events, "PLAYER_FLAGS_CHANGED")
+      end
       if trigger.use_vehicle ~= nil then
         if WeakAuras.IsClassicOrTBC() then
           tinsert(unit_events, "UNIT_FLAGS")
@@ -11952,7 +11954,7 @@ Private.event_prototypes = {
         sortOrder = function()
           local discovered_currencies_sorted = Private.GetDiscoveredCurrenciesSorted()
           local sortOrder = {}
-          for key, value in pairs(Private.GetDiscoveredCurrencies()) do
+          for key in pairs(Private.GetDiscoveredCurrencies()) do
             tinsert(sortOrder, key)
           end
           table.sort(sortOrder, function(aKey, bKey)
