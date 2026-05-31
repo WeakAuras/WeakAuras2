@@ -1968,6 +1968,9 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
           return
         end
 
+        data.parent = group.data.id
+        WeakAuras.Add(data)
+
         local children = group.data.controlledChildren;
         local index = target:GetGroupOrder();
         if (ensure(children, index, target.data.id)) then
@@ -1978,8 +1981,7 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
           -- move source into group as the first child
           tinsert(children, 1, data.id);
         end
-        data.parent = group.data.id;
-        WeakAuras.Add(data);
+
         WeakAuras.Add(group.data);
         OptionsPrivate.Private.AddParents(group.data)
         WeakAuras.NewDisplayButton(data);
