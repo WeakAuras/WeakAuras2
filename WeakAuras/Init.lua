@@ -683,7 +683,7 @@ end
 
 ---@type fun(regionType: string, createOptions: function, icon: string|function, displayName: string, createThumbnail: function?, modifyThumbnail: function?, description: string?, templates: table?, getAnchors: function?)
 ---@diagnostic disable-next-line: duplicate-set-field
-function Private.RegisterRegionOptions(_, _ , _ ,_ )
+function Private.RegisterRegionOptions(_, _ , _ ,_)
 end
 
 function Private.StartProfileSystem(_)

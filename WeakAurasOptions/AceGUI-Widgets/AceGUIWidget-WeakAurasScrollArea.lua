@@ -8,7 +8,7 @@ local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
-local pairs, assert, type = pairs, assert, type
+local pairs = pairs
 local min, max, floor = math.min, math.max, math.floor
 
 -- WoW APIs

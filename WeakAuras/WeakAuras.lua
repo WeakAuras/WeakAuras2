@@ -402,7 +402,6 @@ WeakAuras.UnitIsPet = function(unit)
 end
 
 local playerLevel = UnitLevel("player");
-local currentInstanceType = "none"
 
 -- Custom Action Functions, keyed on id, "init" / "start" / "finish"
 Private.customActionsFunctions = {};
@@ -2718,7 +2717,7 @@ function Private.AddMany(tbl, takeSnapshots)
     else
       if next(WeakAuras.LoadFromArchive("Repository", "migration").stores) ~= nil then
         C_Timer.After(1, function()
-          prettyPrint(L["WeakAuras has detected empty settings. If this is unexpected, ask for assitance on https://discord.gg/weakauras."])
+          prettyPrint(L["WeakAuras has detected empty settings. If this is unexpected, ask for assistance on https://discord.gg/weakauras."])
         end)
       end
     end
@@ -3567,7 +3566,7 @@ end
 function Private.SetAllStatesHidden(id, triggernum)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   local changed = false
-  for cloneId, state in pairs(triggerState) do
+  for cloneId in pairs(triggerState) do
     changed = true
     triggerState[cloneId] = nil
   end
@@ -3576,7 +3575,7 @@ end
 
 function Private.SetAllStatesHiddenExcept(id, triggernum, list)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-  for cloneId, state in  pairs(triggerState) do
+  for cloneId in pairs(triggerState) do
     if (not (list[cloneId])) then
       triggerState[cloneId] = nil
     end
@@ -6032,7 +6031,7 @@ local function tryAnchorAgain()
   postPonedAnchors = {};
   anchorTimer = nil;
 
-  for id, _ in pairs(delayed) do
+  for id in pairs(delayed) do
     local data = WeakAuras.GetData(id);
     local region = WeakAuras.GetRegion(id);
     if (data and region) then

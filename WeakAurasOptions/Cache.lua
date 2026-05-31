@@ -23,7 +23,7 @@ local bestIcon = {}
 -- Builds a cache of name/icon pairs from existing spell data
 -- This is a rather slow operation, so it's only done once, and the result is subsequently saved
 function spellCache.Build()
-  if not cache  then
+  if not cache then
     error("spellCache has not been loaded. Call WeakAuras.spellCache.Load(...) first.")
   end
 
@@ -106,7 +106,8 @@ function spellCache.Build()
       coroutine.yield(0.01, "spells")
     end
 
-    if WeakAuras.IsCataOrMistsOrRetail() then
+    -- achievements got introduced in 3.0.2, so we can skip this step for TBC and Classic
+    if WeakAuras.IsWrathOrCataOrMistsOrRetail() then
       for _, category in pairs(GetCategoryList()) do
         local total = GetCategoryNumAchievements(category, true)
         for i = 1, total do
@@ -195,7 +196,6 @@ function spellCache.GetSpellsMatching(name)
       local result = {}
       for spell, icon in cache[name].spells:gmatch("(%d+)=(%d+)") do
         local spellId = tonumber(spell)
-        local iconId = tonumber(icon)
         result[spellId] = icon
       end
       return result
@@ -294,7 +294,7 @@ function spellCache.BestKeyMatch(nearkey)
       partialMatches[key] = value;
     end
   end
-  for key, value in pairs(partialMatches) do
+  for key in pairs(partialMatches) do
     local distance = Lev(nearkey, key);
     if(distance < bestDistance) then
       bestKey = key;

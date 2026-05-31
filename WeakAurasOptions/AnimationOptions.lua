@@ -643,8 +643,8 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Color"],
         order = 68.2,
         hidden = function()
-           return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Color)
-          end
+          return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Color)
+        end
       },
       main_colorType = {
         type = "select",
@@ -892,8 +892,8 @@ function OptionsPrivate.GetAnimationOptions(data)
         order = 87,
         values = anim_rotate_types,
         hidden = function()
-           return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).SetAnimRotation)
-          end
+          return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).SetAnimRotation)
+        end
       },
       -- texteditor added below
       finish_rotate = {

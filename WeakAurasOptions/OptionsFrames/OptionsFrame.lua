@@ -6,12 +6,12 @@ local OptionsPrivate = select(2, ...)
 
 -- Lua APIs
 local tinsert, tremove, wipe = table.insert, table.remove, wipe
-local pairs, type, error = pairs, type, error
+local pairs, type = pairs, type
 local _G = _G
 
 -- WoW APIs
-local GetScreenWidth, GetScreenHeight, CreateFrame, UnitName
-  = GetScreenWidth, GetScreenHeight, CreateFrame, UnitName
+local GetScreenWidth, GetScreenHeight, CreateFrame
+  = GetScreenWidth, GetScreenHeight, CreateFrame
 
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -186,7 +186,7 @@ function OptionsPrivate.CreateFrame()
       OptionsPrivate.Private.personalRessourceDisplayFrame:OptionsClosed()
     end
 
-    if frame.dynamicTextCodesFrame  then
+    if frame.dynamicTextCodesFrame then
       frame.dynamicTextCodesFrame:Hide()
     end
 

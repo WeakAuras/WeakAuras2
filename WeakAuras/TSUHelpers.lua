@@ -32,7 +32,7 @@ end
 ---@type fun(states: states): boolean
 local removeAll = function(states)
   local changed = false
-  for cloneId, state in pairs(states) do
+  for cloneId in pairs(states) do
     states[cloneId] = nil
     changed = true
   end

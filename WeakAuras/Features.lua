@@ -169,4 +169,3 @@ Features:Register({
 Private.DebugPrint = Features:Wrap("debug", function(...)
   print("|cff00d3ffWeakAuras-Debug:|r ", ...)
 end)
-
