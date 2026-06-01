@@ -90,6 +90,31 @@ function Private.InitializeEncounterAndZoneLists()
       }
     },
     {
+      L["Zul'Gurub"],
+      {
+        { L["High Priest Venoxis"], 784 },
+        { L["High Priestess Jeklik"], 785 },
+        { L["High Priestess Mar'li"], 786 },
+        { L["Bloodlord Mandokir"], 787 },
+        { L["Edge of Madness"], 788 },
+        { L["High Priest Thekal"], 789 },
+        { L["Gahz'ranka"], 790 },
+        { L["High Priestess Arlokk"], 791 },
+        { L["Jin'do the Hexxer"], 792 },
+        { L["Hakkar"], 793 }
+      }
+    },
+    {
+      L["Trial of the Crusader"],
+      {
+        { L["Northrend Beasts"], 629 },
+        { L["Lord Jaraxxus"], 633 },
+        { L["Faction Champions"], 637 },
+        { L["Val'kyr Twins"], 641 },
+        { L["Anub'arak"], 645 },
+      }
+    },
+    {
       L["Vault of Archavon"],
       {
         { L["Archavon the Stone Watcher"], 772 },
