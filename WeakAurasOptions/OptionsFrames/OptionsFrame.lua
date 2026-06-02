@@ -122,9 +122,8 @@ function OptionsPrivate.CreateFrame()
   frame:SetFrameStrata("DIALOG")
   -- Workaround classic issue
 
-  local serverTime = C_DateAndTime.GetServerTimeLocal()
-  if serverTime >= 1748736000 -- June 1.
-     and serverTime <= 1751328000 -- July 1.
+  local serverDate = C_DateAndTime.GetCurrentCalendarTime()
+  if serverDate.month == 6
   then
     WeakAurasOptionsPortrait:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round_pride.tga]])
   else
