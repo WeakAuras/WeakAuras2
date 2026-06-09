@@ -602,6 +602,11 @@ local function setNum(data, option, key, required)
         })
       end
     else
+      local num = tonumber(value)
+      if not num or math.abs(num) == math.huge or tostring(num) == "nan" then
+        OptionsPrivate.Private.TimeMachine:Reject()
+        return
+      end
       for id, optionData in pairs(option.references) do
         local childOption = optionData.options[optionData.index]
         local childData = optionData.data
@@ -609,7 +614,7 @@ local function setNum(data, option, key, required)
           uid = childData.uid,
           actionType = "set",
           path = expandPath(optionData.path, key),
-          payload = value
+          payload = num
         })
       end
     end
