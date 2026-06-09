@@ -600,7 +600,7 @@ if not WeakAuras.ToggleOptions then
 
       OptionsPrivate.Private.callbacks:RegisterCallback("ScanForLoads", AfterScanForLoads)
       OptionsPrivate.Private.callbacks:RegisterCallback("AboutToDelete", OnAboutToDelete)
-      OptionsPrivate.Private.callbacks:RegisterCallback("Rename", OnRename)
+      OptionsPrivate.Private.callbacks:RegisterCallback("RenameFirst", OnRename)
       OptionsPrivate.Private.OpenUpdate = OptionsPrivate.OpenUpdate
     end
 
