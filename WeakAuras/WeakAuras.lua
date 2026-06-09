@@ -2337,7 +2337,8 @@ function WeakAuras.Rename(data, newid)
 
   Private.ProfileRenameAura(oldid, newid);
 
-
+  -- The options code needs to handle the rename before the Anchor code
+  Private.callbacks:Fire("RenameFirst", data.uid, oldid, newid)
   Private.callbacks:Fire("Rename", data.uid, oldid, newid)
 
   -- TODO: This should not be necessary
