@@ -1062,6 +1062,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7896900",
+      text = "babyfaeriedragon_pink.m2",
+      value = "babyfaeriedragon_pink.m2",
+     },
+    },
+    text = "babyfaeriedragon_pink",
+    value = "babyfaeriedragon_pink",
+   },
+   {
+    children = {
+     {
       fileId = "7813598",
       text = "babyfaeriedragonblackclassic.m2",
       value = "babyfaeriedragonblackclassic.m2",
@@ -8680,6 +8691,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7348903",
+      text = "springpandamount.m2",
+      value = "springpandamount.m2",
+     },
+    },
+    text = "springpandamount",
+    value = "springpandamount",
+   },
+   {
+    children = {
+     {
       fileId = "126061",
       text = "squirrel.m2",
       value = "squirrel.m2",
@@ -14881,6 +14903,116 @@ WeakAuras.ModelPaths = {
         fileId = "137996",
         text = "helm_eyepatch_a_02_bem.m2",
         value = "helm_eyepatch_a_02_bem.m2",
+       },
+       {
+        fileId = "8026710",
+        text = "helm_flowercrown_a_01_be_f.m2",
+        value = "helm_flowercrown_a_01_be_f.m2",
+       },
+       {
+        fileId = "8026711",
+        text = "helm_flowercrown_a_01_be_m.m2",
+        value = "helm_flowercrown_a_01_be_m.m2",
+       },
+       {
+        fileId = "8026712",
+        text = "helm_flowercrown_a_01_dr_f.m2",
+        value = "helm_flowercrown_a_01_dr_f.m2",
+       },
+       {
+        fileId = "8026713",
+        text = "helm_flowercrown_a_01_dr_m.m2",
+        value = "helm_flowercrown_a_01_dr_m.m2",
+       },
+       {
+        fileId = "8026714",
+        text = "helm_flowercrown_a_01_dw_f.m2",
+        value = "helm_flowercrown_a_01_dw_f.m2",
+       },
+       {
+        fileId = "8026715",
+        text = "helm_flowercrown_a_01_dw_m.m2",
+        value = "helm_flowercrown_a_01_dw_m.m2",
+       },
+       {
+        fileId = "8026716",
+        text = "helm_flowercrown_a_01_gn_f.m2",
+        value = "helm_flowercrown_a_01_gn_f.m2",
+       },
+       {
+        fileId = "8026717",
+        text = "helm_flowercrown_a_01_gn_m.m2",
+        value = "helm_flowercrown_a_01_gn_m.m2",
+       },
+       {
+        fileId = "8026718",
+        text = "helm_flowercrown_a_01_go_f.m2",
+        value = "helm_flowercrown_a_01_go_f.m2",
+       },
+       {
+        fileId = "8026719",
+        text = "helm_flowercrown_a_01_go_m.m2",
+        value = "helm_flowercrown_a_01_go_m.m2",
+       },
+       {
+        fileId = "8026720",
+        text = "helm_flowercrown_a_01_hu_f.m2",
+        value = "helm_flowercrown_a_01_hu_f.m2",
+       },
+       {
+        fileId = "8026721",
+        text = "helm_flowercrown_a_01_hu_m.m2",
+        value = "helm_flowercrown_a_01_hu_m.m2",
+       },
+       {
+        fileId = "8026722",
+        text = "helm_flowercrown_a_01_ni_f.m2",
+        value = "helm_flowercrown_a_01_ni_f.m2",
+       },
+       {
+        fileId = "8026723",
+        text = "helm_flowercrown_a_01_ni_m.m2",
+        value = "helm_flowercrown_a_01_ni_m.m2",
+       },
+       {
+        fileId = "8026724",
+        text = "helm_flowercrown_a_01_or_f.m2",
+        value = "helm_flowercrown_a_01_or_f.m2",
+       },
+       {
+        fileId = "8026725",
+        text = "helm_flowercrown_a_01_or_m.m2",
+        value = "helm_flowercrown_a_01_or_m.m2",
+       },
+       {
+        fileId = "8026728",
+        text = "helm_flowercrown_a_01_sc_f.m2",
+        value = "helm_flowercrown_a_01_sc_f.m2",
+       },
+       {
+        fileId = "8026729",
+        text = "helm_flowercrown_a_01_sc_m.m2",
+        value = "helm_flowercrown_a_01_sc_m.m2",
+       },
+       {
+        fileId = "8026730",
+        text = "helm_flowercrown_a_01_ta_f.m2",
+        value = "helm_flowercrown_a_01_ta_f.m2",
+       },
+       {
+        fileId = "8026731",
+        text = "helm_flowercrown_a_01_ta_m.m2",
+        value = "helm_flowercrown_a_01_ta_m.m2",
+       },
+       {
+        fileId = "8026732",
+        text = "helm_flowercrown_a_01_tr_f.m2",
+        value = "helm_flowercrown_a_01_tr_f.m2",
+       },
+       {
+        fileId = "8026733",
+        text = "helm_flowercrown_a_01_tr_m.m2",
+        value = "helm_flowercrown_a_01_tr_m.m2",
        },
        {
         fileId = "137998",
