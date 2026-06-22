@@ -8702,6 +8702,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "8123814",
+      text = "springpandamount_classic.m2",
+      value = "springpandamount_classic.m2",
+     },
+    },
+    text = "springpandamount_classic",
+    value = "springpandamount_classic",
+   },
+   {
+    children = {
+     {
       fileId = "126061",
       text = "squirrel.m2",
       value = "squirrel.m2",
