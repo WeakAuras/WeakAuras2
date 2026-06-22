@@ -45,7 +45,7 @@ jobs:
 
       - name: Create Package
         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-        uses: BigWigsMods/packager@12e08b28e30e3df84cc508525ebfcdf3818ad86c # master
+        uses: BigWigsMods/packager@36b4c3b7b7bd17c835ad8c83fed4976c067edfbe # master
         with:
           args: -g retail
         env:
@@ -56,7 +56,7 @@ jobs:
 
       - name: Create Artifact
         if: github.event_name == 'push' && !contains(github.ref, 'refs/tags/')
-        uses: BigWigsMods/packager@12e08b28e30e3df84cc508525ebfcdf3818ad86c # master
+        uses: BigWigsMods/packager@36b4c3b7b7bd17c835ad8c83fed4976c067edfbe # master
         with:
           args: -zg retail
 

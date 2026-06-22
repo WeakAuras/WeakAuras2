@@ -50,7 +50,7 @@ jobs:
           -e "s/--@end-experimental@/--@end-experimental@\]=====\]/" WeakAuras/Init.lua
 
       - name: Create Package
-        uses: BigWigsMods/packager@12e08b28e30e3df84cc508525ebfcdf3818ad86c # v2
+        uses: BigWigsMods/packager@36b4c3b7b7bd17c835ad8c83fed4976c067edfbe # v2
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
