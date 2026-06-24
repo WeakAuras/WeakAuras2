@@ -1947,6 +1947,108 @@ local function GetCustomCode(data, path)
   return data;
 end
 
+local function AddCodeOptionTimeMachine(args, data, name, prefix, url, order, hiddenFunc, path, encloseInFunction, options)
+  options = options and CopyTable(options) or {}
+  options.extraFunctions = options.extraFunctions or {};
+  tinsert(options.extraFunctions, 1, {
+    buttonLabel = L["Expand"],
+    func = function()
+      OptionsPrivate.OpenTextEditor(OptionsPrivate.GetPickedDisplay(), path, encloseInFunction, options.multipath,
+                                    options.reloadOptions, options.setOnParent, url, options.validator)
+    end
+  });
+
+  args[prefix .. "_custom"] = {
+    type = "input",
+    width = WeakAuras.doubleWidth,
+    name = name,
+    order = order,
+    multiline = true,
+    hidden = hiddenFunc,
+    control = "WeakAurasMultiLineEditBox",
+    arg = {
+      extraFunctions = options.extraFunctions,
+    },
+    set = function(info, v)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = path,
+        payload = v
+      })
+
+      if (options.extraSetFunction) then
+        options.extraSetFunction();
+      end
+    end,
+    get = function(info)
+      return GetCustomCode(data, path);
+    end
+  };
+
+  args[prefix .. "_customError"] = {
+    type = "description",
+    name = function()
+      if hiddenFunc() then
+        return "";
+      end
+
+      local code = GetCustomCode(data, path);
+
+      if (not code or code:trim() == "") then
+        return ""
+      end
+
+      if (encloseInFunction) then
+        code = "function() "..code.."\n end";
+      end
+
+      code = "return " .. code;
+
+      local loadedFunction, errorString = OptionsPrivate.Private.LoadFunction(code, data.id, true);
+
+      if not errorString then
+        if options.validator then
+          errorString = options.validator(loadedFunction)
+        end
+      end
+      return errorString and "|cFFFF0000"..errorString or "";
+    end,
+    width = WeakAuras.doubleWidth,
+    order = order + 0.002,
+    hidden = function()
+      if (hiddenFunc()) then
+        return true;
+      end
+
+      local code = GetCustomCode(data, path);
+      if (not code or code:trim() == "") then
+        return true;
+      end
+
+      if (encloseInFunction) then
+        code = "function() "..code.."\n end";
+      end
+
+      code = "return " .. code;
+
+      local loadedFunction, errorString = loadstring(code);
+      if(errorString and not loadedFunction) then
+        return false;
+      else
+        if options.validator then
+          local ok, validate = xpcall(loadedFunction, noop)
+          if ok then
+            return options.validator(validate)
+          end
+          return false
+        end
+        return true;
+      end
+    end
+  };
+end
+
 local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, path, encloseInFunction, options)
   options = options and CopyTable(options) or {}
   options.extraFunctions = options.extraFunctions or {};
@@ -2163,6 +2265,7 @@ OptionsPrivate.commonOptions.ProgressOptions = ProgressOptions
 OptionsPrivate.commonOptions.ProgressOptionsForSubElement = ProgressOptionsForSubElement
 OptionsPrivate.commonOptions.BorderOptions = BorderOptions
 OptionsPrivate.commonOptions.AddCodeOption = AddCodeOption
+OptionsPrivate.commonOptions.AddCodeOptionTimeMachine = AddCodeOptionTimeMachine
 
 OptionsPrivate.commonOptions.AddCommonTriggerOptions = AddCommonTriggerOptions
 OptionsPrivate.commonOptions.AddTriggerGetterSetter = AddTriggerGetterSetter

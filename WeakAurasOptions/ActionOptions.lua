@@ -1228,15 +1228,15 @@ function OptionsPrivate.GetActionOptions(data)
 
   -- Text format option helpers
 
-  OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "init", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-init",
+  OptionsPrivate.commonOptions.AddCodeOptionTimeMachine(action.args, data, L["Custom Code"], "init", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-init",
                           0.21, function() return not data.actions.init.do_custom end, {"actions", "init", "custom"}, true)
 
-  OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "customOnLoad", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-load",
+  OptionsPrivate.commonOptions.AddCodeOptionTimeMachine(action.args, data, L["Custom Code"], "customOnLoad", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-load",
                           0.31, function() return not data.actions.init.do_custom_load end, {"actions", "init", "customOnLoad"}, true)
-  OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "customOnUnload", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-unload",
+  OptionsPrivate.commonOptions.AddCodeOptionTimeMachine(action.args, data, L["Custom Code"], "customOnUnload", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-unload",
                           0.41, function() return not data.actions.init.do_custom_unload end, {"actions", "init", "customOnUnload"}, true)
 
-  OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "start_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
+  OptionsPrivate.commonOptions.AddCodeOptionTimeMachine(action.args, data, L["Custom Code"], "start_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
                           5, function() return not (data.actions.start.do_message and (OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.start.message) or (data.actions.start.message_type == "WHISPER" and OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.start.message_dest)))) end, {"actions", "start", "message_custom"}, false);
 
   local startHidden = function()
@@ -1296,10 +1296,10 @@ function OptionsPrivate.GetActionOptions(data)
   end
 
 
-  OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "start", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-show",
+  OptionsPrivate.commonOptions.AddCodeOptionTimeMachine(action.args, data, L["Custom Code"], "start", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-show",
                           13, function() return not data.actions.start.do_custom end, {"actions", "start", "custom"}, true);
 
-  OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "finish_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
+  OptionsPrivate.commonOptions.AddCodeOptionTimeMachine(action.args, data, L["Custom Code"], "finish_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
                           25, function() return not (data.actions.finish.do_message and (OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.finish.message) or (data.actions.finish.message_type == "WHISPER" and OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.finish.message_dest)))) end, {"actions", "finish", "message_custom"}, false);
 
   local finishHidden = function()
@@ -1356,7 +1356,7 @@ function OptionsPrivate.GetActionOptions(data)
     OptionsPrivate.AddTextFormatOption(data.actions and data.actions.finish.message, true, finishGet, finishAddOption, finishHidden, finishSetHidden, true)
   end
 
-  OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "finish", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-hide",
+  OptionsPrivate.commonOptions.AddCodeOptionTimeMachine(action.args, data, L["Custom Code"], "finish", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-hide",
                           32, function() return not data.actions.finish.do_custom end, {"actions", "finish", "custom"}, true);
 
   if data.controlledChildren then
