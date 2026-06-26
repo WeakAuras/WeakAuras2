@@ -388,7 +388,9 @@ local function ApplyAdditionalProgressCircular(self, additionalProgress, min, ma
 
       if ((endProgress - startProgress) == 0) then
         extraSpinner:SetProgress(0, 0)
+        extraSpinner:Hide() -- JT fix additionalProgress not showing up
       else
+        extraSpinner:Show() -- JT fix additionalProgress not showing up
         local color = self.overlays[index];
         if (color) then
           extraSpinner:SetColor(unpack(color));
