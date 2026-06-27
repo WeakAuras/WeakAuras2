@@ -4481,7 +4481,7 @@ do
 end
 
 -- combat assist next cast
-if not WeakAuras.IsWrathClassic() and C_AssistedCombat and C_AssistedCombat.GetNextCastSpell then
+if not WeakAuras.IsTBCOrWrathOrMists() and C_AssistedCombat and C_AssistedCombat.GetNextCastSpell then
   local assistedCombatFrame
 
   local function assistedCombatUpdate(self, elapsed)
