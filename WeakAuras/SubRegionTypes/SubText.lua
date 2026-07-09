@@ -6,6 +6,7 @@ local Private = select(2, ...)
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
+local FontStringScaleAnimationMode = Enum and Enum.FontStringScaleAnimationMode
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20
 
@@ -211,6 +212,13 @@ local function modify(parent, region, parentData, data, first)
 
   local fontPath = SharedMedia:Fetch("font", data.text_font);
   local fontType = data.text_fontType == "None" and "" or data.text_fontType
+  local slugFont = data.text_fontType == "SLUG" or data.text_fontType == "OUTLINE|SLUG"
+  if text.SetScaleAnimationMode and FontStringScaleAnimationMode then
+    text:SetScaleAnimationMode(slugFont and FontStringScaleAnimationMode.Vertex or FontStringScaleAnimationMode.FontSize)
+  end
+  if text.SetSmoothScaling then
+    text:SetSmoothScaling(data.text_smoothScaling or false) -- doesn't accept nil
+  end
   text:SetFont(fontPath, data.text_fontSize, fontType);
   if not text:GetFont() and fontPath then -- workaround font not loading correctly
     local objectName = "WeakAuras-Font-" .. data.text_font

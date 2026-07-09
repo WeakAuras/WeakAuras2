@@ -143,7 +143,13 @@ local function createOptions(id, data)
       hasAlpha = true,
       order = 47
     },
-
+    smoothScaling = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = WeakAuras.newFeatureString .. L["Smooth Font"],
+      desc = L["Smooths text height, preventing it from snapping to the nearest whole number when scaled."],
+      order = 47.5
+    },
     fontFlagsDescription = {
       order = 48,
       width = WeakAuras.doubleWidth,
@@ -151,6 +157,7 @@ local function createOptions(id, data)
       control = "WeakAurasExpandSmall",
       name = function()
         local textFlags = OptionsPrivate.Private.font_flags[data.outline]
+        local hideShadow = data.outline == "OUTLINE|SLUG"
         local color = format("%02x%02x%02x%02x",
                              data.shadowColor[4] * 255, data.shadowColor[1] * 255,
                              data.shadowColor[2] * 255, data.shadowColor[3]*255)
@@ -175,7 +182,12 @@ local function createOptions(id, data)
           textWidth = " "..L["and with width |cFFFF0000%s|r and %s"]:format(data.fixedWidth, wordWarp)
         end
 
-        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"]:format(textFlags, color, data.shadowXOffset, data.shadowYOffset, textJustify, textWidth)
+        local secondline
+        if hideShadow then
+          secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r%s%s"]:format(textFlags, textJustify, textWidth)
+        else
+          secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"]:format(textFlags, color, data.shadowXOffset, data.shadowYOffset, textJustify, textWidth)
+        end
 
         return secondline
       end,
@@ -215,14 +227,27 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Shadow Color"],
       order = 48.3,
-      hidden = hiddenFontExtra
+      hidden = function()
+        return hiddenFontExtra() or data.outline == "OUTLINE|SLUG"
+      end
+    },
+    shadowColorSpace = {
+      type = "description",
+      name = "",
+      width = WeakAuras.normalWidth,
+      order = 48.3,
+      hidden = function()
+        return hiddenFontExtra() or data.outline ~= "OUTLINE|SLUG"
+      end
     },
 
     text_font_space3 = {
       type = "description",
       name = "",
       order = 48.4,
-      hidden = hiddenFontExtra,
+      hidden = function()
+        return hiddenFontExtra() or data.outline == "OUTLINE|SLUG"
+      end,
       width = indentWidth
     },
     shadowXOffset = {
@@ -234,7 +259,9 @@ local function createOptions(id, data)
       softMax = 15,
       bigStep = 1,
       order = 48.5,
-      hidden = hiddenFontExtra
+      hidden = function()
+        return hiddenFontExtra() or data.outline == "OUTLINE|SLUG"
+      end
     },
     shadowYOffset = {
       type = "range",
@@ -245,7 +272,9 @@ local function createOptions(id, data)
       softMax = 15,
       bigStep = 1,
       order = 48.6,
-      hidden = hiddenFontExtra
+      hidden = function()
+        return hiddenFontExtra() or data.outline == "OUTLINE|SLUG"
+      end
     },
 
     text_font_space4 = {
