@@ -202,7 +202,7 @@ local function modify(parent, region, parentData, data, first)
   local text = region.text;
 
   local fontPath = SharedMedia:Fetch("font", data.text_font);
-  text:SetFont(fontPath, data.text_fontSize, data.text_fontType);
+  text:SetFont(fontPath, data.text_fontSize, data.text_fontType == "None" and "" or data.text_fontType);
   if not text:GetFont() and fontPath then -- workaround font not loading correctly
     local objectName = "WeakAuras-Font-" .. data.text_font
     local fontObject = _G[objectName] or CreateFont(objectName)
