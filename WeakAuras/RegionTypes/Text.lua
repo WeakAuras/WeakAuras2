@@ -82,6 +82,8 @@ Private.regionPrototype.AddProperties(properties, default);
 --- @field SetTextHeight fun(self: TextRegion, size: number)
 --- @field ChangeText fun(self: TextRegion, msg: string)
 
+local fontObjectCounter = 0
+
 local function create(parent)
   local region = CreateFrame("Frame", nil, parent);
   region.regionType = "text"
@@ -92,6 +94,11 @@ local function create(parent)
   text:SetWordWrap(true);
   text:SetNonSpaceWrap(true);
 
+  local fontObject = CreateFont("WeakAuras-Text-Font"..fontObjectCounter)
+  fontObjectCounter =  fontObjectCounter + 1
+  region.text:SetFontObject(fontObject)
+  region.fontObject = fontObject
+
   Private.regionPrototype.create(region);
 
   return region;
@@ -101,6 +108,7 @@ end
 local function modify(parent, region, data)
   Private.regionPrototype.modify(parent, region, data);
   local text = region.text;
+  local fontObject = region.fontObject
 
   local fontPath = SharedMedia:Fetch("font", data.font);
   local outline = data.outline == "None" and "" or data.outline
@@ -115,7 +123,7 @@ local function modify(parent, region, data)
     text:SetFont(STANDARD_TEXT_FONT, data.fontSize, outline);
   end
 
-  text:SetJustifyH(data.justify);
+  fontObject:SetJustifyH(data.justify);
   text:SetText("")
 
   text:ClearAllPoints();
@@ -143,8 +151,8 @@ local function modify(parent, region, data)
   end
 
   text:SetTextHeight(data.fontSize);
-  text:SetShadowColor(unpack(data.shadowColor))
-  text:SetShadowOffset(data.shadowXOffset, data.shadowYOffset)
+  fontObject:SetShadowColor(unpack(data.shadowColor))
+  fontObject:SetShadowOffset(data.shadowXOffset, data.shadowYOffset)
 
   text:ClearAllPoints();
   text:SetPoint(data.justify, region, data.justify);
