@@ -1561,8 +1561,10 @@ Private.tick_placement_modes = {
 ---@type table<string, string>
 Private.font_flags = {
   None = L["None"],
+  ["SLUG"] = WeakAuras.newFeatureString .. L["Slug"],
   MONOCHROME = L["Monochrome"],
   OUTLINE = L["Outline"],
+  ["OUTLINE|SLUG"] = WeakAuras.newFeatureString .. L["Slug Outline"],
   THICKOUTLINE  = L["Thick Outline"],
   ["MONOCHROME|OUTLINE"] = L["Monochrome Outline"],
   ["MONOCHROME|THICKOUTLINE"] = L["Monochrome Thick Outline"]
