@@ -237,7 +237,11 @@ local function modify(parent, region, parentData, data, first)
   text:SetTextHeight(data.text_fontSize);
 
   fontObject:SetShadowColor(unpack(data.text_shadowColor))
-  fontObject:SetShadowOffset(data.text_shadowXOffset, data.text_shadowYOffset)
+  if data.text_fontType == "OUTLINE|SLUG" then
+    fontObject:SetShadowOffset(0, 0)
+  else
+    fontObject:SetShadowOffset(data.text_shadowXOffset, data.text_shadowYOffset)
+  end
   fontObject:SetJustifyH(data.text_justify or "CENTER")
 
   if (data.text_automaticWidth == "Fixed") then

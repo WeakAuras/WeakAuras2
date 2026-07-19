@@ -160,7 +160,11 @@ local function modify(parent, region, data)
 
   text:SetTextHeight(data.fontSize);
   fontObject:SetShadowColor(unpack(data.shadowColor))
-  fontObject:SetShadowOffset(data.shadowXOffset, data.shadowYOffset)
+  if data.outline == "OUTLINE|SLUG" then
+    fontObject:SetShadowOffset(0, 0)
+  else
+    fontObject:SetShadowOffset(data.shadowXOffset, data.shadowYOffset)
+  end
 
   text:ClearAllPoints();
   text:SetPoint(data.justify, region, data.justify);

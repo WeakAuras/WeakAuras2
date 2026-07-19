@@ -113,40 +113,45 @@ local function createOptions(parentData, data, index, subIndex)
       hasAlpha = true,
       order = 15,
     },
-    text_smoothScaling = {
-      type = "toggle",
+     text_fontType = {
+      type = "select",
       width = WeakAuras.normalWidth,
-      name = WeakAuras.newFeatureString .. L["Smooth Font"],
-      desc = L["Smooths text height, preventing it from snapping to the nearest whole number when scaled."],
-      order = 16
+      name = L["Outline"],
+      order = 16,
+      values = OptionsPrivate.Private.font_flags,
     },
     text_fontFlagsDescription = {
       type = "execute",
       control = "WeakAurasExpandSmall",
       name = function()
-        local textFlags = OptionsPrivate.Private.font_flags[data.text_fontType]
         local hideShadow = data.text_fontType == "OUTLINE|SLUG"
         local color = format("%02x%02x%02x%02x",
                              data.text_shadowColor[4] * 255, data.text_shadowColor[1] * 255,
                              data.text_shadowColor[2] * 255, data.text_shadowColor[3]*255)
 
-        local textJustify = ""
+        local text = ""
         if data.text_justify == "CENTER" then
           -- CENTER is default
         elseif data.text_justify == "LEFT" then
-          textJustify = " " .. L["and aligned left"]
+          text = L["Aligned left"]
         elseif data.text_justify == "RIGHT" then
-          textJustify = " " ..  L["and aligned right"]
+          text = L["Aligned right"]
         end
 
-        local textRotate = ""
         if data.rotateText == "LEFT" then
-          textRotate = " " .. L["and rotated left"]
+          if text == "" then
+            text = L["Rotated left"]
+          else
+            text = text .. " " .. L["and rotated left"]
+          end
         elseif data.rotateText == "RIGHT" then
-          textRotate = " " .. L["and rotated right"]
+          if text == "" then
+            text = L["Rotated right"]
+          else
+            text = text .. " " .. L["and rotated right"]
+          end
         end
 
-        local textWidth = ""
         if data.text_automaticWidth == "Fixed" then
           local wordWarp = ""
           if data.text_wordWrap == "WordWrap" then
@@ -154,20 +159,35 @@ local function createOptions(parentData, data, index, subIndex)
           else
             wordWarp = L["eliding"]
           end
-          textWidth = " "..L["and with width |cFFFF0000%s|r and %s"]:format(data.text_fixedWidth, wordWarp)
+          if text == "" then
+            text = L["Width |cFFFF0000%s|r and %s"]:format(data.text_fixedWidth, wordWarp)
+          else
+            text = text .. " "..L["and with width |cFFFF0000%s|r and %s"]:format(data.text_fixedWidth, wordWarp)
+          end
         end
 
-        local secondline
-        if hideShadow then
-          secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r%s%s%s"]
-            :format(textFlags, textRotate, textJustify, textWidth)
+         if data.text_smoothScaling then
+          if text == "" then
+            text = L["Smooth scaling"]
+          else
+            text = text .. " " .. L["and smooth scaling"]
+          end
+        end
+
+         if not hideShadow then
+          if text == "" then
+            text = text .. " " .. L["Shadow |c%sColor|r with offset |cFFFF0000%s/%s|r"]
+                                  :format(color, data.text_shadowXOffset, data.text_shadowYOffset)
+          else
+            text = text .. " " .. L["and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r"]
+                                  :format(color, data.text_shadowXOffset, data.text_shadowYOffset)
+          end
+        end
+        if text == "" then
+          return L["|cFFffcc00Font Flags:|r none"]
         else
-          secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s%s"]
-            :format(textFlags, color, data.text_shadowXOffset, data.text_shadowYOffset,
-                    textRotate, textJustify, textWidth)
+          return L["|cFFffcc00Font Flags:|r"] .. " " .. text
         end
-
-        return secondline
       end,
       width = WeakAuras.doubleWidth,
       order = 44,
@@ -193,12 +213,12 @@ local function createOptions(parentData, data, index, subIndex)
       hidden = hiddenFontExtra,
       width = indentWidth
     },
-    text_fontType = {
-      type = "select",
+    text_smoothScaling = {
+      type = "toggle",
       width = WeakAuras.normalWidth - indentWidth,
-      name = L["Outline"],
+      name = WeakAuras.newFeatureString .. L["Smooth Font"],
+      desc = L["Smooths text height, preventing it from snapping to the nearest whole number when scaled."],
       order = 46,
-      values = OptionsPrivate.Private.font_flags,
       hidden = hiddenFontExtra
     },
     text_shadowColor = {

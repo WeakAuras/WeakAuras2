@@ -143,12 +143,12 @@ local function createOptions(id, data)
       hasAlpha = true,
       order = 47
     },
-    smoothScaling = {
-      type = "toggle",
+    outline = {
+      type = "select",
       width = WeakAuras.normalWidth,
-      name = WeakAuras.newFeatureString .. L["Smooth Font"],
-      desc = L["Smooths text height, preventing it from snapping to the nearest whole number when scaled."],
-      order = 47.5
+      name = L["Outline"],
+      order = 47.5,
+      values = OptionsPrivate.Private.font_flags,
     },
     fontFlagsDescription = {
       order = 48,
@@ -156,22 +156,20 @@ local function createOptions(id, data)
       type = "execute",
       control = "WeakAurasExpandSmall",
       name = function()
-        local textFlags = OptionsPrivate.Private.font_flags[data.outline]
         local hideShadow = data.outline == "OUTLINE|SLUG"
         local color = format("%02x%02x%02x%02x",
                              data.shadowColor[4] * 255, data.shadowColor[1] * 255,
                              data.shadowColor[2] * 255, data.shadowColor[3]*255)
 
-        local textJustify = ""
+        local text = ""
         if data.justify == "CENTER" then
           -- CENTER is default
         elseif data.justify == "LEFT" then
-          textJustify = " " .. L["and aligned left"]
+          text = L["Aligned left"]
         elseif data.justify == "RIGHT" then
-          textJustify = " " ..  L["and aligned right"]
+          text =  L["Aligned right"]
         end
 
-        local textWidth = ""
         if data.automaticWidth == "Fixed" then
           local wordWarp = ""
           if data.wordWrap == "WordWrap" then
@@ -179,17 +177,36 @@ local function createOptions(id, data)
           else
             wordWarp = L["eliding"]
           end
-          textWidth = " "..L["and with width |cFFFF0000%s|r and %s"]:format(data.fixedWidth, wordWarp)
+          if text == "" then
+            text = L["Width |cFFFF0000%s|r and %s"]:format(data.fixedWidth, wordWarp)
+          else
+            text = text .. " " .. L["and with width |cFFFF0000%s|r and %s"]:format(data.fixedWidth, wordWarp)
+          end
         end
 
-        local secondline
-        if hideShadow then
-          secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r%s%s"]:format(textFlags, textJustify, textWidth)
+        if data.smoothScaling then
+          if text == "" then
+            text = L["Smooth scaling"]
+          else
+            text = text .. " " .. L["and smooth scaling"]
+          end
+        end
+
+        if not hideShadow then
+          if text == "" then
+            text = text .. " " .. L["Shadow |c%sColor|r with offset |cFFFF0000%s/%s|r"]
+                                  :format(color, data.shadowXOffset, data.shadowYOffset)
+          else
+            text = text .. " " .. L["and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r"]
+                                  :format(color, data.shadowXOffset, data.shadowYOffset)
+          end
+        end
+
+        if text == "" then
+          return L["|cFFffcc00Font Flags:|r none"]
         else
-          secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"]:format(textFlags, color, data.shadowXOffset, data.shadowYOffset, textJustify, textWidth)
+          return L["|cFFffcc00Font Flags:|r"] .. " " .. text
         end
-
-        return secondline
       end,
       func = function(info, button)
         local collapsed = OptionsPrivate.IsCollapsed("text", "text", "fontflags", true)
@@ -213,14 +230,15 @@ local function createOptions(id, data)
       hidden = hiddenFontExtra,
       width = indentWidth
     },
-    outline = {
-      type = "select",
+    smoothScaling = {
+      type = "toggle",
       width = WeakAuras.normalWidth - indentWidth,
-      name = L["Outline"],
+      name = WeakAuras.newFeatureString .. L["Smooth Font"],
+      desc = L["Smooths text height, preventing it from snapping to the nearest whole number when scaled."],
       order = 48.2,
-      values = OptionsPrivate.Private.font_flags,
       hidden = hiddenFontExtra
     },
+
     shadowColor = {
       type = "color",
       hasAlpha = true,
