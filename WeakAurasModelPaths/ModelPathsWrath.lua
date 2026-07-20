@@ -6011,6 +6011,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7651319",
+      text = "mothpet2_classic.m2",
+      value = "mothpet2_classic.m2",
+     },
+    },
+    text = "mothpet2_classic",
+    value = "mothpet2_classic",
+   },
+   {
+    children = {
+     {
       fileId = "234727",
       text = "motorcyclevehicle.m2",
       value = "motorcyclevehicle.m2",
