@@ -100,7 +100,7 @@ jobs:
     steps:
       - name: Send Bluesky Notification
         id: bluesky
-        uses: myConsciousness/bluesky-post@96827d0a9604cb228b11b3095f6961196efba4a0 # v5
+        uses: myConsciousness/bluesky-post@00ba09c01fa9e5a7c64c086773e3bfc18a12995c # v6
         with:
           text: ${{needs.release-notification-output.outputs.tweetText}}
           identifier: ${{ secrets.BLUESKY_IDENTIFIER }}
