@@ -1906,12 +1906,10 @@ Private.load_prototype = {
     },
     {
       name = "role",
-      display = L["Spec Role"],
+      display = (WeakAuras.IsClassic()) and L["Assigned Role"] or L["Spec Role"],
       type = "multiselect",
       values = "role_types",
-      init = WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail() and "arg" or nil,
-      enable = WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail(),
-      hidden = not WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail(),
+      init = "arg",
       events = {"PLAYER_ROLES_ASSIGNED", "PLAYER_TALENT_UPDATE"}
     },
     {
