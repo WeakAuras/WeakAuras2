@@ -126,9 +126,6 @@ Private.big_number_types = {
   ["AbbreviateLargeNumbers"] = L["AbbreviateLargeNumbers (Blizzard)"],
   ["BreakUpLargeNumbers"] = L["BreakUpLargeNumbers (Blizzard)"],
 }
-if WeakAuras.IsClassicEra() then
-  Private.big_number_types.BreakUpLargeNumbers = nil
-end
 ---@type table<string, string>
 Private.big_number_types_with_disable = CopyTable(Private.big_number_types)
 Private.big_number_types_with_disable["disable"] = L["Disabled"]
@@ -220,7 +217,7 @@ if gameLocale == "koKR" or gameLocale == "zhCN" or gameLocale == "zhTW" then
     end
     return tostring(value);
   end
-elseif WeakAuras.IsClassicEra() or WeakAuras.IsWrathOrCataOrMists() then
+elseif WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists() then
   local NUMBER_ABBREVIATION_DATA_FIXED = {
         -- Work around another bug in NUMBER_ABBREVIATION_DATA, https://github.com/WeakAuras/WeakAuras2/issues/6061
         { breakpoint = 10000000,        abbreviation = SECOND_NUMBER_CAP_NO_SPACE,      significandDivisor = 1000000,   fractionDivisor = 1 },

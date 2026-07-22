@@ -40,6 +40,7 @@ function spellCache.Build()
     holes[285224] = 301088
     holes[301101] = 324269
     holes[474742] = 1213143
+    holes[1259266] = 1278761
   elseif WeakAuras.IsTBC() then
     holes = {}
     holes[81748] = 158262

@@ -1719,13 +1719,10 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       end
     end
   end
-  if WeakAuras.IsClassicEra() then
-    vehicle = UnitOnTaxi('player')
-  end
-  if WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail() then
-    vehicle = UnitInVehicle('player') or UnitOnTaxi('player') or false
-    vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar() or HasVehicleActionBar() or false
-  end
+
+  vehicle = UnitInVehicle('player') or UnitOnTaxi('player') or false
+  vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar() or HasVehicleActionBar() or false
+
   if WeakAuras.IsCataOrMistsOrRetail() then
     specId, role, position = Private.LibSpecWrapper.SpecRolePositionForUnit("player")
   end
