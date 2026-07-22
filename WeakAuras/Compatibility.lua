@@ -75,10 +75,11 @@ else
   Private.ExecEnv.GetSpecializationInfoForClassID = GetSpecializationInfoForClassID
 end
 
-if C_SpecializationInfo and C_SpecializationInfo.GetTalentInfo and not WeakAuras.IsClassicEra() then
-  if WeakAuras.IsTBCOrWrathOrCata() then
+if C_SpecializationInfo and C_SpecializationInfo.GetTalentInfo then
+  if WeakAuras.IsClassicOrTBCOrWrathOrCata() then
     -- copy pasta from
     -- Interface/AddOns/Blizzard_DeprecatedSpecialization/
+    -- ├─ Deprecated_Specialization_Vanilla.lua
     -- ├─ Deprecated_Specialization_TBC.lua
     -- ├─ Deprecated_Specialization_Wrath.lua
     -- └─ Deprecated_Specialization_Cata.lua
