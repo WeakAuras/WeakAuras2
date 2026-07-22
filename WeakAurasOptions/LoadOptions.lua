@@ -23,7 +23,7 @@ local function CorrectSpellName(input)
   local inputId = tonumber(input)
   if(inputId) then
     return inputId
-  elseif WeakAuras.IsClassicEra() and input then
+  elseif WeakAuras.IsClassicEra() and input then -- Classic does not create a hyperlink, instead returns plain spellName
     local _, _, _, _, _, _, spellId = OptionsPrivate.Private.ExecEnv.GetSpellInfo(input)
     if spellId then
       return spellId

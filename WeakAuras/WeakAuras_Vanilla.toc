@@ -1,4 +1,4 @@
-## Interface: 11508
+## Interface: 11509
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@

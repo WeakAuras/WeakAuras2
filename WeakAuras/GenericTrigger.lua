@@ -2304,12 +2304,19 @@ do
 
   local function CheckGCD()
     local event;
-    local startTime, duration, _, modRate
+    local startTime, duration, modRate
     if WeakAuras.IsClassicOrTBCOrWrath() then
-      startTime, duration = GetSpellCooldown(29515);
-      shootStart, shootDuration = GetSpellCooldown(5019)
-    elseif GetSpellCooldown then
-      startTime, duration, _, modRate = GetSpellCooldown(61304);
+      local spellCooldownInfo = C_Spell.GetSpellCooldown(29515)
+      if spellCooldownInfo then
+        startTime = spellCooldownInfo.startTime
+        duration = spellCooldownInfo.duration
+        modRate = spellCooldownInfo.modRate
+      end
+      local shootInfo = C_Spell.GetSpellCooldown(5019)
+      if shootInfo then
+        shootStart = shootInfo.startTime
+        shootDuration = shootInfo.duration
+      end
     else
       local spellCooldownInfo = C_Spell.GetSpellCooldown(61304);
       if spellCooldownInfo then
@@ -3277,19 +3284,12 @@ do
   ---@param runeDuration? number
   function WeakAuras.GetSpellCooldownUnified(id, runeDuration)
     local startTimeCooldown, durationCooldown, enabled, modRate
-    if GetSpellCooldown then
-      startTimeCooldown, durationCooldown, enabled, modRate = GetSpellCooldown(id)
-      if type(enabled) == "number" then
-        enabled = enabled == 1 and true or false
-      end
-    else
-      local spellCooldownInfo = C_Spell.GetSpellCooldown(id);
-      if spellCooldownInfo then
-        startTimeCooldown = spellCooldownInfo.startTime
-        durationCooldown = spellCooldownInfo.duration
-        enabled = spellCooldownInfo.isEnabled
-        modRate = spellCooldownInfo.modRate
-      end
+    local spellCooldownInfo = C_Spell.GetSpellCooldown(id);
+    if spellCooldownInfo then
+      startTimeCooldown = spellCooldownInfo.startTime
+      durationCooldown = spellCooldownInfo.duration
+      enabled = spellCooldownInfo.isEnabled
+      modRate = spellCooldownInfo.modRate
     end
 
     local charges, maxCharges, startTimeCharges, durationCharges, modRateCharges = GetSpellCharges(id);
@@ -4127,7 +4127,7 @@ if WeakAuras.IsClassicOrTBCOrWrath() then
           for _, spellID in ipairs(queueableSpells) do
             -- Check the highest known rank
             local maxRank = select(7, Private.ExecEnv.GetSpellInfo(Private.ExecEnv.GetSpellName(spellID)))
-            if IsCurrentSpell(maxRank) then
+            if C_Spell.IsCurrentSpell(maxRank) then
               newQueuedSpell = maxRank
               break
             end
@@ -4147,7 +4147,7 @@ if WeakAuras.IsClassicOrTBCOrWrath() then
   end
 end
 
-local GetSpellPowerCost = GetSpellPowerCost or C_Spell and C_Spell.GetSpellPowerCost
+local GetSpellPowerCost = C_Spell.GetSpellPowerCost
 
 ---@param powerTypeToCheck integer
 ---@return number? cost
@@ -4481,7 +4481,7 @@ do
 end
 
 -- combat assist next cast
-if not WeakAuras.IsTBCOrWrathOrMists() and C_AssistedCombat and C_AssistedCombat.GetNextCastSpell then
+if not WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists() and C_AssistedCombat and C_AssistedCombat.GetNextCastSpell then
   local assistedCombatFrame
 
   local function assistedCombatUpdate(self, elapsed)

@@ -168,11 +168,9 @@ function Private.StopMotionBase.setTextureFunc(textureWidget, texturePath, textu
   end
 end
 
-local GetAtlasInfo = WeakAuras.IsClassicEra() and GetAtlasInfo or C_Texture.GetAtlasInfo
-
 --- @type fun(self: StopMotionBaseInstance, texture: string)
 local function SetTextureViaAtlas(self, texture)
-  if type(texture) == "string" and GetAtlasInfo(texture) then
+  if type(texture) == "string" and C_Texture.GetAtlasInfo(texture) then
     self.texture:SetAtlas(texture)
   else
     self.texture:SetTexture(texture)

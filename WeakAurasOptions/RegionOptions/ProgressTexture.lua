@@ -5,7 +5,6 @@ local AddonName = ...
 local OptionsPrivate = select(2, ...)
 
 local L = WeakAuras.L;
-local GetAtlasInfo = WeakAuras.IsClassicEra() and GetAtlasInfo or C_Texture.GetAtlasInfo
 
 local function createOptions(id, data)
   local options = {
@@ -449,7 +448,7 @@ local function createThumbnail()
   local OrgSetTexture = foreground.SetTexture;
   -- WORKAROUND, setting the same texture with a different wrap mode does not change the wrap mode
   foreground.SetTexture = function(self, texture, horWrapMode, verWrapMode)
-    if (GetAtlasInfo(texture)) then
+    if (C_Texture.GetAtlasInfo(texture)) then
       self:SetAtlas(texture);
     else
       local needToClear = (self.horWrapMode and self.horWrapMode ~= horWrapMode) or (self.verWrapMode and self.verWrapMode ~= verWrapMode);

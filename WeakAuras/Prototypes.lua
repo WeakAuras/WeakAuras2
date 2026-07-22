@@ -1584,8 +1584,7 @@ Private.load_prototype = {
           end
         end
       end or nil,
-      events = (WeakAuras.IsClassicEra() and {"CHARACTER_POINTS_CHANGED"})
-        or (WeakAuras.IsTBCOrWrathOrCataOrMists() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
+      events = (WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
         or (WeakAuras.IsRetail() and {"WA_TALENT_UPDATE"}),
       inverse = function(load)
         return WeakAuras.IsClassicEra() and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
@@ -1649,8 +1648,7 @@ Private.load_prototype = {
           end
         end
       end or nil,
-      events = (WeakAuras.IsClassicEra() and {"CHARACTER_POINTS_CHANGED"})
-        or (WeakAuras.IsTBCOrWrathOrCataOrMists() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
+      events = (WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
         or (WeakAuras.IsRetail() and {"WA_TALENT_UPDATE"}),
       inverse = function(load)
         return WeakAuras.IsClassicEra() and (load.talent3_extraOption == 2 or load.talent3_extraOption == 3)
@@ -1810,7 +1808,7 @@ Private.load_prototype = {
       display = L["Spell Known"],
       type = "spell",
       test = "WeakAuras.IsSpellKnownForLoad(%s, %s)",
-      events = WeakAuras.IsTBCOrWrathOrCataOrMists() and {"SPELLS_CHANGED", "UNIT_PET", "PLAYER_TALENT_UPDATE"} or {"SPELLS_CHANGED", "UNIT_PET"},
+      events = WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists() and {"SPELLS_CHANGED", "UNIT_PET", "PLAYER_TALENT_UPDATE"} or {"SPELLS_CHANGED", "UNIT_PET"},
       showExactOption = true
     },
     {
@@ -1818,7 +1816,7 @@ Private.load_prototype = {
       display = WeakAuras.newFeatureString .. L["|cFFFF0000Not|r Spell Known"],
       type = "spell",
       test = "not WeakAuras.IsSpellKnownForLoad(%s, %s)",
-      events = WeakAuras.IsTBCOrWrathOrCataOrMists() and {"SPELLS_CHANGED", "UNIT_PET", "PLAYER_TALENT_UPDATE"} or {"SPELLS_CHANGED", "UNIT_PET"},
+      events = WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists() and {"SPELLS_CHANGED", "UNIT_PET", "PLAYER_TALENT_UPDATE"} or {"SPELLS_CHANGED", "UNIT_PET"},
       showExactOption = true
     },
     {
@@ -1908,12 +1906,10 @@ Private.load_prototype = {
     },
     {
       name = "role",
-      display = L["Spec Role"],
+      display = (WeakAuras.IsClassicEra()) and L["Assigned Role"] or L["Spec Role"],
       type = "multiselect",
       values = "role_types",
-      init = WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail() and "arg" or nil,
-      enable = WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail(),
-      hidden = not WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail(),
+      init = "arg",
       events = {"PLAYER_ROLES_ASSIGNED", "PLAYER_TALENT_UPDATE"}
     },
     {
@@ -6946,12 +6942,7 @@ Private.event_prototypes = {
     type = "unit",
     events = function()
       local events
-      if WeakAuras.IsClassicEra() then
-        events = {
-          "CHARACTER_POINTS_CHANGED",
-          "SPELLS_CHANGED"
-        }
-      elseif WeakAuras.IsTBCOrWrathOrCataOrMists() then
+      if WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists() then
         events = {
           "CHARACTER_POINTS_CHANGED",
           "SPELLS_CHANGED",
@@ -11286,7 +11277,7 @@ Private.event_prototypes = {
         name = "vehicle",
         display = WeakAuras.IsClassicOrTBC() and L["On Taxi"] or L["In Vehicle"],
         type = "tristate",
-        init = WeakAuras.IsClassicEra() and "UnitOnTaxi('player')" or "UnitInVehicle('player') or UnitOnTaxi('player')",
+        init = "UnitInVehicle('player') or UnitOnTaxi('player')",
       },
       {
         name = "resting",
@@ -11362,7 +11353,7 @@ Private.event_prototypes = {
   ["Spell Known"] = {
     type = "spell",
     events = {
-      ["events"] = WeakAuras.IsTBCOrWrathOrCataOrMists() and {"SPELLS_CHANGED","PLAYER_TALENT_UPDATE"} or {"SPELLS_CHANGED"},
+      ["events"] = WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists() and {"SPELLS_CHANGED","PLAYER_TALENT_UPDATE"} or {"SPELLS_CHANGED"},
       ["unit_events"] = {
         ["player"] = {"UNIT_PET"}
       }
@@ -12311,7 +12302,7 @@ Private.event_prototypes = {
   },
 };
 
-if not WeakAuras.IsTBCOrWrathOrMists() and C_AssistedCombat and C_AssistedCombat.GetNextCastSpell then
+if not WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists() and C_AssistedCombat and C_AssistedCombat.GetNextCastSpell then
   Private.event_prototypes["Assisted Combat Next Cast"] = {
     type = "spell",
     events = { "SPELLS_CHANGED"},
