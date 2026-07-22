@@ -12311,7 +12311,7 @@ Private.event_prototypes = {
   },
 };
 
-if not WeakAuras.IsTBCOrWrathOrMists() and C_AssistedCombat and C_AssistedCombat.GetNextCastSpell then
+if not WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists() and C_AssistedCombat and C_AssistedCombat.GetNextCastSpell then
   Private.event_prototypes["Assisted Combat Next Cast"] = {
     type = "spell",
     events = { "SPELLS_CHANGED"},
