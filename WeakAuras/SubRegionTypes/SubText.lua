@@ -189,7 +189,7 @@ local function create()
   text:SetWordWrap(true)
   text:SetNonSpaceWrap(true)
 
-  local fontObject = CreateFont("WeakAuras-Text-Font"..fontObjectCounter)
+  local fontObject = CreateFont("WeakAuras-SubText-Font"..fontObjectCounter)
   fontObjectCounter =  fontObjectCounter + 1
   region.text:SetFontObject(fontObject)
   region.fontObject = fontObject
