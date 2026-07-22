@@ -1906,7 +1906,7 @@ Private.load_prototype = {
     },
     {
       name = "role",
-      display = (WeakAuras.IsClassic()) and L["Assigned Role"] or L["Spec Role"],
+      display = (WeakAuras.IsClassicEra()) and L["Assigned Role"] or L["Spec Role"],
       type = "multiselect",
       values = "role_types",
       init = "arg",
@@ -11277,7 +11277,7 @@ Private.event_prototypes = {
         name = "vehicle",
         display = WeakAuras.IsClassicOrTBC() and L["On Taxi"] or L["In Vehicle"],
         type = "tristate",
-        init = WeakAuras.IsClassicEra() and "UnitOnTaxi('player')" or "UnitInVehicle('player') or UnitOnTaxi('player')",
+        init = "UnitInVehicle('player') or UnitOnTaxi('player')",
       },
       {
         name = "resting",
