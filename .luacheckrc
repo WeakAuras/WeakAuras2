@@ -2667,7 +2667,6 @@ globals = {
 	"GetTabardCreationCost",
 	"GetTabardInfo",
 	"GetTalentGroupRole",
-	"GetTalentInfo",
 	"GetTalentInfoByID",
 	"GetTalentInfoBySpecialization",
 	"GetTalentLink",
