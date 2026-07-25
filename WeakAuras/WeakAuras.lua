@@ -9,7 +9,7 @@ local internalVersion = 90
 local insert = table.insert
 
 -- WoW APIs
-local GetTalentInfo, InCombatLockdown = GetTalentInfo, InCombatLockdown
+local InCombatLockdown = InCombatLockdown
 local UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
   = UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
 local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance

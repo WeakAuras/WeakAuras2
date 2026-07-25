@@ -125,8 +125,6 @@ if C_SpecializationInfo and C_SpecializationInfo.GetTalentInfo then
         talentInfo.talentID
     end
   end
-else
-  Private.ExecEnv.GetTalentInfo = GetTalentInfo
 end
 
 Private.ExecEnv.GetNumFactions = C_Reputation.GetNumFactions or GetNumFactions
