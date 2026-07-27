@@ -20386,6 +20386,31 @@ WeakAuras.ModelPaths = {
     value = "classic_fx_light_yellow.m2",
    },
    {
+    fileId = "6641988",
+    text = "classic_fx_scarlet_breath_cast.m2",
+    value = "classic_fx_scarlet_breath_cast.m2",
+   },
+   {
+    fileId = "6641985",
+    text = "classic_fx_scarlet_cast.m2",
+    value = "classic_fx_scarlet_cast.m2",
+   },
+   {
+    fileId = "6641987",
+    text = "classic_fx_scarlet_impact.m2",
+    value = "classic_fx_scarlet_impact.m2",
+   },
+   {
+    fileId = "6641986",
+    text = "classic_fx_scarlet_missile.m2",
+    value = "classic_fx_scarlet_missile.m2",
+   },
+   {
+    fileId = "6641984",
+    text = "classic_fx_scarlet_precast_hand.m2",
+    value = "classic_fx_scarlet_precast_hand.m2",
+   },
+   {
     fileId = "5593602",
     text = "classic_fx_shadowpriest_legendary.m2",
     value = "classic_fx_shadowpriest_legendary.m2",
@@ -33356,6 +33381,11 @@ WeakAuras.ModelPaths = {
     children = {
      {
       children = {
+       {
+        fileId = "5512707",
+        text = "11xp_general_fx_lightray_01.m2",
+        value = "11xp_general_fx_lightray_01.m2",
+       },
        {
         fileId = "5890520",
         text = "11xp_generic_light_orange01.m2",
