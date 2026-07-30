@@ -411,8 +411,9 @@ Private.RegisterRegionType("text", create, modify, default, properties, validate
 local function fallbackmodify(parent, region, data)
   Private.regionPrototype.modify(parent, region, data);
   local text = region.text;
+  local fontObject = region.fontObject
 
-  text:SetFont(STANDARD_TEXT_FONT, data.fontSize, data.outline and "OUTLINE" or "");
+  fontObject:SetFont(STANDARD_TEXT_FONT, data.fontSize, data.outline and "OUTLINE" or "");
   if text:GetFont() then
     text:SetText(WeakAuras.L["Region type %s not supported"]:format(data.regionType));
   end
