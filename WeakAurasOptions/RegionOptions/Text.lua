@@ -458,6 +458,8 @@ local function createOptions(id, data)
   };
 end
 
+local thumbnailFontObjectCounter = 0
+
 local function createThumbnail()
   local borderframe = CreateFrame("Frame", nil, UIParent);
   borderframe:SetWidth(32);
@@ -482,22 +484,28 @@ local function createThumbnail()
   borderframe.text = text;
   text:SetNonSpaceWrap(true);
 
+  local fontObject = CreateFont("WeakAuras-TextThumbnail-Font" .. thumbnailFontObjectCounter)
+  thumbnailFontObjectCounter = thumbnailFontObjectCounter + 1
+  text:SetFontObject(fontObject)
+  borderframe.fontObject = fontObject
+
   borderframe.values = {};
 
   return borderframe;
 end
 
 local function modifyThumbnail(parent, borderframe, data, fullModify, size)
-  local mask, content, text = borderframe.mask, borderframe.content, borderframe.text;
+  local mask, content, text, fontObject =
+    borderframe.mask, borderframe.content, borderframe.text, borderframe.fontObject;
 
   size = size or 28;
 
   local fontPath = SharedMedia:Fetch("font", data.font) or data.font;
-  text:SetFont(fontPath, data.fontSize, data.outline and "OUTLINE" or "");
+  fontObject:SetFont(fontPath, data.fontSize, data.outline and "OUTLINE" or "");
   text:SetTextHeight(data.fontSize);
   text:SetText(data.displayText);
   text:SetTextColor(data.color[1], data.color[2], data.color[3], data.color[4]);
-  text:SetJustifyH(data.justify);
+  fontObject:SetJustifyH(data.justify);
 
   text:ClearAllPoints();
   text:SetPoint("CENTER", UIParent, "CENTER");
