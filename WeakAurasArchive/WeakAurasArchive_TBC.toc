@@ -1,3 +1,4 @@
+# WOW_INTERFACE_TARGETS: tbc
 ## Interface: 20506
 ## Title: WeakAuras Archive
 ## Author: The WeakAuras Team
