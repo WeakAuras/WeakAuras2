@@ -1,4 +1,5 @@
-## Interface: 30405, 38001
+# WOW_INTERFACE_TARGETS: wrath-titan, wrath
+## Interface: 38002, 30405
 ## Title: WeakAuras Model Paths
 ## Author: The WeakAuras Team
 ## Version: @project-version@

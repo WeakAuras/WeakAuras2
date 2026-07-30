@@ -1,0 +1,31 @@
+name: Update WoW TOC Interface
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "37 4 * * 1"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    if: github.repository == 'WeakAuras/WeakAuras2'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - id: toc
+        uses: Nnoggie/wow-interface-updater@5d4857867ca38a2a26041ae2c527ec3a4f522af5 # v1
+
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
+        if: steps.toc.outputs.changed == 'true'
+        with:
+          branch: automation/wow-interface
+          delete-branch: true
+          commit-message: "chore: update WoW TOC interface versions"
+          title: "chore: update WoW TOC interface versions"
+          body: ${{ steps.toc.outputs.pr-body }}

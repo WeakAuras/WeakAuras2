@@ -1,3 +1,4 @@
+# WOW_INTERFACE_TARGETS: tbc
 ## Interface: 20506
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
