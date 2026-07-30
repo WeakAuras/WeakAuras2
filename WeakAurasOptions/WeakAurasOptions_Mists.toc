@@ -1,4 +1,4 @@
-# WOW_INTERFACE_TARGETS: mists
+# WOW_INTERFACE_TARGETS: mists-test, mists
 ## Interface: 50504
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team

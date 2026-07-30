@@ -3,7 +3,7 @@ name: Update WoW TOC Interface
 on:
   workflow_dispatch:
   schedule:
-    - cron: "37 4 * * 1"
+    - cron: "0 10 * * 1"
 
 permissions:
   contents: write
