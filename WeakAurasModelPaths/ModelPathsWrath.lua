@@ -1029,6 +1029,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "8101262",
+      text = "axolotlpetclassic.m2",
+      value = "axolotlpetclassic.m2",
+     },
+    },
+    text = "axolotlpetclassic",
+    value = "axolotlpetclassic",
+   },
+   {
+    children = {
+     {
       fileId = "122975",
       text = "babybeholder.m2",
       value = "babybeholder.m2",
@@ -1306,6 +1317,28 @@ WeakAuras.ModelPaths = {
     },
     text = "bearmountutilityclassic",
     value = "bearmountutilityclassic",
+   },
+   {
+    children = {
+     {
+      fileId = "7864606",
+      text = "beaverpet.m2",
+      value = "beaverpet.m2",
+     },
+    },
+    text = "beaverpet",
+    value = "beaverpet",
+   },
+   {
+    children = {
+     {
+      fileId = "4227772",
+      text = "beaverprimalpet.m2",
+      value = "beaverprimalpet.m2",
+     },
+    },
+    text = "beaverprimalpet",
+    value = "beaverprimalpet",
    },
    {
     children = {
@@ -3376,6 +3409,17 @@ WeakAuras.ModelPaths = {
     },
     text = "fish",
     value = "fish",
+   },
+   {
+    children = {
+     {
+      fileId = "2746822",
+      text = "fishbunch.m2",
+      value = "fishbunch.m2",
+     },
+    },
+    text = "fishbunch",
+    value = "fishbunch",
    },
    {
     children = {
@@ -9327,6 +9371,17 @@ WeakAuras.ModelPaths = {
     },
     text = "tuskarrmalefisherman",
     value = "tuskarrmalefisherman",
+   },
+   {
+    children = {
+     {
+      fileId = "7208231",
+      text = "tuskarrsealpet.m2",
+      value = "tuskarrsealpet.m2",
+     },
+    },
+    text = "tuskarrsealpet",
+    value = "tuskarrsealpet",
    },
    {
     children = {
@@ -50832,6 +50887,11 @@ WeakAuras.ModelPaths = {
         value = "polearm_2h_zulgurub_d_01.m2",
        },
        {
+        fileId = "4689164",
+        text = "staff_2h_tuskarrladle_b_01.m2",
+        value = "staff_2h_tuskarrladle_b_01.m2",
+       },
+       {
         fileId = "147382",
         text = "stave_2h_ahnqiraj_d_01.m2",
         value = "stave_2h_ahnqiraj_d_01.m2",
@@ -53000,6 +53060,56 @@ WeakAuras.ModelPaths = {
      {
       children = {
        {
+        fileId = "7648798",
+        text = "7648798.m2",
+        value = "7648798.m2",
+       },
+      },
+      text = "unk_exp11_7648798",
+      value = "unk_exp11_7648798",
+     },
+     {
+      children = {
+       {
+        fileId = "7844897",
+        text = "7844897.m2",
+        value = "7844897.m2",
+       },
+      },
+      text = "unk_exp11_7844897",
+      value = "unk_exp11_7844897",
+     },
+     {
+      children = {
+       {
+        fileId = "7866654",
+        text = "7866654.m2",
+        value = "7866654.m2",
+       },
+      },
+      text = "unk_exp11_7866654",
+      value = "unk_exp11_7866654",
+     },
+     {
+      children = {
+       {
+        fileId = "8036208",
+        text = "8036208.m2",
+        value = "8036208.m2",
+       },
+      },
+      text = "unk_exp11_8036208",
+      value = "unk_exp11_8036208",
+     },
+    },
+    text = "creature",
+    value = "creature",
+   },
+   {
+    children = {
+     {
+      children = {
+       {
         fileId = "7114944",
         text = "7114944.m2",
         value = "7114944.m2",
@@ -53161,6 +53271,39 @@ WeakAuras.ModelPaths = {
       },
       text = "unk_exp11_7736414",
       value = "unk_exp11_7736414",
+     },
+     {
+      children = {
+       {
+        fileId = "7893899",
+        text = "7893899.m2",
+        value = "7893899.m2",
+       },
+      },
+      text = "unk_exp11_7893899",
+      value = "unk_exp11_7893899",
+     },
+     {
+      children = {
+       {
+        fileId = "7897682",
+        text = "7897682.m2",
+        value = "7897682.m2",
+       },
+      },
+      text = "unk_exp11_7897682",
+      value = "unk_exp11_7897682",
+     },
+     {
+      children = {
+       {
+        fileId = "7897683",
+        text = "7897683.m2",
+        value = "7897683.m2",
+       },
+      },
+      text = "unk_exp11_7897683",
+      value = "unk_exp11_7897683",
      },
     },
     text = "spells",
@@ -53388,14 +53531,34 @@ WeakAuras.ModelPaths = {
     value = "10fx_hearthstone_storm_precast_base.m2",
    },
    {
-    fileId = "5927961",
-    text = "11fx_lightcircle02.m2",
-    value = "11fx_lightcircle02.m2",
+    fileId = "5054341",
+    text = "10gfx_arcane_precasthands.m2",
+    value = "10gfx_arcane_precasthands.m2",
    },
    {
     fileId = "6703761",
-    text = "11fx_manaforgeomega_forgeweaveraraz_powermanifested_impact.m2",
-    value = "11fx_manaforgeomega_forgeweaveraraz_powermanifested_impact.m2",
+    text = "11gfx_arcane_verticalimpact.m2",
+    value = "11gfx_arcane_verticalimpact.m2",
+   },
+   {
+    fileId = "6372071",
+    text = "11gfx_explosion_verticalimpact.m2",
+    value = "11gfx_explosion_verticalimpact.m2",
+   },
+   {
+    fileId = "5927961",
+    text = "11gfx_holy_precast_base.m2",
+    value = "11gfx_holy_precast_base.m2",
+   },
+   {
+    fileId = "7704420",
+    text = "12fx_transmog_set_change.m2",
+    value = "12fx_transmog_set_change.m2",
+   },
+   {
+    fileId = "1660571",
+    text = "7fx_nagawitch_watersplash_precast.m2",
+    value = "7fx_nagawitch_watersplash_precast.m2",
    },
    {
     fileId = "2497791",
@@ -56859,14 +57022,19 @@ WeakAuras.ModelPaths = {
     value = "fx_arcanebombardment_cast01.m2",
    },
    {
-    fileId = "5054341",
-    text = "fx_destabilize_precast.m2",
-    value = "fx_destabilize_precast.m2",
-   },
-   {
     fileId = "5928236",
     text = "fx_payline_aura.m2",
     value = "fx_payline_aura.m2",
+   },
+   {
+    fileId = "4575541",
+    text = "fx_tuskarrdinghy_aura02.m2",
+    value = "fx_tuskarrdinghy_aura02.m2",
+   },
+   {
+    fileId = "4640850",
+    text = "fx_tuskarrdinghy_aura03.m2",
+    value = "fx_tuskarrdinghy_aura03.m2",
    },
    {
     fileId = "166222",
@@ -96976,6 +97144,61 @@ WeakAuras.ModelPaths = {
          {
           children = {
            {
+            fileId = "519244",
+            text = "firelands_minivolcano_doodad_01.m2",
+            value = "firelands_minivolcano_doodad_01.m2",
+           },
+          },
+          text = "minivolcano_doodad",
+          value = "minivolcano_doodad",
+         },
+         {
+          children = {
+           {
+            fileId = "514479",
+            text = "firelands_minivolcano_smoke_01.m2",
+            value = "firelands_minivolcano_smoke_01.m2",
+           },
+          },
+          text = "minivolcano_smoke",
+          value = "minivolcano_smoke",
+         },
+         {
+          children = {
+           {
+            fileId = "514069",
+            text = "firelands_volcano_doodad.m2",
+            value = "firelands_volcano_doodad.m2",
+           },
+           {
+            fileId = "523713",
+            text = "firelands_volcano_doodad_active.m2",
+            value = "firelands_volcano_doodad_active.m2",
+           },
+          },
+          text = "volcano",
+          value = "volcano",
+         },
+        },
+        text = "firelands",
+        value = "firelands",
+       },
+       {
+        children = {
+         {
+          fileId = "353152",
+          text = "clickable_box.m2",
+          value = "clickable_box.m2",
+         },
+        },
+        text = "generic",
+        value = "generic",
+       },
+       {
+        children = {
+         {
+          children = {
+           {
             fileId = "305630",
             text = "twilightshammer_altar01.m2",
             value = "twilightshammer_altar01.m2",
@@ -97086,6 +97309,40 @@ WeakAuras.ModelPaths = {
      {
       children = {
        {
+        children = {
+         {
+          children = {
+           {
+            fileId = "575425",
+            text = "pa_fishingbarrel_01.m2",
+            value = "pa_fishingbarrel_01.m2",
+           },
+          },
+          text = "fishing",
+          value = "fishing",
+         },
+         {
+          fileId = "593942",
+          text = "pa_raft_1.m2",
+          value = "pa_raft_1.m2",
+         },
+        },
+        text = "pandaren",
+        value = "pandaren",
+       },
+      },
+      text = "doodads",
+      value = "doodads",
+     },
+    },
+    text = "expansion04",
+    value = "expansion04",
+   },
+   {
+    children = {
+     {
+      children = {
+       {
         fileId = "1401005",
         text = "shop_giftbox01.m2",
         value = "shop_giftbox01.m2",
@@ -97097,6 +97354,54 @@ WeakAuras.ModelPaths = {
     },
     text = "expansion06",
     value = "expansion06",
+   },
+   {
+    children = {
+     {
+      children = {
+       {
+        children = {
+         {
+          fileId = "3857151",
+          text = "10ts_tuskarr_basket01.m2",
+          value = "10ts_tuskarr_basket01.m2",
+         },
+         {
+          fileId = "3857145",
+          text = "10ts_tuskarr_boat01.m2",
+          value = "10ts_tuskarr_boat01.m2",
+         },
+         {
+          fileId = "3857128",
+          text = "10ts_tuskarr_fish01.m2",
+          value = "10ts_tuskarr_fish01.m2",
+         },
+         {
+          fileId = "4575536",
+          text = "10ts_tuskarr_fish03.m2",
+          value = "10ts_tuskarr_fish03.m2",
+         },
+         {
+          fileId = "4616655",
+          text = "10ts_tuskarr_flask01.m2",
+          value = "10ts_tuskarr_flask01.m2",
+         },
+         {
+          fileId = "3857150",
+          text = "10ts_tuskarr_tacklebox01open.m2",
+          value = "10ts_tuskarr_tacklebox01open.m2",
+         },
+        },
+        text = "tuskarr",
+        value = "tuskarr",
+       },
+      },
+      text = "doodads",
+      value = "doodads",
+     },
+    },
+    text = "expansion09",
+    value = "expansion09",
    },
    {
     children = {
