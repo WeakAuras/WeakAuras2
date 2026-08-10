@@ -12450,6 +12450,86 @@ WeakAuras.ModelPaths = {
         value = "helm_plate_raidwarrior_c_01_trm.m2",
        },
        {
+        fileId = "6726319",
+        text = "helm_plate_raidwarriorscarlet_f_01_dw_f.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_dw_f.m2",
+       },
+       {
+        fileId = "6726320",
+        text = "helm_plate_raidwarriorscarlet_f_01_dw_m.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_dw_m.m2",
+       },
+       {
+        fileId = "6726321",
+        text = "helm_plate_raidwarriorscarlet_f_01_gn_f.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_gn_f.m2",
+       },
+       {
+        fileId = "6726322",
+        text = "helm_plate_raidwarriorscarlet_f_01_gn_m.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_gn_m.m2",
+       },
+       {
+        fileId = "6726323",
+        text = "helm_plate_raidwarriorscarlet_f_01_hu_f.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_hu_f.m2",
+       },
+       {
+        fileId = "6726324",
+        text = "helm_plate_raidwarriorscarlet_f_01_hu_m.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_hu_m.m2",
+       },
+       {
+        fileId = "6726325",
+        text = "helm_plate_raidwarriorscarlet_f_01_ni_f.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_ni_f.m2",
+       },
+       {
+        fileId = "6726326",
+        text = "helm_plate_raidwarriorscarlet_f_01_ni_m.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_ni_m.m2",
+       },
+       {
+        fileId = "6726327",
+        text = "helm_plate_raidwarriorscarlet_f_01_or_f.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_or_f.m2",
+       },
+       {
+        fileId = "6726328",
+        text = "helm_plate_raidwarriorscarlet_f_01_or_m.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_or_m.m2",
+       },
+       {
+        fileId = "6726329",
+        text = "helm_plate_raidwarriorscarlet_f_01_sc_f.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_sc_f.m2",
+       },
+       {
+        fileId = "6726330",
+        text = "helm_plate_raidwarriorscarlet_f_01_sc_m.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_sc_m.m2",
+       },
+       {
+        fileId = "6726332",
+        text = "helm_plate_raidwarriorscarlet_f_01_ta_f.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_ta_f.m2",
+       },
+       {
+        fileId = "6726333",
+        text = "helm_plate_raidwarriorscarlet_f_01_ta_m.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_ta_m.m2",
+       },
+       {
+        fileId = "6726334",
+        text = "helm_plate_raidwarriorscarlet_f_01_tr_f.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_tr_f.m2",
+       },
+       {
+        fileId = "6726335",
+        text = "helm_plate_raidwarriorscarlet_f_01_tr_m.m2",
+        value = "helm_plate_raidwarriorscarlet_f_01_tr_m.m2",
+       },
+       {
         fileId = "141328",
         text = "helm_robe_ahnqiraj_a_01_dwf.m2",
         value = "helm_robe_ahnqiraj_a_01_dwf.m2",
@@ -13835,6 +13915,86 @@ WeakAuras.ModelPaths = {
         value = "helm_robe_raidmage_c_01_trm.m2",
        },
        {
+        fileId = "6731095",
+        text = "helm_robe_raidmagescarlet_e_01_dw_f.m2",
+        value = "helm_robe_raidmagescarlet_e_01_dw_f.m2",
+       },
+       {
+        fileId = "6731096",
+        text = "helm_robe_raidmagescarlet_e_01_dw_m.m2",
+        value = "helm_robe_raidmagescarlet_e_01_dw_m.m2",
+       },
+       {
+        fileId = "6731097",
+        text = "helm_robe_raidmagescarlet_e_01_gn_f.m2",
+        value = "helm_robe_raidmagescarlet_e_01_gn_f.m2",
+       },
+       {
+        fileId = "6731098",
+        text = "helm_robe_raidmagescarlet_e_01_gn_m.m2",
+        value = "helm_robe_raidmagescarlet_e_01_gn_m.m2",
+       },
+       {
+        fileId = "6731099",
+        text = "helm_robe_raidmagescarlet_e_01_hu_f.m2",
+        value = "helm_robe_raidmagescarlet_e_01_hu_f.m2",
+       },
+       {
+        fileId = "6731100",
+        text = "helm_robe_raidmagescarlet_e_01_hu_m.m2",
+        value = "helm_robe_raidmagescarlet_e_01_hu_m.m2",
+       },
+       {
+        fileId = "6731101",
+        text = "helm_robe_raidmagescarlet_e_01_ni_f.m2",
+        value = "helm_robe_raidmagescarlet_e_01_ni_f.m2",
+       },
+       {
+        fileId = "6731102",
+        text = "helm_robe_raidmagescarlet_e_01_ni_m.m2",
+        value = "helm_robe_raidmagescarlet_e_01_ni_m.m2",
+       },
+       {
+        fileId = "6731103",
+        text = "helm_robe_raidmagescarlet_e_01_or_f.m2",
+        value = "helm_robe_raidmagescarlet_e_01_or_f.m2",
+       },
+       {
+        fileId = "6731104",
+        text = "helm_robe_raidmagescarlet_e_01_or_m.m2",
+        value = "helm_robe_raidmagescarlet_e_01_or_m.m2",
+       },
+       {
+        fileId = "6731105",
+        text = "helm_robe_raidmagescarlet_e_01_sc_f.m2",
+        value = "helm_robe_raidmagescarlet_e_01_sc_f.m2",
+       },
+       {
+        fileId = "6731106",
+        text = "helm_robe_raidmagescarlet_e_01_sc_m.m2",
+        value = "helm_robe_raidmagescarlet_e_01_sc_m.m2",
+       },
+       {
+        fileId = "6731107",
+        text = "helm_robe_raidmagescarlet_e_01_ta_f.m2",
+        value = "helm_robe_raidmagescarlet_e_01_ta_f.m2",
+       },
+       {
+        fileId = "6731108",
+        text = "helm_robe_raidmagescarlet_e_01_ta_m.m2",
+        value = "helm_robe_raidmagescarlet_e_01_ta_m.m2",
+       },
+       {
+        fileId = "6731109",
+        text = "helm_robe_raidmagescarlet_e_01_tr_f.m2",
+        value = "helm_robe_raidmagescarlet_e_01_tr_f.m2",
+       },
+       {
+        fileId = "6731110",
+        text = "helm_robe_raidmagescarlet_e_01_tr_m.m2",
+        value = "helm_robe_raidmagescarlet_e_01_tr_m.m2",
+       },
+       {
         fileId = "142130",
         text = "helm_robe_raidpriest_a_01_dwf.m2",
         value = "helm_robe_raidpriest_a_01_dwf.m2",
@@ -15129,6 +15289,11 @@ WeakAuras.ModelPaths = {
         value = "lshoulder_mail_pvpalliance_c_01.m2",
        },
        {
+        fileId = "6725202",
+        text = "lshoulder_mail_pvpalliancescarlet_c_01.m2",
+        value = "lshoulder_mail_pvpalliancescarlet_c_01.m2",
+       },
+       {
         fileId = "143211",
         text = "lshoulder_mail_pvphorde_a_01.m2",
         value = "lshoulder_mail_pvphorde_a_01.m2",
@@ -15339,6 +15504,11 @@ WeakAuras.ModelPaths = {
         value = "lshoulder_plate_raidwarrior_c_01.m2",
        },
        {
+        fileId = "6725213",
+        text = "lshoulder_plate_raidwarriorscarlet_f_01.m2",
+        value = "lshoulder_plate_raidwarriorscarlet_f_01.m2",
+       },
+       {
         fileId = "143294",
         text = "lshoulder_raiddruid_b_01.m2",
         value = "lshoulder_raiddruid_b_01.m2",
@@ -15477,6 +15647,11 @@ WeakAuras.ModelPaths = {
         fileId = "143328",
         text = "lshoulder_robe_raidmage_c_01.m2",
         value = "lshoulder_robe_raidmage_c_01.m2",
+       },
+       {
+        fileId = "6725215",
+        text = "lshoulder_robe_raidmagescarlet_e_01.m2",
+        value = "lshoulder_robe_raidmagescarlet_e_01.m2",
        },
        {
         fileId = "143333",
@@ -15749,6 +15924,11 @@ WeakAuras.ModelPaths = {
         value = "rshoulder_mail_pvpalliance_c_01.m2",
        },
        {
+        fileId = "6725205",
+        text = "rshoulder_mail_pvpalliancescarlet_c_01.m2",
+        value = "rshoulder_mail_pvpalliancescarlet_c_01.m2",
+       },
+       {
         fileId = "143514",
         text = "rshoulder_mail_pvphorde_a_01.m2",
         value = "rshoulder_mail_pvphorde_a_01.m2",
@@ -15954,6 +16134,11 @@ WeakAuras.ModelPaths = {
         value = "rshoulder_plate_raidwarrior_c_01.m2",
        },
        {
+        fileId = "6725214",
+        text = "rshoulder_plate_raidwarriorscarlet_f_01.m2",
+        value = "rshoulder_plate_raidwarriorscarlet_f_01.m2",
+       },
+       {
         fileId = "143593",
         text = "rshoulder_raiddruid_b_01.m2",
         value = "rshoulder_raiddruid_b_01.m2",
@@ -16092,6 +16277,11 @@ WeakAuras.ModelPaths = {
         fileId = "143627",
         text = "rshoulder_robe_raidmage_c_01.m2",
         value = "rshoulder_robe_raidmage_c_01.m2",
+       },
+       {
+        fileId = "6725216",
+        text = "rshoulder_robe_raidmagescarlet_e_01.m2",
+        value = "rshoulder_robe_raidmagescarlet_e_01.m2",
        },
        {
         fileId = "143632",

@@ -1691,6 +1691,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "4227772",
+      text = "beaverprimalpet.m2",
+      value = "beaverprimalpet.m2",
+     },
+    },
+    text = "beaverprimalpet",
+    value = "beaverprimalpet",
+   },
+   {
+    children = {
+     {
       fileId = "123071",
       text = "beholder.m2",
       value = "beholder.m2",
@@ -2604,6 +2615,17 @@ WeakAuras.ModelPaths = {
     },
     text = "crab",
     value = "crab",
+   },
+   {
+    children = {
+     {
+      fileId = "7844897",
+      text = "crabtuskarrmount.m2",
+      value = "crabtuskarrmount.m2",
+     },
+    },
+    text = "crabtuskarrmount",
+    value = "crabtuskarrmount",
    },
    {
     children = {
@@ -5138,6 +5160,17 @@ WeakAuras.ModelPaths = {
     },
     text = "fish",
     value = "fish",
+   },
+   {
+    children = {
+     {
+      fileId = "2746822",
+      text = "fishbunch.m2",
+      value = "fishbunch.m2",
+     },
+    },
+    text = "fishbunch",
+    value = "fishbunch",
    },
    {
     children = {
@@ -14552,6 +14585,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7208231",
+      text = "tuskarrsealpet.m2",
+      value = "tuskarrsealpet.m2",
+     },
+    },
+    text = "tuskarrsealpet",
+    value = "tuskarrsealpet",
+   },
+   {
+    children = {
+     {
       fileId = "367653",
       text = "twighlightdragon.m2",
       value = "twighlightdragon.m2",
@@ -17614,6 +17658,136 @@ WeakAuras.ModelPaths = {
         fileId = "6655142",
         text = "helm_armor_chensha_c_01_wo_m.m2",
         value = "helm_armor_chensha_c_01_wo_m.m2",
+       },
+       {
+        fileId = "8267907",
+        text = "helm_armor_fisherfolk_c_02_be_f.m2",
+        value = "helm_armor_fisherfolk_c_02_be_f.m2",
+       },
+       {
+        fileId = "8267906",
+        text = "helm_armor_fisherfolk_c_02_be_m.m2",
+        value = "helm_armor_fisherfolk_c_02_be_m.m2",
+       },
+       {
+        fileId = "8267909",
+        text = "helm_armor_fisherfolk_c_02_dr_f.m2",
+        value = "helm_armor_fisherfolk_c_02_dr_f.m2",
+       },
+       {
+        fileId = "8267908",
+        text = "helm_armor_fisherfolk_c_02_dr_m.m2",
+        value = "helm_armor_fisherfolk_c_02_dr_m.m2",
+       },
+       {
+        fileId = "8267911",
+        text = "helm_armor_fisherfolk_c_02_dw_f.m2",
+        value = "helm_armor_fisherfolk_c_02_dw_f.m2",
+       },
+       {
+        fileId = "8267910",
+        text = "helm_armor_fisherfolk_c_02_dw_m.m2",
+        value = "helm_armor_fisherfolk_c_02_dw_m.m2",
+       },
+       {
+        fileId = "8267913",
+        text = "helm_armor_fisherfolk_c_02_gn_f.m2",
+        value = "helm_armor_fisherfolk_c_02_gn_f.m2",
+       },
+       {
+        fileId = "8267912",
+        text = "helm_armor_fisherfolk_c_02_gn_m.m2",
+        value = "helm_armor_fisherfolk_c_02_gn_m.m2",
+       },
+       {
+        fileId = "8267915",
+        text = "helm_armor_fisherfolk_c_02_go_f.m2",
+        value = "helm_armor_fisherfolk_c_02_go_f.m2",
+       },
+       {
+        fileId = "8267914",
+        text = "helm_armor_fisherfolk_c_02_go_m.m2",
+        value = "helm_armor_fisherfolk_c_02_go_m.m2",
+       },
+       {
+        fileId = "8267917",
+        text = "helm_armor_fisherfolk_c_02_hu_f.m2",
+        value = "helm_armor_fisherfolk_c_02_hu_f.m2",
+       },
+       {
+        fileId = "8267916",
+        text = "helm_armor_fisherfolk_c_02_hu_m.m2",
+        value = "helm_armor_fisherfolk_c_02_hu_m.m2",
+       },
+       {
+        fileId = "8267919",
+        text = "helm_armor_fisherfolk_c_02_ni_f.m2",
+        value = "helm_armor_fisherfolk_c_02_ni_f.m2",
+       },
+       {
+        fileId = "8267918",
+        text = "helm_armor_fisherfolk_c_02_ni_m.m2",
+        value = "helm_armor_fisherfolk_c_02_ni_m.m2",
+       },
+       {
+        fileId = "8267921",
+        text = "helm_armor_fisherfolk_c_02_or_f.m2",
+        value = "helm_armor_fisherfolk_c_02_or_f.m2",
+       },
+       {
+        fileId = "8267920",
+        text = "helm_armor_fisherfolk_c_02_or_m.m2",
+        value = "helm_armor_fisherfolk_c_02_or_m.m2",
+       },
+       {
+        fileId = "8267923",
+        text = "helm_armor_fisherfolk_c_02_pa_f.m2",
+        value = "helm_armor_fisherfolk_c_02_pa_f.m2",
+       },
+       {
+        fileId = "8267922",
+        text = "helm_armor_fisherfolk_c_02_pa_m.m2",
+        value = "helm_armor_fisherfolk_c_02_pa_m.m2",
+       },
+       {
+        fileId = "8267929",
+        text = "helm_armor_fisherfolk_c_02_sc_f.m2",
+        value = "helm_armor_fisherfolk_c_02_sc_f.m2",
+       },
+       {
+        fileId = "8267928",
+        text = "helm_armor_fisherfolk_c_02_sc_m.m2",
+        value = "helm_armor_fisherfolk_c_02_sc_m.m2",
+       },
+       {
+        fileId = "8267925",
+        text = "helm_armor_fisherfolk_c_02_ta_f.m2",
+        value = "helm_armor_fisherfolk_c_02_ta_f.m2",
+       },
+       {
+        fileId = "8267924",
+        text = "helm_armor_fisherfolk_c_02_ta_m.m2",
+        value = "helm_armor_fisherfolk_c_02_ta_m.m2",
+       },
+       {
+        fileId = "8267927",
+        text = "helm_armor_fisherfolk_c_02_tr_f.m2",
+        value = "helm_armor_fisherfolk_c_02_tr_f.m2",
+       },
+       {
+        fileId = "8267926",
+        text = "helm_armor_fisherfolk_c_02_tr_m.m2",
+        value = "helm_armor_fisherfolk_c_02_tr_m.m2",
+       },
+       {
+        fileId = "8267931",
+        text = "helm_armor_fisherfolk_c_02_wo_f.m2",
+        value = "helm_armor_fisherfolk_c_02_wo_f.m2",
+       },
+       {
+        fileId = "8267930",
+        text = "helm_armor_fisherfolk_c_02_wo_m.m2",
+        value = "helm_armor_fisherfolk_c_02_wo_m.m2",
        },
        {
         fileId = "5504037",
@@ -88736,6 +88910,16 @@ WeakAuras.ModelPaths = {
         value = "shoulder_armor_chensha_c_01_r.m2",
        },
        {
+        fileId = "8267904",
+        text = "shoulder_armor_fisherfolk_c_02_l.m2",
+        value = "shoulder_armor_fisherfolk_c_02_l.m2",
+       },
+       {
+        fileId = "8267905",
+        text = "shoulder_armor_fisherfolk_c_02_r.m2",
+        value = "shoulder_armor_fisherfolk_c_02_r.m2",
+       },
+       {
         fileId = "5504073",
         text = "shoulder_armor_twilightcultist_b_01_l.m2",
         value = "shoulder_armor_twilightcultist_b_01_l.m2",
@@ -88760,6 +88944,11 @@ WeakAuras.ModelPaths = {
         fileId = "6655148",
         text = "buckle_armor_chensha_c_01.m2",
         value = "buckle_armor_chensha_c_01.m2",
+       },
+       {
+        fileId = "8267903",
+        text = "buckle_armor_fisherfolk_c_02.m2",
+        value = "buckle_armor_fisherfolk_c_02.m2",
        },
        {
         fileId = "616015",
@@ -96153,6 +96342,11 @@ WeakAuras.ModelPaths = {
         value = "staff_2h_pvppandarias3_c_02.m2",
        },
        {
+        fileId = "4689164",
+        text = "staff_2h_tuskarrladle_b_01.m2",
+        value = "staff_2h_tuskarrladle_b_01.m2",
+       },
+       {
         fileId = "796968",
         text = "staff_2h_zandalari_c_01.m2",
         value = "staff_2h_zandalari_c_01.m2",
@@ -99144,6 +99338,28 @@ WeakAuras.ModelPaths = {
       text = "unk_exp11_7320488",
       value = "unk_exp11_7320488",
      },
+     {
+      children = {
+       {
+        fileId = "7648798",
+        text = "7648798.m2",
+        value = "7648798.m2",
+       },
+      },
+      text = "unk_exp11_7648798",
+      value = "unk_exp11_7648798",
+     },
+     {
+      children = {
+       {
+        fileId = "7866654",
+        text = "7866654.m2",
+        value = "7866654.m2",
+       },
+      },
+      text = "unk_exp11_7866654",
+      value = "unk_exp11_7866654",
+     },
     },
     text = "creature",
     value = "creature",
@@ -99336,6 +99552,39 @@ WeakAuras.ModelPaths = {
       },
       text = "unk_exp11_7736414",
       value = "unk_exp11_7736414",
+     },
+     {
+      children = {
+       {
+        fileId = "7893899",
+        text = "7893899.m2",
+        value = "7893899.m2",
+       },
+      },
+      text = "unk_exp11_7893899",
+      value = "unk_exp11_7893899",
+     },
+     {
+      children = {
+       {
+        fileId = "7897682",
+        text = "7897682.m2",
+        value = "7897682.m2",
+       },
+      },
+      text = "unk_exp11_7897682",
+      value = "unk_exp11_7897682",
+     },
+     {
+      children = {
+       {
+        fileId = "7897683",
+        text = "7897683.m2",
+        value = "7897683.m2",
+       },
+      },
+      text = "unk_exp11_7897683",
+      value = "unk_exp11_7897683",
      },
     },
     text = "spells",
@@ -99563,9 +99812,9 @@ WeakAuras.ModelPaths = {
     value = "10fx_rubylifepools_melidrussa_frigidshard_precast.m2",
    },
    {
-    fileId = "6703761",
-    text = "11fx_manaforgeomega_forgeweaveraraz_powermanifested_impact.m2",
-    value = "11fx_manaforgeomega_forgeweaveraraz_powermanifested_impact.m2",
+    fileId = "5054341",
+    text = "10gfx_arcane_precasthands.m2",
+    value = "10gfx_arcane_precasthands.m2",
    },
    {
     fileId = "7116163",
@@ -99641,6 +99890,26 @@ WeakAuras.ModelPaths = {
     fileId = "5928237",
     text = "11fx_undermineraid_theonearmedbandit_scatteredpayout_cast.m2",
     value = "11fx_undermineraid_theonearmedbandit_scatteredpayout_cast.m2",
+   },
+   {
+    fileId = "6703761",
+    text = "11gfx_arcane_verticalimpact.m2",
+    value = "11gfx_arcane_verticalimpact.m2",
+   },
+   {
+    fileId = "6372071",
+    text = "11gfx_explosion_verticalimpact.m2",
+    value = "11gfx_explosion_verticalimpact.m2",
+   },
+   {
+    fileId = "7704420",
+    text = "12fx_transmog_set_change.m2",
+    value = "12fx_transmog_set_change.m2",
+   },
+   {
+    fileId = "1660571",
+    text = "7fx_nagawitch_watersplash_precast.m2",
+    value = "7fx_nagawitch_watersplash_precast.m2",
    },
    {
     fileId = "3061921",
@@ -104989,14 +105258,14 @@ WeakAuras.ModelPaths = {
     value = "fx_arcanebombardment_cast01.m2",
    },
    {
-    fileId = "5054341",
-    text = "fx_destabilize_precast.m2",
-    value = "fx_destabilize_precast.m2",
-   },
-   {
     fileId = "5928236",
     text = "fx_payline_aura.m2",
     value = "fx_payline_aura.m2",
+   },
+   {
+    fileId = "4640850",
+    text = "fx_tuskarrdinghy_aura03.m2",
+    value = "fx_tuskarrdinghy_aura03.m2",
    },
    {
     fileId = "575418",
@@ -186998,6 +187267,59 @@ WeakAuras.ModelPaths = {
     },
     text = "expansion06",
     value = "expansion06",
+   },
+   {
+    children = {
+     {
+      children = {
+       {
+        children = {
+         {
+          fileId = "3857151",
+          text = "10ts_tuskarr_basket01.m2",
+          value = "10ts_tuskarr_basket01.m2",
+         },
+         {
+          fileId = "3857145",
+          text = "10ts_tuskarr_boat01.m2",
+          value = "10ts_tuskarr_boat01.m2",
+         },
+         {
+          fileId = "3857128",
+          text = "10ts_tuskarr_fish01.m2",
+          value = "10ts_tuskarr_fish01.m2",
+         },
+         {
+          fileId = "4575536",
+          text = "10ts_tuskarr_fish03.m2",
+          value = "10ts_tuskarr_fish03.m2",
+         },
+         {
+          fileId = "4575541",
+          text = "10ts_tuskarr_fish04.m2",
+          value = "10ts_tuskarr_fish04.m2",
+         },
+         {
+          fileId = "4616655",
+          text = "10ts_tuskarr_flask01.m2",
+          value = "10ts_tuskarr_flask01.m2",
+         },
+         {
+          fileId = "3857150",
+          text = "10ts_tuskarr_tacklebox01open.m2",
+          value = "10ts_tuskarr_tacklebox01open.m2",
+         },
+        },
+        text = "tuskarr",
+        value = "tuskarr",
+       },
+      },
+      text = "doodads",
+      value = "doodads",
+     },
+    },
+    text = "expansion09",
+    value = "expansion09",
    },
    {
     children = {
