@@ -1883,6 +1883,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7844897",
+      text = "crabtuskarrmount.m2",
+      value = "crabtuskarrmount.m2",
+     },
+    },
+    text = "crabtuskarrmount",
+    value = "crabtuskarrmount",
+   },
+   {
+    children = {
+     {
       fileId = "123299",
       text = "crackelfmale.m2",
       value = "crackelfmale.m2",
@@ -53071,17 +53082,6 @@ WeakAuras.ModelPaths = {
      {
       children = {
        {
-        fileId = "7844897",
-        text = "7844897.m2",
-        value = "7844897.m2",
-       },
-      },
-      text = "unk_exp11_7844897",
-      value = "unk_exp11_7844897",
-     },
-     {
-      children = {
-       {
         fileId = "7866654",
         text = "7866654.m2",
         value = "7866654.m2",
@@ -57025,11 +57025,6 @@ WeakAuras.ModelPaths = {
     fileId = "5928236",
     text = "fx_payline_aura.m2",
     value = "fx_payline_aura.m2",
-   },
-   {
-    fileId = "4575541",
-    text = "fx_tuskarrdinghy_aura02.m2",
-    value = "fx_tuskarrdinghy_aura02.m2",
    },
    {
     fileId = "4640850",
@@ -97380,6 +97375,11 @@ WeakAuras.ModelPaths = {
           fileId = "4575536",
           text = "10ts_tuskarr_fish03.m2",
           value = "10ts_tuskarr_fish03.m2",
+         },
+         {
+          fileId = "4575541",
+          text = "10ts_tuskarr_fish04.m2",
+          value = "10ts_tuskarr_fish04.m2",
          },
          {
           fileId = "4616655",
