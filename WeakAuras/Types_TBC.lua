@@ -95,7 +95,7 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Jan'alai"], 1191 },
         { L["Halazzi"], 1192 },
         { L["Hex Lord Malacrass"], 1193 },
-        { L["Daakara"], 1194 },
+        { L["Zul'jin"], 1194 },
       }
     },
     {
