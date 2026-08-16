@@ -1,5 +1,5 @@
-# WOW_INTERFACE_TARGETS: vanilla
 ## Interface: 11509
+# WOW_INTERFACE_TARGETS: vanilla
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@

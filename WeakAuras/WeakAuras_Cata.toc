@@ -1,5 +1,5 @@
-# WOW_INTERFACE_TARGETS: cata
 ## Interface: 40402
+# WOW_INTERFACE_TARGETS: cata
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@
