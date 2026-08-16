@@ -1,6 +1,6 @@
-## Title: WeakAuras
-# WOW_INTERFACE_TARGETS: mists-test, mists
 ## Interface: 50504
+# WOW_INTERFACE_TARGETS: mists-test, mists
+## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@
 ## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp

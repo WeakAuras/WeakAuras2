@@ -1,5 +1,5 @@
-# WOW_INTERFACE_TARGETS: wrath-titan
 ## Interface: 38002
+# WOW_INTERFACE_TARGETS: wrath-titan
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@

@@ -1,5 +1,5 @@
-# WOW_INTERFACE_TARGETS: mists-test, mists
 ## Interface: 50504
+# WOW_INTERFACE_TARGETS: mists-test, mists
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
