@@ -72,7 +72,7 @@ jobs:
     steps:
       - name: Send Twitter Notification
         id: twitter
-        uses: nearform-actions/github-action-notify-twitter@b3fa623c2f320117e8a08e20564c4ce0a5e67930 # v1
+        uses: nearform-actions/github-action-notify-twitter@fd83d603197ec1274182f4de9fbacc249db0d92b # v1
         with:
           message: ${{needs.release-notification-output.outputs.tweetText}}
           twitter-app-key: ${{ secrets.TWITTER_API_KEY }}
