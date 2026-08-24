@@ -99341,17 +99341,6 @@ WeakAuras.ModelPaths = {
      {
       children = {
        {
-        fileId = "7648798",
-        text = "7648798.m2",
-        value = "7648798.m2",
-       },
-      },
-      text = "unk_exp11_7648798",
-      value = "unk_exp11_7648798",
-     },
-     {
-      children = {
-       {
         fileId = "7866654",
         text = "7866654.m2",
         value = "7866654.m2",
@@ -187394,6 +187383,34 @@ WeakAuras.ModelPaths = {
     },
     text = "expansion10",
     value = "expansion10",
+   },
+   {
+    children = {
+     {
+      children = {
+       {
+        children = {
+         {
+          fileId = "7648798",
+          text = "12xp_generic_toy_dragonthronetoy01.m2",
+          value = "12xp_generic_toy_dragonthronetoy01.m2",
+         },
+         {
+          fileId = "7956698",
+          text = "12xp_generic_toy_dragonthronetoy01_classic.m2",
+          value = "12xp_generic_toy_dragonthronetoy01_classic.m2",
+         },
+        },
+        text = "12xp_generic_toy_dragonthronetoy01",
+        value = "12xp_generic_toy_dragonthronetoy01",
+       },
+      },
+      text = "doodads",
+      value = "doodads",
+     },
+    },
+    text = "expansion11",
+    value = "expansion11",
    },
    {
     children = {
