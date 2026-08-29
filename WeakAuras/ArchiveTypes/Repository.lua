@@ -114,8 +114,8 @@ local prototype = {
     return store
   end,
   Delete = function(self, image)
-    for id in pairs(image.stores) do
-      Archivist:Delete("ReadOnly", id)
+    for _, subStore in pairs(image.stores) do
+      Archivist:Delete("ReadOnly", subStore.id)
     end
   end,
 }
