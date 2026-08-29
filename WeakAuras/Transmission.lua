@@ -394,54 +394,27 @@ function Private.DisplayToString(id, forChat)
   end
 end
 
-local orderedPairs
-do
-  local function __genOrderedIndex(t)
-    local orderedIndex = {}
-    for key in pairs(t) do
-      if key ~= "__orderedIndex" then
-        table.insert(orderedIndex, key)
-      end
-    end
-    table.sort(orderedIndex, function(a, b)
-      local typeA, typeB = type(a), type(b)
-      if typeA ~= typeB then
-        return typeA < typeB
-      else
-        return a < b
-      end
-    end)
-    return orderedIndex
+local function orderedPairs(t)
+  local orderedKeys = {}
+  for key in pairs(t) do
+    table.insert(orderedKeys, key)
   end
-
-  local function orderedNext(t, state)
-    -- Equivalent of the next function, but returns the keys in the alphabetic
-    -- order. We use a temporary ordered key table that is stored in the
-    -- table being iterated.
-    local key = nil
-    if state == nil then
-      -- the first time, generate the index
-      t.__orderedIndex = __genOrderedIndex(t)
-      key = t.__orderedIndex[1]
+  table.sort(orderedKeys, function(a, b)
+    local typeA, typeB = type(a), type(b)
+    if typeA ~= typeB then
+      return typeA < typeB
     else
-      -- fetch the next value
-      for i = 1, table.getn(t.__orderedIndex) do
-        if t.__orderedIndex[i] == state then
-          key = t.__orderedIndex[i+1]
-        end
-      end
+      return a < b
     end
+  end)
 
-    if key then
+  local index = 0
+  return function()
+    index = index + 1
+    local key = orderedKeys[index]
+    if key ~= nil then
       return key, t[key]
     end
-
-    -- no more value to return, cleanup
-    t.__orderedIndex = nil
-  end
-
-  function orderedPairs(t)
-    return orderedNext, t, nil
   end
 end
 
@@ -751,5 +724,4 @@ end
 Comm:RegisterComm("WeakAurasProg", HandleProgressComm)
 Comm:RegisterComm("WeakAuras", HandleComm)
 Chomp.RegisterAddonPrefix("WeakAuras2", HandleComm)
-
 
