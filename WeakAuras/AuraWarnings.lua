@@ -68,32 +68,51 @@ function Private.AuraWarnings.UpdateWarning(uid, key, severity, message, printOn
   end
 end
 
---- @type table<AuraWarningSeverity, number>
-local severityLevel = {
-  info = 0,
-  sound = 1,
-  tts = 2,
-  warning = 3,
-  error = 4
+---@class AuraWarningSeverityDescriptor
+---@field id AuraWarningSeverity
+---@field level number
+---@field icon string
+---@field title string
+
+--- @type AuraWarningSeverityDescriptor[]
+local severityDescriptors = {
+  {
+    id = "error",
+    level = 4,
+    icon = [[Interface/HELPFRAME/HelpIcon-Bug]],
+    title = L["Error"]
+  },
+  {
+    id = "warning",
+    level = 3,
+    icon = [[services-icon-warning]],
+    title = L["Warning"]
+  },
+  {
+    id = "tts",
+    level = 2,
+    icon = [[chatframe-button-icon-tts]],
+    title = L["Text To Speech"]
+  },
+  {
+    id = "sound",
+    level = 1,
+    icon = [[chatframe-button-icon-voicechat]],
+    title = L["Sound"]
+  },
+  {
+    id = "info",
+    level = 0,
+    icon = [[Interface/friendsframe/informationicon.blp]],
+    title = L["Information"]
+  }
 }
 
---- @type table<AuraWarningSeverity, string>
-local icons = {
-  info = [[Interface/friendsframe/informationicon.blp]],
-  sound = [[chatframe-button-icon-voicechat]],
-  tts = [[chatframe-button-icon-tts]],
-  warning = [[services-icon-warning]],
-  error = [[Interface/HELPFRAME/HelpIcon-Bug]]
-}
-
---- @type table<AuraWarningSeverity, string>
-local titles = {
-  info = L["Information"],
-  sound = L["Sound"],
-  tts = L["Text To Speech"],
-  warning = L["Warning"],
-  error = L["Error"],
-}
+--- @type table<AuraWarningSeverity, AuraWarningSeverityDescriptor>
+local severityById = {}
+for _, severity in ipairs(severityDescriptors) do
+  severityById[severity.id] = severity
+end
 
 ---@param result string
 ---@param messages string[]
@@ -125,8 +144,10 @@ function Private.AuraWarnings.FormatWarnings(uid)
     return
   end
 
-  --- @type AuraWarningSeverity
+  --- @type AuraWarningSeverityDescriptor
   local maxSeverity
+  --- @type AuraWarningSeverity
+  local firstSeverity
   --- @type boolean
   local mixedSeverity = false
 
@@ -134,12 +155,14 @@ function Private.AuraWarnings.FormatWarnings(uid)
   local messagePerSeverity = {}
 
   for key, warning in pairs(warnings[uid]) do
-    if not maxSeverity then
-      maxSeverity = warning.severity
-    elseif severityLevel[warning.severity] > severityLevel[maxSeverity] then
-      maxSeverity = warning.severity
-    elseif severityLevel[warning.severity] < severityLevel[maxSeverity] then
+    local severity = severityById[warning.severity]
+    if not maxSeverity or severity.level > maxSeverity.level then
+      maxSeverity = severity
+    end
+    if firstSeverity and firstSeverity ~= warning.severity then
       mixedSeverity = true
+    else
+      firstSeverity = warning.severity
     end
     messagePerSeverity[warning.severity] = messagePerSeverity[warning.severity] or {}
     tinsert(messagePerSeverity[warning.severity], warning.message)
@@ -151,12 +174,10 @@ function Private.AuraWarnings.FormatWarnings(uid)
 
   --- @type string
   local result = ""
-  result = AddMessages(result, messagePerSeverity["error"], icons["error"], mixedSeverity)
-  result = AddMessages(result, messagePerSeverity["warning"], icons["warning"], mixedSeverity)
-  result = AddMessages(result, messagePerSeverity["sound"], icons["sound"], mixedSeverity)
-  result = AddMessages(result, messagePerSeverity["tts"], icons["tts"], mixedSeverity)
-  result = AddMessages(result, messagePerSeverity["info"], icons["info"], mixedSeverity)
-  return icons[maxSeverity], titles[maxSeverity], result
+  for _, severity in ipairs(severityDescriptors) do
+    result = AddMessages(result, messagePerSeverity[severity.id], severity.icon, mixedSeverity)
+  end
+  return maxSeverity.icon, maxSeverity.title, result
 end
 
 function Private.AuraWarnings.GetAllWarnings(uid)
@@ -189,10 +210,11 @@ function Private.AuraWarnings.GetAllWarnings(uid)
 
   -- Order them by severity, keeping just one per severity
   for key, warning in pairs(thisWarnings) do
+    local severity = severityById[warning.severity]
     results[warning.severity] = {
-      icon = icons[warning.severity],
-      prio = 5 + severityLevel[warning.severity],
-      title = titles[warning.severity] or warning.severity,
+      icon = severity.icon,
+      prio = 5 + severity.level,
+      title = severity.title,
       message = warning.message,
       auraId = warning.auraId,
       key = key
