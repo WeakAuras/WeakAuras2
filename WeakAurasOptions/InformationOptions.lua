@@ -183,7 +183,7 @@ function OptionsPrivate.GetInformationOptions(data)
       desc = desc .. "|cFFE0E000"..child.id..": |r"..L["Squelched"] .. "\n"
     end
     local childSquelch = child.information.squelchOnLoad and true or false
-    if not commonSquelch then
+    if commonSquelch == nil then
       commonSquelch = childSquelch
     elseif childSquelch ~= commonSquelch then
       sameSquelch = false
