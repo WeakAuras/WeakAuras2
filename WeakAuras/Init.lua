@@ -462,11 +462,6 @@ function WeakAuras.IsTWW()
 end
 
 ---@return boolean result
-function WeakAuras.IsMidnight()
-  return WeakAuras.BuildInfo >= 120000
-end
-
----@return boolean result
 function WeakAuras.IsClassicOrTBC()
   return WeakAuras.IsClassicEra() or WeakAuras.IsTBC()
 end
@@ -664,15 +659,6 @@ end
 if WeakAuras.IsWrathClassic() then
   C_Timer.After(1, function()
     WeakAuras.prettyPrint("This version of WeakAuras is provided as is. We are unable to test it ourselves on CN Servers.")
-  end)
-elseif WeakAuras.IsMidnight() then
-  C_Timer.After(1, function()
-    WeakAuras.prettyPrint("WeakAuras does not support Midnight due to Blizzard restricting addons. Read more at https://patreon.com/WeakAuras")
-  end)
-  libsAreOk = false
-elseif WeakAuras.IsTWW() then
-  C_Timer.After(1, function()
-    WeakAuras.prettyPrint("WeakAuras does not support Midnight due to Blizzard's new addon restrictions. Read more at https://patreon.com/WeakAuras")
   end)
 end
 
