@@ -91,6 +91,27 @@ behavior, and the client flavors and patch versions that support it. Check it
 before you call an API in flavor-sensitive code, and trust it over memory when
 the two disagree.
 
+## Secure execution and taint
+
+WoW separates secure Blizzard code from tainted addon code. Taint that spreads
+into secure code blocks protected actions and raises blocked-action errors for
+users. See <https://warcraft.wiki.gg/wiki/Secure_Execution_and_Tainting> for
+the model.
+
+- Do not write to Blizzard frames, globals, or tables that secure code reads.
+  Hook a Blizzard function with `hooksecurefunc`, as
+  `WeakAuras/Transmission.lua` does for `SetItemRef`.
+- A protected frame cannot change during combat lockdown. Follow the pattern
+  in `WeakAuras/RegionTypes/RegionPrototype.lua`: check `region:IsProtected()`
+  and `InCombatLockdown()`, raise an aura warning instead of touching the
+  frame, and point users to
+  <https://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames>.
+- Defer work that combat blocks until `PLAYER_REGEN_ENABLED`, as
+  `Private.LoadOptions` in `WeakAuras/WeakAuras.lua` defers the options UI.
+- Custom aura code runs in the sandbox that `WeakAuras/AuraEnvironment.lua`
+  builds. When you expose a new function there, check that it cannot spread
+  taint into secure code or perform a protected action.
+
 ## Code conventions
 
 - Use Lua 5.1 syntax. WoW runs a customized Lua 5.1: it removes standard
