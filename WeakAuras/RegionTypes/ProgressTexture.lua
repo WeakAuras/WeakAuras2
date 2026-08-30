@@ -690,13 +690,14 @@ local funcs = {
     self:Scale(self.scalex, self.scaley)
   end,
   Scale = function(self, scalex, scaley)
+    self.mirror_h = scalex < 0
+    self.mirror_v = scaley < 0
+
     if(scalex < 0) then
-      self.mirror_h = true
       scalex = scalex * -1
     end
 
     if(scaley < 0) then
-      self.mirror_v = true
       scaley = scaley * -1
     end
 
