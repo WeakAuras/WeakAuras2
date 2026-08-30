@@ -625,9 +625,6 @@ end
 ---@type fun(data: auraData, option: Option): fun(_, value: number)
 local function setUserNum(data, option)
   return function(_, value)
-    if value == "" then
-      return
-    end
     OptionsPrivate.Private.TimeMachine:StartTransaction()
     local num = tonumber(value)
     if not num or math.abs(num) == math.huge or tostring(num) == "nan" then
