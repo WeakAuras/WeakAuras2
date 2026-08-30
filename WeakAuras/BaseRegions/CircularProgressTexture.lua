@@ -112,15 +112,15 @@ local funcs = {
     self.mirror = mirror
     self:UpdateTextures()
   end,
-  --- @type fun(self: CircularProgressTextureInstance)
+  --- @type fun(self: CircularProgressTextureInstance, width: number)
   SetWidth = function(self, width)
     self.width = width
   end,
-  --- @type fun(self: CircularProgressTextureInstance)
+  --- @type fun(self: CircularProgressTextureInstance, height: number)
   SetHeight = function(self, height)
     self.height = height
   end,
-  --- @type fun(self: CircularProgressTextureInstance)
+  --- @type fun(self: CircularProgressTextureInstance, scalex: number, scaley: number)
   SetScale = function(self, scalex, scaley)
     self.scalex, self.scaley = scalex, scaley
   end,
