@@ -159,19 +159,24 @@ check passed unless you ran it or GitHub reports it as passed.
 - Use conventional commit messages.
 - Keep each commit reviewable and keep the pull request description clear
   about the reason, behavior change, risks, and validation.
-- Read all current review comments before you revise a pull request. Reply to
-  and resolve each addressed thread when the task includes review follow-up.
-- Preserve unrelated work in a dirty worktree.
-
-## Working with GitHub PRs, Issues, and Comments
-
-- **Open every PR with the repository template.** `gh pr create` does not apply `.github/pull_request_template.md` automatically, so read that file and pass its filled-in contents as the PR body (`--body`/`--body-file`). Keep every section (Summary, Squash Commit Body, Checklist), fill them in for this change, mark the checklist items, and remove only the lines the template says are inapplicable.
-- **Keep PR titles and descriptions current.** When pushing new changes to a PR, review the title and description and update them if they no longer accurately reflect what the PR does.
-- **Reply to and resolve review conversations.** Once a review comment has been addressed, reply to the thread with a description of the resolution including the commit hash that fixed it, then mark the conversation as resolved.
-- **Sign all agent-authored content.** When posting a comment, creating an issue, or opening a PR, append a footer to the message indicating that it was written by an agent. The footer must include the name of the agent and the name of the model used. Example:
+- Open every pull request with the repository template. `gh pr create` does
+  not apply `.github/pull_request_template.md` on its own, so read that file
+  and pass its filled-in content as the body. Keep its sections, which are
+  Description, Type of change, How Has This Been Tested, and Checklist. Fill
+  each one in for this change, and delete only the type-of-change options
+  that do not apply.
+- Update the pull request title and description when new commits change what
+  the pull request does.
+- Read all current review comments before you revise a pull request. When a
+  comment is addressed, reply to its thread with what changed and the commit
+  hash, then resolve the thread.
+- Sign agent-authored content. Append a footer that names the agent and the
+  model when you post a comment, create an issue, or open a pull request.
+  Example:
 
   ```markdown
   ---
   Written by an agent (Claude Code, claude-opus-4-7).
   ```
- 
+
+- Preserve unrelated work in a dirty worktree.
