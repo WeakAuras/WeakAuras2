@@ -28,9 +28,11 @@ file after its dependencies.
 - Most runtime files use `local Private = select(2, ...)` for internal state
   shared across files. Put public addon APIs on `WeakAuras` and internal APIs
   on `Private`. Do not create another global.
-- `WeakAuras/Types.lua` and `WeakAuras/Types_*.lua` define shared LuaLS and
-  EmmyLua contracts. Keep these contracts consistent with runtime table
-  shapes and function parameters.
+- `WeakAuras/Types.lua` and the per-client `WeakAuras/Types_*.lua` files fill
+  `Private` with shared option data, such as value lists and their localized
+  display names. Each `.toc` loads the flavor file before `Types.lua`. Keep
+  the flavor files consistent with each other, and keep this data consistent
+  with the runtime code that reads it.
 - `WeakAuras/Prototypes.lua`, `WeakAuras/GenericTrigger.lua`, and
   `WeakAuras/BuffTrigger2.lua` own major trigger behavior. Event dispatch and
   trigger updates are hot paths. Avoid repeated scans, temporary tables, and
