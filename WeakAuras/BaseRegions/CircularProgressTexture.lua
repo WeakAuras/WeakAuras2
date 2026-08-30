@@ -24,6 +24,8 @@ Private.CircularProgressTextureBase = {}
 --- @field offset number
 --- @field width number
 --- @field height number
+--- @field scalex number
+--- @field scaley number
 --- @field coords TextureCoords[]
 
 --- @class CircularProgressTextureOptions
@@ -110,12 +112,15 @@ local funcs = {
     self.mirror = mirror
     self:UpdateTextures()
   end,
+  --- @type fun(self: CircularProgressTextureInstance, width: number)
   SetWidth = function(self, width)
     self.width = width
   end,
+  --- @type fun(self: CircularProgressTextureInstance, height: number)
   SetHeight = function(self, height)
     self.height = height
   end,
+  --- @type fun(self: CircularProgressTextureInstance, scalex: number, scaley: number)
   SetScale = function(self, scalex, scaley)
     self.scalex, self.scaley = scalex, scaley
   end,
@@ -252,6 +257,10 @@ function Private.CircularProgressTextureBase.modify(circularTexture, options)
   circularTexture.width = options.width
   circularTexture.height = options.height
   circularTexture.offset = options.offset
+  circularTexture.scalex = 1
+  circularTexture.scaley = 1
+  circularTexture.mirror_h = false
+  circularTexture.mirror_v = false
   local offset = options.offset
   local frame = circularTexture.parentFrame
   if offset > 0 then
