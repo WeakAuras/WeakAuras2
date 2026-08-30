@@ -94,8 +94,11 @@ into secure code blocks protected actions and raises errors for users. See
 - Do not write to Blizzard frames, globals, or tables that secure code reads.
   Hook a Blizzard function with `hooksecurefunc`, as
   `WeakAuras/Transmission.lua` does for `SetItemRef`.
-- A protected frame cannot change during combat lockdown. Follow the pattern
-  in `WeakAuras/RegionTypes/RegionPrototype.lua`: check `region:IsProtected()`
+- During combat lockdown, WoW blocks specific operations on a protected
+  frame, such as show, hide, move, resize, anchor, and secure attribute
+  changes. See <https://warcraft.wiki.gg/wiki/API_InCombatLockdown> for the
+  restricted set. Before such an operation, follow the pattern in
+  `WeakAuras/RegionTypes/RegionPrototype.lua`: check `region:IsProtected()`
   and `InCombatLockdown()`, raise an aura warning instead of touching the
   frame, and point users to
   <https://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames>.
@@ -178,9 +181,11 @@ Also check the relevant boundaries:
   and migration behavior as applicable.
 - For hot-path work, compare allocations and work per event or frame.
 
-Pull-request CI runs Luacheck and a dry-run package build. It can catch load
-order and packaging errors that a single-file check cannot catch. Do not say a
-check passed unless you ran it or GitHub reports it as passed.
+Pull-request CI runs Luacheck and a dry-run package build. It catches lint
+and packaging errors, but it does not load the addon in WoW, so it cannot
+prove `.toc` load order. Validate load order by inspecting the `.toc` files
+and by loading the addon in the affected clients. Do not say a check passed
+unless you ran it or GitHub reports it as passed.
 
 ## Git and review
 
