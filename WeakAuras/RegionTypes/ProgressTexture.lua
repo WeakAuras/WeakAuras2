@@ -255,7 +255,6 @@ local function ensureExtraTextures(region, count)
       width = region.width,
       height = region.height
     })
-    extraTexture:SetMirrorHV(region.mirror_h, region.mirror_v)
     extraTexture:SetOrientation(region.orientation, region.compress, region.slanted, region.slant,
                                 region.slantFirst, region.slantMode)
     region.extraTextures[i] = extraTexture;
@@ -280,8 +279,7 @@ local function ensureExtraSpinners(region, count)
       offset = 0
     })
 
-    extraSpinner:SetMirrorHV(region.mirror_h, region.mirror_v)
-    extraSpinner:SetScale(math.abs(region.scalex), math.abs(region.scaley))
+    extraSpinner:SetScale(region.scalex, region.scaley)
 
     region.extraSpinners[i] = extraSpinner
   end
@@ -550,8 +548,8 @@ local funcs = {
     end
   end,
   DoPosition = function(self)
-    self:SetWidth(self.width * math.abs(self.scalex));
-    self:SetHeight(self.height * math.abs(self.scaley));
+    self:SetWidth(self.width * self.scalex);
+    self:SetHeight(self.height * self.scaley);
 
     if self.orientation == "CLOCKWISE" or self.orientation == "ANTICLOCKWISE" then
       self:ForAllSpinners(self.foregroundSpinner.UpdateTextures)
@@ -692,14 +690,21 @@ local funcs = {
     self:Scale(self.scalex, self.scaley)
   end,
   Scale = function(self, scalex, scaley)
-    self.scalex = scalex
-    self.scaley = scaley
     self.mirror_h = scalex < 0
     self.mirror_v = scaley < 0
-    local absScalex = math.abs(scalex)
-    local absScaley = math.abs(scaley)
 
-    self:ForAllSpinners(self.foregroundSpinner.SetScale, absScalex, absScaley)
+    if(scalex < 0) then
+      scalex = scalex * -1
+    end
+
+    if(scaley < 0) then
+      scaley = scaley * -1
+    end
+
+    self.scalex = scalex
+    self.scaley = scaley
+
+    self:ForAllSpinners(self.foregroundSpinner.SetScale, self.scalex, self.scaley)
     self:ForAllSpinners(self.foregroundSpinner.SetMirrorHV, self.mirror_h, self.mirror_v)
     self:ForAllLinears(self.foreground.SetMirrorHV, self.mirror_h, self.mirror_v)
     self:DoPosition()
@@ -944,7 +949,7 @@ local function modify(parent, region, data)
   end
 
   region:SetOrientation(data.orientation);
-  region:Scale(region.scalex, region.scaley)
+  region:DoPosition(region)
   region:Color(data.foregroundColor[1], data.foregroundColor[2], data.foregroundColor[3], data.foregroundColor[4]);
 
   Private.regionPrototype.modifyFinish(parent, region, data);
