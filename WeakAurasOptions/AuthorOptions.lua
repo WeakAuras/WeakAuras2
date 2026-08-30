@@ -626,24 +626,21 @@ end
 local function setUserNum(data, option)
   return function(_, value)
     OptionsPrivate.Private.TimeMachine:StartTransaction()
-    if value ~= "" then
-      local num = tonumber(value)
-      if not num or math.abs(num) == math.huge or tostring(num) == "nan" then
-        OptionsPrivate.Private.TimeMachine:Reject()
-        return
-      end
-      for _, optionData in pairs(option.references) do
-        local childData = optionData.data
-        local childConfig = optionData.config
-        OptionsPrivate.Private.TimeMachine:Append({
-          uid = childData.uid,
-          actionType = "set",
-          path = expandUserPath(childData, optionData.path),
-          payload = num
-        })
-      end
-      OptionsPrivate.Private.TimeMachine:Commit()
+    local num = tonumber(value)
+    if not num or math.abs(num) == math.huge or tostring(num) == "nan" then
+      OptionsPrivate.Private.TimeMachine:Reject()
+      return
     end
+    for _, optionData in pairs(option.references) do
+      local childData = optionData.data
+      OptionsPrivate.Private.TimeMachine:Append({
+        uid = childData.uid,
+        actionType = "set",
+        path = expandUserPath(childData, optionData.path),
+        payload = num
+      })
+    end
+    OptionsPrivate.Private.TimeMachine:Commit()
   end
 end
 
