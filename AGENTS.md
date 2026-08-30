@@ -212,3 +212,17 @@ unless you ran it or GitHub reports it as passed.
   ```
 
 - Preserve unrelated work in a dirty worktree.
+
+## Keep this guide current
+
+This guide is a living document. When a review correction teaches you a
+durable, repository-wide rule or fact that this guide does not state, or shows
+that a statement here is wrong, update `AGENTS.md` in the same pull request as
+a separate commit.
+
+- Record the rule, not the incident. Verify the statement against the
+  repository first, write it in the guide's style, and put it in the section
+  where an agent would look for it.
+- Do not record feedback that only applies to one change.
+- Correct or delete a wrong statement instead of adding a second one next to
+  it. A wrong rule is worse than a missing one.
