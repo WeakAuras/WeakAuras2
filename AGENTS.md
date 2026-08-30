@@ -31,8 +31,7 @@ file after its dependencies.
 - `WeakAuras/Types.lua` and the per-client `WeakAuras/Types_*.lua` files fill
   `Private` with shared option data, such as value lists and their localized
   display names. Each `.toc` loads the flavor file before `Types.lua`. Keep
-  the flavor files consistent with each other, and keep this data consistent
-  with the runtime code that reads it.
+  the flavor files consistent with each other.
 - `WeakAuras/Prototypes.lua`, `WeakAuras/GenericTrigger.lua`, and
   `WeakAuras/BuffTrigger2.lua` own major trigger behavior. Event dispatch and
   trigger updates are hot paths. Avoid repeated scans, temporary tables, and
@@ -70,35 +69,27 @@ The addon supports Cataclysm, Mists, The Burning Crusade, Classic Era, and
 Wrath/Titan. Each package has parallel `.toc` files for these clients.
 
 - Keep common behavior in common files when the WoW APIs have the same
-  contract.
-- Put real client differences in the existing flavor files, such as
-  `WeakAuras/Types_Cata.lua`, `WeakAuras/Types_Mists.lua`,
-  `WeakAuras/Types_TBC.lua`, `WeakAuras/Types_Vanilla.lua`, and
-  `WeakAuras/Types_Wrath.lua`.
-- Template and model-path data also have flavor-specific files. Check all five
-  clients when you change either area.
+  contract. Put real client differences in the existing flavor files, such as
+  the per-client `WeakAuras/Types_*.lua`, template, and model-path files, and
+  check all five clients when you change these areas.
 - Preserve the adjacency of each `## Interface:` line and its
   `# WOW_INTERFACE_TARGETS:` marker. The
   `.github/workflows/update-wow-interface.yml` workflow owns their values.
 - Do not assume a WoW API exists on every client. Use the repository's current
   feature checks and compatibility patterns.
-
-## WoW API reference
-
-Always consult <https://warcraft.wiki.gg/wiki/World_of_Warcraft_API> for
-questions about the WoW API. Each function's page documents its signature,
-behavior, and the client flavors and patch versions that support it. Check it
-before you call an API in flavor-sensitive code, and trust it over memory when
-the two disagree. For historical changes to an API, such as a rename, a
-removal, or a changed signature in a given patch, reference
-<https://warcraft.wiki.gg/wiki/API_change_summaries>.
+- Always consult <https://warcraft.wiki.gg/wiki/World_of_Warcraft_API> for
+  questions about the WoW API. Each function's page documents its signature,
+  behavior, and the client flavors and patch versions that support it. Trust
+  the wiki over memory when the two disagree.
+- Reference <https://warcraft.wiki.gg/wiki/API_change_summaries> for
+  historical changes to an API, such as a rename, a removal, or a changed
+  signature in a given patch.
 
 ## Secure execution and taint
 
 WoW separates secure Blizzard code from tainted addon code. Taint that spreads
-into secure code blocks protected actions and raises blocked-action errors for
-users. See <https://warcraft.wiki.gg/wiki/Secure_Execution_and_Tainting> for
-the model.
+into secure code blocks protected actions and raises errors for users. See
+<https://warcraft.wiki.gg/wiki/Secure_Execution_and_Tainting> for the model.
 
 - Do not write to Blizzard frames, globals, or tables that secure code reads.
   Hook a Blizzard function with `hooksecurefunc`, as
@@ -116,11 +107,11 @@ the model.
 
 ## Code conventions
 
-- Use Lua 5.1 syntax. WoW runs a customized Lua 5.1: it removes standard
-  libraries such as `io` and most of `os`, and it adds utility functions and
-  aliases such as `strsplit`, `tinsert`, and `wipe`. See
-  <https://warcraft.wiki.gg/wiki/Lua_functions> for the full list. WoW
-  supplies the globals listed in `.luacheckrc`.
+- Use Lua 5.1 syntax. WoW runs a customized Lua 5.1 that removes standard
+  libraries such as `io` and most of `os`, and adds helpers such as
+  `strsplit`, `tinsert`, and `wipe`. See
+  <https://warcraft.wiki.gg/wiki/Lua_functions> for the full list, and
+  `.luacheckrc` for the globals WoW supplies.
 - Use two spaces for indentation, LF line endings, a final newline, and no
   trailing whitespace. Follow `.editorconfig` for its listed exceptions.
 - Do not add semicolons to new files. In an existing file, follow its local
@@ -192,16 +183,14 @@ check passed unless you ran it or GitHub reports it as passed.
 
 - Start a focused topic branch from current `main`.
 - Use conventional commit messages.
-- Keep each commit reviewable and keep the pull request description clear
-  about the reason, behavior change, risks, and validation.
+- Keep each commit reviewable. Keep the pull request title and description
+  clear about the reason, behavior change, risks, and validation, and update
+  them when new commits change what the pull request does.
 - Open every pull request with the repository template. `gh pr create` does
   not apply `.github/pull_request_template.md` on its own, so read that file
-  and pass its filled-in content as the body. Keep its sections, which are
-  Description, Type of change, How Has This Been Tested, and Checklist. Fill
-  each one in for this change, and delete only the type-of-change options
-  that do not apply.
-- Update the pull request title and description when new commits change what
-  the pull request does.
+  and pass its filled-in content as the body. Keep and fill in its sections
+  (Description, Type of change, How Has This Been Tested, Checklist), and
+  delete only the type-of-change options that do not apply.
 - Read all current review comments before you revise a pull request. When a
   comment is addressed, reply to its thread with what changed and the commit
   hash, then resolve the thread.
