@@ -89,7 +89,9 @@ Always consult <https://warcraft.wiki.gg/wiki/World_of_Warcraft_API> for
 questions about the WoW API. Each function's page documents its signature,
 behavior, and the client flavors and patch versions that support it. Check it
 before you call an API in flavor-sensitive code, and trust it over memory when
-the two disagree.
+the two disagree. For historical changes to an API, such as a rename, a
+removal, or a changed signature in a given patch, reference
+<https://warcraft.wiki.gg/wiki/API_change_summaries>.
 
 ## Secure execution and taint
 
