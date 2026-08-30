@@ -93,7 +93,11 @@ the two disagree.
 
 ## Code conventions
 
-- Use Lua 5.1 syntax. WoW supplies the globals listed in `.luacheckrc`.
+- Use Lua 5.1 syntax. WoW runs a customized Lua 5.1: it removes standard
+  libraries such as `io` and most of `os`, and it adds utility functions and
+  aliases such as `strsplit`, `tinsert`, and `wipe`. See
+  <https://warcraft.wiki.gg/wiki/Lua_functions> for the full list. WoW
+  supplies the globals listed in `.luacheckrc`.
 - Use two spaces for indentation, LF line endings, a final newline, and no
   trailing whitespace. Follow `.editorconfig` for its listed exceptions.
 - Do not add semicolons to new files. In an existing file, follow its local
