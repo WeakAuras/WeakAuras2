@@ -83,6 +83,14 @@ Wrath/Titan. Each package has parallel `.toc` files for these clients.
 - Do not assume a WoW API exists on every client. Use the repository's current
   feature checks and compatibility patterns.
 
+## WoW API reference
+
+Always consult <https://warcraft.wiki.gg/wiki/World_of_Warcraft_API> for
+questions about the WoW API. Each function's page documents its signature,
+behavior, and the client flavors and patch versions that support it. Check it
+before you call an API in flavor-sensitive code, and trust it over memory when
+the two disagree.
+
 ## Code conventions
 
 - Use Lua 5.1 syntax. WoW supplies the globals listed in `.luacheckrc`.
