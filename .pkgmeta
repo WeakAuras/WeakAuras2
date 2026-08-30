@@ -45,6 +45,8 @@ manual-changelog:
 ignore:
   - README.md
   - CONTRIBUTING.md
+  - AGENTS.md
+  - CLAUDE.md
   - babelfish.lua
   - update_translations.sh
   - generate_changelog.sh
