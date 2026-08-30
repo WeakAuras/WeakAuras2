@@ -112,6 +112,9 @@ into secure code blocks protected actions and raises errors for users. See
   `strsplit`, `tinsert`, and `wipe`. See
   <https://warcraft.wiki.gg/wiki/Lua_functions> for the full list, and
   `.luacheckrc` for the globals WoW supplies.
+- `.luacheckrc` is maintained by hand, not generated. When you use a WoW API
+  that it does not list yet, add the global to the matching commented section
+  and keep the order of the nearby entries, or Luacheck fails in CI.
 - Use two spaces for indentation, LF line endings, a final newline, and no
   trailing whitespace. Follow `.editorconfig` for its listed exceptions.
 - Do not add semicolons to new files. In an existing file, follow its local
