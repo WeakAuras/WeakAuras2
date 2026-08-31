@@ -157,12 +157,19 @@ local function RunAnimation(key, anim, elapsed, time)
   Private.StopProfileUID(anim.auraUID)
 end
 
-local updatingAnimations;
-local last_update = GetTime();
-local function UpdateAnimations()
-  if not updatingAnimations then
-    return
+local frame = CreateFrame("Frame")
+Private.frames["WeakAuras Animation Frame"] = frame
+
+local last_update
+
+local function StopUpdatingAnimationsIfIdle()
+  if last_update and not next(animations) and not next(pending_controls) then
+    last_update = nil
+    frame:SetScript("OnUpdate", nil)
   end
+end
+
+local function UpdateAnimations()
   Private.StartProfileSystem("animations");
 
   for groupUid, groupRegion in pairs(pending_controls) do
@@ -179,18 +186,19 @@ local function UpdateAnimations()
   end
 
   Private.StopProfileSystem("animations");
+  StopUpdatingAnimationsIfIdle()
 end
 
-local frame = CreateFrame("Frame")
-Private.frames["WeakAuras Animation Frame"] = frame
-frame:SetScript("OnUpdate", UpdateAnimations)
+local function StartUpdatingAnimations()
+  if not last_update then
+    last_update = GetTime()
+    frame:SetScript("OnUpdate", UpdateAnimations)
+  end
+end
 
 function Private.RegisterGroupForPositioning(uid, region)
   pending_controls[uid] = region
-  if not updatingAnimations then
-    updatingAnimations = true
-    last_update = GetTime()
-  end
+  StartUpdatingAnimations()
 end
 
 function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished, loop, cloneId)
@@ -383,10 +391,7 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
     animation.anim = anim;
     animation.auraUID = uid
 
-    if not(updatingAnimations) then
-      last_update = GetTime()
-      updatingAnimations = true;
-    end
+    StartUpdatingAnimations()
     return true;
   else
     if(animations[key]) then
@@ -437,6 +442,7 @@ function Private.CancelAnimation(region, resetPos, resetAlpha, resetScale, reset
     if(doOnFinished and anim.onFinished) then
       anim.onFinished();
     end
+    StopUpdatingAnimationsIfIdle()
     return true;
   else
     return false;
