@@ -160,16 +160,18 @@ end
 local frame = CreateFrame("Frame")
 Private.frames["WeakAuras Animation Frame"] = frame
 
-local last_update
+local updatingAnimations
 
+-- Every insertion into animations or pending_controls must start updates.
+-- Updates stop only after both tables are empty at the end of UpdateAnimations.
 local function StopUpdatingAnimationsIfIdle()
-  if last_update and not next(animations) and not next(pending_controls) then
-    last_update = nil
+  if updatingAnimations and not next(animations) and not next(pending_controls) then
+    updatingAnimations = nil
     frame:SetScript("OnUpdate", nil)
   end
 end
 
-local function UpdateAnimations()
+local function UpdateAnimations(_, elapsed)
   Private.StartProfileSystem("animations");
 
   for groupUid, groupRegion in pairs(pending_controls) do
@@ -178,8 +180,6 @@ local function UpdateAnimations()
   end
 
   local time = GetTime();
-  local elapsed = time - last_update;
-  last_update = time;
 
   for key, anim in pairs(animations) do
     RunAnimation(key, anim, elapsed, time)
@@ -190,8 +190,8 @@ local function UpdateAnimations()
 end
 
 local function StartUpdatingAnimations()
-  if not last_update then
-    last_update = GetTime()
+  if not updatingAnimations then
+    updatingAnimations = true
     frame:SetScript("OnUpdate", UpdateAnimations)
   end
 end
@@ -442,7 +442,6 @@ function Private.CancelAnimation(region, resetPos, resetAlpha, resetScale, reset
     if(doOnFinished and anim.onFinished) then
       anim.onFinished();
     end
-    StopUpdatingAnimationsIfIdle()
     return true;
   else
     return false;
