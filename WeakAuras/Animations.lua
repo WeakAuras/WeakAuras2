@@ -157,12 +157,21 @@ local function RunAnimation(key, anim, elapsed, time)
   Private.StopProfileUID(anim.auraUID)
 end
 
-local updatingAnimations;
-local last_update = GetTime();
-local function UpdateAnimations()
-  if not updatingAnimations then
-    return
+local frame = CreateFrame("Frame")
+Private.frames["WeakAuras Animation Frame"] = frame
+
+local updatingAnimations
+
+-- Every insertion into animations or pending_controls must start updates.
+-- Updates stop only after both tables are empty at the end of UpdateAnimations.
+local function StopUpdatingAnimationsIfIdle()
+  if updatingAnimations and not next(animations) and not next(pending_controls) then
+    updatingAnimations = nil
+    frame:SetScript("OnUpdate", nil)
   end
+end
+
+local function UpdateAnimations(_, elapsed)
   Private.StartProfileSystem("animations");
 
   for groupUid, groupRegion in pairs(pending_controls) do
@@ -171,26 +180,25 @@ local function UpdateAnimations()
   end
 
   local time = GetTime();
-  local elapsed = time - last_update;
-  last_update = time;
 
   for key, anim in pairs(animations) do
     RunAnimation(key, anim, elapsed, time)
   end
 
   Private.StopProfileSystem("animations");
+  StopUpdatingAnimationsIfIdle()
 end
 
-local frame = CreateFrame("Frame")
-Private.frames["WeakAuras Animation Frame"] = frame
-frame:SetScript("OnUpdate", UpdateAnimations)
+local function StartUpdatingAnimations()
+  if not updatingAnimations then
+    updatingAnimations = true
+    frame:SetScript("OnUpdate", UpdateAnimations)
+  end
+end
 
 function Private.RegisterGroupForPositioning(uid, region)
   pending_controls[uid] = region
-  if not updatingAnimations then
-    updatingAnimations = true
-    last_update = GetTime()
-  end
+  StartUpdatingAnimations()
 end
 
 function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished, loop, cloneId)
@@ -383,10 +391,7 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
     animation.anim = anim;
     animation.auraUID = uid
 
-    if not(updatingAnimations) then
-      last_update = GetTime()
-      updatingAnimations = true;
-    end
+    StartUpdatingAnimations()
     return true;
   else
     if(animations[key]) then
