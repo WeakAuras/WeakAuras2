@@ -4,7 +4,7 @@ local AddonName = ...
 ---@class OptionsPrivate
 local OptionsPrivate = select(2, ...)
 
-local Type, Version = "WeakAurasNewButton", 27
+local Type, Version = "WeakAurasNewButton", 28
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -93,7 +93,7 @@ Constructor
 -------------------------------------------------------------------------------]]
 
 local function Constructor()
-  local name = "WeakAurasDisplayButton"..AceGUI:GetNextWidgetNum(Type);
+  local name = "WeakAurasNewButton"..AceGUI:GetNextWidgetNum(Type);
   local button = CreateFrame("Button", name, UIParent, "OptionsListButtonTemplate");
   button:SetHeight(40);
   button:SetWidth(380);
