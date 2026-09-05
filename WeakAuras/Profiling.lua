@@ -120,10 +120,7 @@ local function StopProfileSystem(system)
 end
 
 local function StopProfileAura(id)
-  -- A callback can delete the aura before its profiling sample stops.
-  if profileData.auras[id] then
-    StopProfiling(profileData.auras, id)
-  end
+  StopProfiling(profileData.auras, id)
 end
 
 local function StartProfileUID(uid)
@@ -131,7 +128,7 @@ local function StartProfileUID(uid)
 end
 
 local function StopProfileUID(uid)
-  StopProfileAura(Private.UIDtoID(uid))
+  StopProfiling(profileData.auras, Private.UIDtoID(uid))
 end
 
 local function RefreshProfileBars()
