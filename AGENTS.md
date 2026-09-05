@@ -48,8 +48,10 @@ file after its dependencies.
   Check both sides before you finish.
 - When changing per-aura state, check both rename and deletion in
   `WeakAuras/WeakAuras.lua`. Keep cached UI rows consistent with the state,
-  and check callbacks that can finish after the aura is deleted. Use the
-  existing lifecycle hooks and respect their `.toc` load order.
+  use the existing lifecycle hooks, and respect their `.toc` load order.
+  Before adding lifecycle guards, verify the callers and sandbox restrictions
+  in `WeakAuras/AuraEnvironment.lua`. A direct call in a test harness does not
+  prove that the same call is reachable through a supported runtime path.
 
 ## Persistent and wire data
 
