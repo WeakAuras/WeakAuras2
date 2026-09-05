@@ -120,7 +120,10 @@ local function StopProfileSystem(system)
 end
 
 local function StopProfileAura(id)
-  StopProfiling(profileData.auras, id)
+  -- A callback can delete the aura before its profiling sample stops.
+  if profileData.auras[id] then
+    StopProfiling(profileData.auras, id)
+  end
 end
 
 local function StartProfileUID(uid)
@@ -128,12 +131,25 @@ local function StartProfileUID(uid)
 end
 
 local function StopProfileUID(uid)
-  StopProfiling(profileData.auras, Private.UIDtoID(uid))
+  StopProfileAura(Private.UIDtoID(uid))
+end
+
+local function RefreshProfileBars()
+  if WeakAurasProfilingFrame and WeakAurasProfilingFrame.bars then
+    WeakAurasProfilingFrame:ResetBars()
+    WeakAurasProfilingFrame:RefreshBars(nil, true)
+  end
 end
 
 function Private.ProfileRenameAura(oldid, id)
   profileData.auras[id] = profileData.auras[oldid]
   profileData.auras[oldid] = nil
+  RefreshProfileBars()
+end
+
+function Private.ProfileDeleteAura(id)
+  profileData.auras[id] = nil
+  RefreshProfileBars()
 end
 
 local RegisterProfile = function(startType)
