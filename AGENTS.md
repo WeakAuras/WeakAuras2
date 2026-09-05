@@ -46,6 +46,9 @@ file after its dependencies.
 - A runtime region or subregion change often needs a matching change in
   `WeakAurasOptions/RegionOptions/` or `WeakAurasOptions/SubRegionOptions/`.
   Check both sides before you finish.
+- When changing per-aura state, check both rename and deletion in
+  `WeakAuras/WeakAuras.lua`. Keep cached UI rows consistent with the state,
+  use the existing lifecycle hooks, and respect their `.toc` load order.
 
 ## Persistent and wire data
 
@@ -155,10 +158,41 @@ output and you use the owning generator.
 - Release and update scripts can change many files or external services. Run
   them only when the task requires that effect.
 
+## Reasoning before changes
+
+Source-based reasoning is required for behavior changes. A passing harness
+or CI job does not replace it. Before editing, explain the affected behavior
+and, for fixes, the actual failure path. Include file references and the rule
+the change must preserve. Keep facts, assumptions, and unknowns distinct.
+
+- Trace the real entry point, callers, and state owner. Check relevant `.toc`
+  order, sandbox restrictions, WoW API contracts, and supported clients.
+  A direct call to an internal function does not prove runtime reachability.
+- Trace the affected lifecycle: creation, updates, rename, unload, deletion,
+  and cached views as applicable. For reentrancy or deferred work, identify
+  the actual callback, yield, or event boundary and its ordering. Do not
+  invent an interleaving merely because a harness can construct it.
+- Treat a guard, fallback, or swallowed error as a behavior change. Determine
+  whether missing state is valid or indicates a broken caller contract.
+  Repair the cause; do not silently accept invalid state to make a test pass.
+- Tie each added branch or helper to a demonstrated defect or an explicit
+  requirement. Before finishing, ask what assumption would make the fix
+  unnecessary or wrong, then check that assumption against the source.
+  Search for contradictory evidence, not only examples that support the fix.
+
 ## Validation
 
-Select checks that prove the changed behavior. Do not add a test that only
-restates the implementation.
+WoW supplies runtime behavior that a local Lua harness does not reproduce.
+Use source inspection and the documented client contracts as the primary
+local evidence. Verify behavior in the affected WoW clients when available.
+When it is not available, state the specific in-game behavior that remains
+unverified; do not replace that gap with a stronger test claim.
+
+Use a focused harness only when it can answer a specific question about
+isolated logic. Identify its stubs and assumptions, and verify those
+assumptions against real callers before using its results. Synthetic states
+can test robustness, but they do not establish a supported failure path.
+Do not build a mock WoW runtime or add tests that restate the implementation.
 
 For every change:
 
@@ -168,8 +202,9 @@ For every change:
    remains the authority for Lua 5.1 compatibility.
 3. Run `luacheck . --no-color -q` when Luacheck is available. This matches the
    lint intent in `.github/workflows/pull_request.yml`.
-4. Use a focused Lua harness with WoW globals stubbed, or verify the behavior
-   in the correct WoW clients, when the change needs runtime proof.
+4. Review the final diff against the source-based explanation. Report the
+   relevant evidence, checks actually run, and remaining uncertainty. Scale
+   this explanation to the change; test counts alone are not validation.
 
 Also check the relevant boundaries:
 
@@ -202,6 +237,10 @@ unless you ran it or GitHub reports it as passed.
 - Read all current review comments before you revise a pull request. When a
   comment is addressed, reply to its thread with what changed and the commit
   hash, then resolve the thread.
+- Keep a reviewer's statement separate from your interpretation. Investigate
+  vague feedback before changing code. If materially different fixes remain
+  possible, explain the evidence and ask for clarification instead of
+  presenting a guessed rationale as established fact.
 - Sign agent-authored content. Append a footer that names the agent and the
   model when you post a comment, create an issue, or open a pull request.
   Example:
