@@ -186,12 +186,14 @@ Also check the relevant boundaries:
 - For a change to the aura sandbox in `WeakAuras/AuraEnvironment.lua`, or to
   code that compiles or evaluates custom aura code, run the sandbox tests in
   `tests/` with `lua5.1 tests/run.lua` or `luajit tests/run.lua`. They need a
-  Lua 5.1 interpreter because the sandbox is built on `setfenv`. See
-  `tests/README.md` for what they cover and how to add one.
+  Lua 5.1 interpreter because the sandbox is built on `setfenv`. They are
+  regression tests for known escape routes, not a security proof, so still
+  reason about the change against the WoW API. When you close a new escape,
+  add a case for it. See `tests/README.md`.
 
 Pull-request CI runs Luacheck, the sandbox tests, and a dry-run package
-build. It catches lint, sandbox, and packaging errors, but it does not load
-the addon in WoW, so it cannot prove `.toc` load order. Validate load order by
+build. It catches lint errors, known sandbox escapes, and packaging errors,
+but it does not load the addon in WoW, so it cannot prove `.toc` load order. Validate load order by
 inspecting the `.toc` files and by loading the addon in the affected clients.
 Do not say a check passed unless you ran it or GitHub reports it as passed.
 
