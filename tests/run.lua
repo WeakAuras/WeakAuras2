@@ -3,7 +3,7 @@
 --
 -- Usage: lua5.1 tests/run.lua
 --    or: luajit tests/run.lua
-local testsDir = (arg and arg[0] or ""):match("^(.*)[/\\][^/\\]*$") or "."
+local testsDir = arg[0]:match("^(.*)[/\\][^/\\]*$") or "."
 package.path = testsDir .. "/?.lua;" .. package.path
 io.stdout:setvbuf("no") -- keep the headers in order with the child output
 require("helpers") -- exits with a clear message on an unsupported Lua version
@@ -13,7 +13,7 @@ local tests = {
   "common_options_test.lua",
 }
 
-local interpreter = arg[-1] or "lua"
+local interpreter = arg[-1]
 local failed = {}
 for _, name in ipairs(tests) do
   print("==> " .. name)
