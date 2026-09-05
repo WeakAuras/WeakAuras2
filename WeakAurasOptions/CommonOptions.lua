@@ -2029,9 +2029,6 @@ local function AddCodeOptionTimeMachine(args, data, name, prefix, url, order, hi
 
       code = "return " .. code;
 
-      -- Aura code must only run inside the sandbox. A raw loadstring here would
-      -- execute the stored code with the real global environment every time
-      -- the options panel renders.
       local loadedFunction, errorString = OptionsPrivate.Private.LoadFunction(code, data.id, true);
       if(errorString and not loadedFunction) then
         return false;
@@ -2138,9 +2135,6 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
 
       code = "return " .. code;
 
-      -- Aura code must only run inside the sandbox. A raw loadstring here would
-      -- execute the stored code with the real global environment every time
-      -- the options panel renders.
       local loadedFunction, errorString = OptionsPrivate.Private.LoadFunction(code, data.id, true);
       if(errorString and not loadedFunction) then
         return false;
