@@ -57,3 +57,21 @@ jobs:
           path:  .release/*.zip
           include-hidden-files: true
           archive: false
+
+  sandbox-tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      # The aura sandbox is built on loadstring and setfenv, so the tests need
+      # a Lua 5.1 interpreter, the same major version the WoW client uses.
+      - name: Install Lua 5.1
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends lua5.1
+
+      - name: Run sandbox tests
+        run: lua5.1 tests/run.lua
