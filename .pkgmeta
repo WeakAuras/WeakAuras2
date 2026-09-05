@@ -47,6 +47,7 @@ ignore:
   - CONTRIBUTING.md
   - AGENTS.md
   - CLAUDE.md
+  - tests
   - babelfish.lua
   - update_translations.sh
   - generate_changelog.sh
