@@ -132,6 +132,9 @@ into secure code blocks protected actions and raises errors for users. See
   not remove a real invalid state, repeated decision, or repeated lookup.
 - Explain non-obvious ownership, lifecycle, and compatibility decisions. Do
   not add comments that only repeat the code.
+- Do not add a comment at every place you change. Never repeat the same
+  comment at more than one site. When a change needs a reason, explain it
+  once, in the commit message or at the one place a reader would look.
 
 ## Generated data and external libraries
 
