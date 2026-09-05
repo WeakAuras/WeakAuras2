@@ -1,12 +1,7 @@
--- Tests for the aura sandbox in WeakAuras/AuraEnvironment.lua.
---
--- The security property under test: code that an aura author writes in a
--- custom trigger, action, or condition runs through WeakAuras.LoadFunction and
--- must not be able to reach the real global table, the blocked WoW functions,
--- or the data-changing WeakAuras API. Each test states the expectation as an
--- aura author would try it, so a passing run shows the boundary holds rather
--- than that a list in the implementation has a given content.
-local testsDir = (arg and arg[0] or ""):match("^(.*)[/\\][^/\\]*$") or "."
+-- Custom aura code runs through WeakAuras.LoadFunction and must not reach the
+-- real global table, the blocked WoW functions, or the data-changing WeakAuras
+-- API. Each check probes the boundary the way an aura author would.
+local testsDir = arg[0]:match("^(.*)[/\\][^/\\]*$") or "."
 package.path = testsDir .. "/?.lua;" .. package.path
 local T = require("helpers")
 local stubs = require("wow_stubs")
@@ -31,16 +26,14 @@ end
 
 T.loadAddonFile("WeakAuras/AuraEnvironment.lua", "WeakAuras", Private)
 
---- Runs code the way a custom trigger runs it: compiled through the public
---- loader into the custom environment, then called.
+--- Runs code the way a custom trigger runs it.
 local function runCustom(body)
   local fn, err = WeakAuras.LoadFunction("return function()\n" .. body .. "\nend", "test")
   assert(fn, err)
   return fn()
 end
 
---- Runs code through the loader that WeakAuras uses for its own generated
---- code and for validation in the options panel.
+--- Runs code through the loader for generated code and options validation.
 local function runBuiltin(body)
   local fn, err = Private.LoadFunction("return function()\n" .. body .. "\nend", "test", true)
   assert(fn, err)

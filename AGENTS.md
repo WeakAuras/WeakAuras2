@@ -191,9 +191,9 @@ Also check the relevant boundaries:
 
 Pull-request CI runs Luacheck, the sandbox tests, and a dry-run package
 build. It catches lint, sandbox, and packaging errors, but it does not load
-the addon in WoW, so it cannot prove `.toc` load order. Validate load order by inspecting the `.toc` files
-and by loading the addon in the affected clients. Do not say a check passed
-unless you ran it or GitHub reports it as passed.
+the addon in WoW, so it cannot prove `.toc` load order. Validate load order by
+inspecting the `.toc` files and by loading the addon in the affected clients.
+Do not say a check passed unless you ran it or GitHub reports it as passed.
 
 ## Git and review
 

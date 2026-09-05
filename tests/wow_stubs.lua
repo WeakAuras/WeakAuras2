@@ -1,7 +1,5 @@
--- Stand-ins for the WoW globals that WeakAuras/AuraEnvironment.lua and
--- WeakAurasOptions/CommonOptions.lua touch when they load or when the tests
--- drive them. This is not a WoW API emulation. It provides only what the
--- sandbox needs to be constructed and exercised.
+-- Stand-ins for the WoW globals that the loaded addon files touch. This is not
+-- a WoW API emulation.
 local M = {}
 
 local function strsplit(delimiter, text)
@@ -25,9 +23,8 @@ local function CopyTable(source)
   return copy
 end
 
---- Installs the global helpers, API functions, frames, libraries, and
---- sensitive globals that the tests refer to. Sensitive globals return a
---- marker string so a test can tell the real function from a sandbox stub.
+--- Sensitive globals return a marker string so a test can tell the real
+--- function from a sandbox stub.
 function M.install()
   _G.strsplit = strsplit
   _G.strtrim = strtrim
@@ -51,11 +48,9 @@ function M.install()
   _G.UnitExists = function() return false end
   _G.C_Timer = { After = function() end, NewTicker = function() end }
 
-  -- Frames are plain tables here. A child frame without a name is reached
-  -- through its parent, which is what the frame chooser produces.
+  -- A child frame without a name, as the frame chooser produces it
   _G.PlayerFrame = { healthbar = {} }
 
-  -- Globals the sandbox must hide from aura code.
   _G.EnumerateFrames = function() return "REAL_EnumerateFrames" end
   _G.RunScript = function() return "REAL_RunScript" end
   _G.SendMail = function() return "REAL_SendMail" end
@@ -75,16 +70,13 @@ function M.install()
   })
 end
 
---- Returns a table that answers any unknown key with a no-op function. Use it
---- for objects whose many members a test does not exercise.
+--- Answers any unknown key with a no-op function.
 function M.permissive(table)
   return setmetatable(table or {}, {
     __index = function() return function() end end,
   })
 end
 
---- A WeakAuras table with markers for the functions that aura code must not be
---- able to reach.
 function M.newWeakAuras()
   return {
     IsLibsOK = function() return true end,
@@ -102,8 +94,7 @@ function M.newWeakAuras()
   }
 end
 
---- The Private table that AuraEnvironment.lua expects. Sandbox warnings are
---- appended to the returned list as { key = ..., message = ... }.
+--- Sandbox warnings are appended to the returned list as { key, message }.
 function M.newPrivate()
   local warnings = {}
   local Private = {

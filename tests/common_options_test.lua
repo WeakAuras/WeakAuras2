@@ -1,31 +1,22 @@
--- Tests for the custom code options in WeakAurasOptions/CommonOptions.lua.
---
--- The options panel compiles stored aura code to show syntax and validation
--- errors next to the code box. AceConfig evaluates the name and hidden
--- callbacks of that error label on every render. The property under test:
--- this evaluation must run the stored code inside the sandbox, never in the
--- real global environment, or opening the options of a malicious aura would
--- execute its code unsandboxed.
-local testsDir = (arg and arg[0] or ""):match("^(.*)[/\\][^/\\]*$") or "."
+-- The options panel compiles stored aura code to show errors under the code
+-- box, and AceConfig evaluates the name and hidden callbacks of that label on
+-- every render. That evaluation must stay inside the sandbox.
+local testsDir = arg[0]:match("^(.*)[/\\][^/\\]*$") or "."
 package.path = testsDir .. "/?.lua;" .. package.path
 local T = require("helpers")
 local stubs = require("wow_stubs")
 
 stubs.install()
 local realG = _G
--- The options file refers to many WeakAuras and OptionsPrivate members that
--- these tests do not exercise, so both tables answer unknown keys with no-ops.
 _G.WeakAuras = stubs.permissive(stubs.newWeakAuras())
 local Private, warnings = stubs.newPrivate()
 
--- The real sandbox provides Private.LoadFunction, which the options code uses.
 T.loadAddonFile("WeakAuras/AuraEnvironment.lua", "WeakAuras", Private)
 local OptionsPrivate = stubs.permissive({ Private = Private })
 T.loadAddonFile("WeakAurasOptions/CommonOptions.lua", "WeakAurasOptions", OptionsPrivate)
 
--- The Custom Variables field of a custom trigger is registered with
--- encloseInFunction = false and a validator, so its stored text is evaluated
--- as an expression whenever the error label is rendered.
+-- Custom Variables is registered without encloseInFunction and with a
+-- validator, so its text is evaluated as an expression on every render.
 local maliciousCode = table.concat({
   "(function()",
   "  _G.OWNED_FROM_OPTIONS = true",

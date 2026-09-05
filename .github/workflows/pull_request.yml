@@ -66,8 +66,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
 
-      # The aura sandbox is built on loadstring and setfenv, so the tests need
-      # a Lua 5.1 interpreter, the same major version the WoW client uses.
+      # The sandbox uses setfenv, so the tests need Lua 5.1 like the WoW client
       - name: Install Lua 5.1
         run: |
           sudo apt-get update
