@@ -46,6 +46,10 @@ file after its dependencies.
 - A runtime region or subregion change often needs a matching change in
   `WeakAurasOptions/RegionOptions/` or `WeakAurasOptions/SubRegionOptions/`.
   Check both sides before you finish.
+- When changing per-aura state, check both rename and deletion in
+  `WeakAuras/WeakAuras.lua`. Keep cached UI rows consistent with the state,
+  and check callbacks that can finish after the aura is deleted. Use the
+  existing lifecycle hooks and respect their `.toc` load order.
 
 ## Persistent and wire data
 
