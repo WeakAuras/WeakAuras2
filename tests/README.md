@@ -1,7 +1,8 @@
 # Tests
 
-These tests load real addon files outside of World of Warcraft, with the WoW
-globals they need stubbed, and check the aura sandbox boundary:
+These are regression tests for the aura sandbox. They load real addon files
+outside of World of Warcraft, with the WoW globals they need stubbed, and check
+that the escape routes we have found and closed stay closed:
 
 - `aura_environment_test.lua` checks that custom aura code compiled through
   `WeakAuras.LoadFunction` cannot reach the real global table, the blocked WoW
@@ -11,8 +12,11 @@ globals they need stubbed, and check the aura sandbox boundary:
   custom code only inside the sandbox when it renders the error label under a
   code box.
 
-They do not emulate the WoW API, taint, or secure execution. They prove that
-aura code cannot leave the sandbox, not that the block lists are complete.
+A passing run is not a security proof. The tests only probe the routes they
+name. They cannot show that the block lists are complete, that no other route
+exists, or that an allowed WoW function is harmless. They do not emulate the
+WoW API, taint, or secure execution. When a new escape is found, add it here so
+it cannot come back.
 
 ## Running
 
