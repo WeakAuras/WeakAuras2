@@ -588,11 +588,15 @@ local exec_env_custom = setmetatable(CopyTable(mixins),
     elseif _G[k] then
       return _G[k]
     elseif k:find(".", 1, true) then
+      -- The frame chooser names a child frame without a name after its parent,
+      -- e.g. "PlayerFrame.healthbar". Resolve the first segment through this
+      -- sandbox, not through the real _G. Otherwise "_G.loadstring" or
+      -- "WeakAuras.Add" would return the real, blocked functions.
       local f
       for i, n in ipairs{strsplit(".", k)} do
         if i == 1 then
-          f = _G[n]
-        elseif f then
+          f = t[n]
+        elseif type(f) == "table" then
           f = f[n]
         else
           return
