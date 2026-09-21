@@ -2776,6 +2776,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7704360",
+      text = "dwarfbearmount_c60.m2",
+      value = "dwarfbearmount_c60.m2",
+     },
+    },
+    text = "dwarfbearmount",
+    value = "dwarfbearmount",
+   },
+   {
+    children = {
+     {
       fileId = "123708",
       text = "dwarfmalewarriorlight.m2",
       value = "dwarfmalewarriorlight.m2",
@@ -53486,6 +53497,11 @@ WeakAuras.ModelPaths = {
     value = "10fx_dragon_green_creature_shader_particles.m2",
    },
    {
+    fileId = "4623475",
+    text = "10fx_freehold_councilocaptains_tradewindsvigor_aura.m2",
+    value = "10fx_freehold_councilocaptains_tradewindsvigor_aura.m2",
+   },
+   {
     fileId = "4507696",
     text = "10fx_generic_dragon_bronze_cast_hand_low.m2",
     value = "10fx_generic_dragon_bronze_cast_hand_low.m2",
@@ -57020,6 +57036,11 @@ WeakAuras.ModelPaths = {
     fileId = "6013970",
     text = "fx_arcanebombardment_cast01.m2",
     value = "fx_arcanebombardment_cast01.m2",
+   },
+   {
+    fileId = "7750287",
+    text = "fx_galeforce_areatrigger.m2",
+    value = "fx_galeforce_areatrigger.m2",
    },
    {
     fileId = "5928236",
@@ -97349,6 +97370,35 @@ WeakAuras.ModelPaths = {
     },
     text = "expansion06",
     value = "expansion06",
+   },
+   {
+    children = {
+     {
+      children = {
+       {
+        children = {
+         {
+          children = {
+           {
+            fileId = "2620050",
+            text = "8du_mechagon_windowglow01_blue.m2",
+            value = "8du_mechagon_windowglow01_blue.m2",
+           },
+          },
+          text = "doodads",
+          value = "doodads",
+         },
+        },
+        text = "dungeon",
+        value = "dungeon",
+       },
+      },
+      text = "doodads",
+      value = "doodads",
+     },
+    },
+    text = "expansion07",
+    value = "expansion07",
    },
    {
     children = {
