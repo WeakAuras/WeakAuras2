@@ -1633,10 +1633,12 @@ local methods = {
         button1 = L["Import"],
         button2 = L["Cancel"],
         OnShow = function(self)
-          self.text:SetFontObject(GameFontNormalLarge)
+          local text = self.text or self.Text
+          text:SetFontObject(GameFontNormalLarge)
         end,
         OnHide = function(self)
-          self.text:SetFontObject(GameFontNormal)
+          local text = self.text or self.Text
+          text:SetFontObject(GameFontNormal)
         end,
         OnAccept = function()
           OptionsPrivate.Private.Threads:Add("import", coroutine.create(function()

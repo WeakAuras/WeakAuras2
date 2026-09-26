@@ -1623,5 +1623,28 @@ function OptionsPrivate.CreateFrame()
   local left, right, top, bottom = w/2,-w/2, 0, h-25
   frame:SetClampRectInsets(left, right, top, bottom)
 
+  if C_GameRules.IsHardcoreActive() then
+    local hardcoreWarning = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+    hardcoreWarning:SetBackdrop({
+      bgFile = "Interface\\Addons\\WeakAuras\\Media\\Textures\\Square_FullWhite.tga",
+      edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+      tile = true,
+      tileSize = 16,
+      edgeSize = 16,
+      insets = { left = 4, right = 4, top = 4, bottom = 4 }
+    })
+
+    hardcoreWarning:SetBackdropBorderColor(1, 0, 0, 1);
+    hardcoreWarning:SetBackdropColor(0, 0, 0, 1)
+
+    hardcoreWarning:SetPoint("TOPLEFT", frame, "BOTTOMLEFT")
+    hardcoreWarning:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT")
+    hardcoreWarning:SetHeight(50)
+
+    local text = hardcoreWarning:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    text:SetPoint("LEFT", hardcoreWarning, "LEFT", 10, 0)
+    text:SetText(L["Hardcore has very low script time out limits. We recommend using a normal server to modify auras."])
+  end
+
   return frame
 end
