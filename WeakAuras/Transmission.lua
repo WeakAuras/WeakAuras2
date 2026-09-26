@@ -221,6 +221,12 @@ local Comm = LibStub:GetLibrary("AceComm-3.0")
 local Chomp = LibStub:GetLibrary("Chomp")
 -- the biggest bottleneck by far is in transmission and printing; so use maximal compression
 local configForDeflate = {level = 9}
+
+-- Don't compress on hardcore, because blizzard is stupid and put impossible limits on hardcode realms
+if C_GameRules.IsHardcoreActive() then
+  configForDeflate.level = 1
+end
+
 local configForLS = {
   errorOnUnserializableType =  false
 }
