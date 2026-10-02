@@ -3223,13 +3223,11 @@ Private.event_prototypes = {
       end
       AddUnitEventForEvents(result, unit, "UNIT_MAXHEALTH")
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
-      if WeakAuras.IsMistsOrRetail() then
-        if trigger.use_showAbsorb then
-          AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
-        end
-        if trigger.use_showHealAbsorb then
-          AddUnitEventForEvents(result, unit, "UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
-        end
+      if trigger.use_showAbsorb then
+        AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
+      end
+      if trigger.use_showHealAbsorb then
+        AddUnitEventForEvents(result, unit, "UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
       end
       if trigger.use_showIncomingHeal then
         AddUnitEventForEvents(result, unit, "UNIT_HEAL_PREDICTION")
@@ -3366,12 +3364,10 @@ Private.event_prototypes = {
       },
       {
         name = "showAbsorb",
-        display = L["Fetch Absorb"],
+        display = WeakAuras.newFeatureString .. L["Fetch Absorb"],
         type = "toggle",
         test = "true",
         reloadOptions = true,
-        enable = WeakAuras.IsMistsOrRetail(),
-        hidden = not WeakAuras.IsMistsOrRetail(),
       },
       {
         name = "absorbMode",
@@ -3380,17 +3376,14 @@ Private.event_prototypes = {
         test = "true",
         values = "absorb_modes",
         required = true,
-        enable = function(trigger) return WeakAuras.IsMistsOrRetail() and trigger.use_showAbsorb end,
-        hidden = not WeakAuras.IsMistsOrRetail()
+        enable = function(trigger) return trigger.use_showAbsorb end,
       },
       {
         name = "showHealAbsorb",
-        display = L["Fetch Heal Absorb"],
+        display = WeakAuras.newFeatureString .. L["Fetch Heal Absorb"],
         type = "toggle",
         test = "true",
         reloadOptions = true,
-        enable = WeakAuras.IsMistsOrRetail(),
-        hidden = not WeakAuras.IsMistsOrRetail()
       },
       {
         name = "absorbHealMode",
@@ -3399,8 +3392,7 @@ Private.event_prototypes = {
         test = "true",
         values = "absorb_modes",
         required = true,
-        enable = function(trigger) return WeakAuras.IsMistsOrRetail() and trigger.use_showHealAbsorb end,
-        hidden = not WeakAuras.IsMistsOrRetail()
+        enable = function(trigger) return trigger.use_showHealAbsorb end,
       },
       {
         name = "absorb",
@@ -3409,8 +3401,7 @@ Private.event_prototypes = {
         init = "UnitGetTotalAbsorbs(unit)",
         store = true,
         conditionType = "number",
-        enable = function(trigger) return WeakAuras.IsMistsOrRetail() and trigger.use_showAbsorb end,
-        hidden = not WeakAuras.IsMistsOrRetail(),
+        enable = function(trigger) return trigger.use_showAbsorb end,
         multiEntry = {
           operator = "and",
           limit = 2
@@ -3424,8 +3415,7 @@ Private.event_prototypes = {
         init = "UnitGetTotalHealAbsorbs(unit)",
         store = true,
         conditionType = "number",
-        enable = function(trigger) return WeakAuras.IsMistsOrRetail() and trigger.use_showHealAbsorb end,
-        hidden = not WeakAuras.IsMistsOrRetail(),
+        enable = function(trigger) return trigger.use_showHealAbsorb end,
         multiEntry = {
           operator = "and",
           limit = 2
@@ -3678,7 +3668,7 @@ Private.event_prototypes = {
           end
         end,
         enable = function(trigger)
-          return WeakAuras.IsMistsOrRetail() and trigger.use_showAbsorb;
+          return trigger.use_showAbsorb;
         end
       },
       {
@@ -3690,7 +3680,7 @@ Private.event_prototypes = {
           end
           if (trigger.absorbHealMode == "OVERLAY_FROM_START") then
             return 0, healabsorb;
-          elseif (trigger.absorbMode == "OVERLAY_FROM_END") then
+          elseif (trigger.absorbHealMode == "OVERLAY_FROM_END") then
             return "forward", healabsorb;
           else
             local total = state.total
@@ -3701,7 +3691,7 @@ Private.event_prototypes = {
           end
         end,
         enable = function(trigger)
-          return WeakAuras.IsMistsOrRetail() and trigger.use_showHealAbsorb;
+          return trigger.use_showHealAbsorb;
         end
       },
       {
