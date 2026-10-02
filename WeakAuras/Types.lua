@@ -3255,7 +3255,7 @@ Private.classification_types = {
   minus = L["Minus (Small Nameplate)"]
 }
 
-if WeakAuras.IsTBCOrWrathOrMistsOrRetail() then
+if not WeakAuras.IsCataClassic() then
   ---@type table<number, string>
   Private.creature_type_types = {}
   for _, creatureID in ipairs(C_CreatureInfo.GetCreatureTypeIDs()) do
@@ -4276,7 +4276,7 @@ Private.glow_types = {
   buttonOverlay = L["Action Button Glow"],
 }
 
-if WeakAuras.IsTBCOrWrathOrMistsOrRetail() then
+if not WeakAuras.IsCataClassic() then
   Private.glow_types.Proc = L["Proc Glow"]
 end
 
