@@ -4,7 +4,7 @@ local AddonName, TemplatePrivate = ...
 
 local AceGUI = LibStub("AceGUI-3.0");
 local floor, ceil, tinsert = floor, ceil, tinsert;
-local CreateFrame, UnitClass, UnitRace, GetSpecialization = CreateFrame, UnitClass, UnitRace, GetSpecialization;
+local CreateFrame, UnitClass, UnitRace = CreateFrame, UnitClass, UnitRace;
 ---@class WeakAuras
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L
@@ -1870,7 +1870,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
     end
     newView.class = select(2, UnitClass("player"));
     if WeakAuras.IsRetail() then
-      newView.spec = GetSpecialization() or 1;
+      newView.spec = C_SpecializationInfo.GetSpecialization() or 1;
     else
       newView.spec = 1
     end

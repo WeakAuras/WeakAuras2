@@ -34,21 +34,6 @@ else
   Private.ExecEnv.IsUsableSpell = C_Spell.IsSpellUsable
 end
 
-if C_SpecializationInfo and C_SpecializationInfo.GetSpecialization then
-  Private.ExecEnv.GetSpecialization = C_SpecializationInfo.GetSpecialization
-else
-  Private.ExecEnv.GetSpecialization = GetSpecialization
-end
-if C_SpecializationInfo and C_SpecializationInfo.GetSpecializationInfo then
-  Private.ExecEnv.GetSpecializationInfo = C_SpecializationInfo.GetSpecializationInfo
-else
-  Private.ExecEnv.GetSpecializationInfo = GetSpecializationInfo
-end
-if C_SpecializationInfo and C_SpecializationInfo.GetNumSpecializationsForClassID then
-  Private.ExecEnv.GetNumSpecializationsForClassID = C_SpecializationInfo.GetNumSpecializationsForClassID
-else
-  Private.ExecEnv.GetNumSpecializationsForClassID = GetNumSpecializationsForClassID
-end
 if WeakAuras.IsMists() then
   local specsByClassID = {
     [0] = { 74, 81, 79 },

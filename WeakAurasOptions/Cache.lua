@@ -8,7 +8,7 @@ local OptionsPrivate = select(2, ...)
 local pairs, error, coroutine = pairs, error, coroutine
 
 -- WoW APIs
-local IsSpellKnown = IsSpellKnown
+local IsSpellInSpellBook = C_SpellBook.IsSpellInSpellBook
 
 ---@class WeakAuras
 local WeakAuras = WeakAuras
@@ -175,7 +175,7 @@ function spellCache.GetIcon(name)
         for spell, icon in icons.spells:gmatch("(%d+)=(%d+)") do
           local spellId = tonumber(spell)
 
-          if not bestMatch or (spellId and spellId ~= 0 and IsSpellKnown(spellId)) then
+          if not bestMatch or (spellId and spellId ~= 0 and IsSpellInSpellBook(spellId, Enum.SpellBookSpellBank.Player, false)) then
             bestMatch = tonumber(icon)
           end
         end
