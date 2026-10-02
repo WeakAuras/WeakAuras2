@@ -84,7 +84,14 @@ end
 -- Lua APIs
 local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
-local UnitAura = UnitAura
+
+local UnitAura = function(unit, i, filter)
+  local auraData = C_UnitAuras.GetAuraDataByIndex(unit, i, filter)
+  if not auraData then
+    return nil
+  end
+  return AuraUtil.UnpackAuraData(auraData)
+end
 
 local newAPI = WeakAuras.IsRetail()
 
@@ -4305,7 +4312,7 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
   local system = "bufftrigger2 - multi - " .. event
   Private.StartProfileSystem(system)
   if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-    CombatLog(CombatLogGetCurrentEventInfo())
+    CombatLog(C_CombatLog.GetCurrentEventInfo())
   elseif event == "UNIT_TARGET" then
     TrackUid(...)
   elseif Private.player_target_events[event] then

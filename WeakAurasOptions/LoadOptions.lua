@@ -42,7 +42,7 @@ local function CorrectSpellName(input)
       local spells = spellCache.GetSpellsMatching(input)
       if type(spells) == "table" then
         for id in pairs(spells) do
-          if IsPlayerSpell(id) then
+          if C_SpellBook.IsSpellKnown(id, Enum.SpellBookSpellBank.Player) then
             return id
           end
         end

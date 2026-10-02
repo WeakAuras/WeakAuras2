@@ -11,29 +11,16 @@ local L = WeakAuras.L
 local LibSerialize = LibStub("LibSerialize")
 local LibDeflate = LibStub:GetLibrary("LibDeflate")
 
-local UnitAura = UnitAura
-if UnitAura == nil then
-  --- Deprecated in 10.2.5
-  UnitAura = function(unitToken, index, filter)
-		local auraData = C_UnitAuras.GetAuraDataByIndex(unitToken, index, filter)
-		if not auraData then
-			return nil;
-		end
-
-		return AuraUtil.UnpackAuraData(auraData)
-	end
-end
-
 -- Unit Aura functions that return info about the first Aura matching the spellName or spellID given on the unit.
 local WA_GetUnitAura = function(unit, spell, filter)
   if filter and not filter:upper():find("FUL") then
-      filter = filter.."|HELPFUL"
+    filter = filter.."|HELPFUL"
   end
   for i = 1, 255 do
-    local name, _, _, _, _, _, _, _, _, spellId = UnitAura(unit, i, filter)
-    if not name then return end
-    if spell == spellId or spell == name then
-      return UnitAura(unit, i, filter)
+    local auraData = C_UnitAuras.GetAuraDataByIndex(unit, i, filter)
+    if not auraData then return end
+    if spell == auraData.spellId or spell == auraData.name then
+      return AuraUtil.UnpackAuraData(auraData)
     end
   end
 end
