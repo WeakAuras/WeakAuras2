@@ -136,6 +136,170 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Kil'jaeden"], 729 },
       }
     },
+    -- Phase 6
+    --[[
+    {
+      L["Ulduar"],
+      {
+        -- The Siege of Ulduar
+        { L["Flame Leviathan"], 744 },
+        { L["Ignis the Furnace Master"], 745 },
+        { L["Razorscale"], 746 },
+        { L["XT-002 Deconstructor"], 747 },
+        -- The Antechamber of Ulduar
+        { L["The Iron Council"], 748 },
+        { L["Kologarn"], 749 },
+        { L["Auriaya"], 750 },
+        -- The Keepers of Ulduar
+        { L["Hodir"], 751 },
+        { L["Thorim"], 752 },
+        { L["Freya"], 753 },
+        { L["Mimiron"], 754 },
+        -- The Descent into Madness
+        { L["General Vezax"], 755 },
+        { L["Yogg-Saron"], 756 },
+        -- Celestial Planetarium
+        { L["Algalon the Observer"], 757 },
+      }
+    },
+    ]]
+    -- Phase 7
+    --[[
+    {
+      L["Karazhan"],
+      {
+        { L["Attumen the Huntsman"], 652 },
+        { L["Moroes"], 653 },
+        { L["Maiden of Virtue"], 654 },
+        { L["Opera Hall"], 655 },
+        { L["The Curator"], 656 },
+        { L["Terestian Illhoof"], 657 },
+        { L["Shade of Aran"], 658 },
+        { L["Netherspite"], 659 },
+        { L["Chess Event"], 660 },
+        { L["Prince Malchezaar"], 661 },
+        { L["Nightbane"], 662 },
+      }
+    },
+    {
+      L["Gruul's Lair"],
+      {
+        { L["High King Maulgar"], 649 },
+        { L["Gruul the Dragonkiller"], 650 },
+      }
+    },
+    {
+      L["Magtheridon's Lair"],
+      {
+        { L["Magtheridon"], 651 },
+      }
+    },
+    ]]
+    -- Phase 8
+    --[[
+    {
+      L["Blackwing Lair"],
+      {
+        { L["Razorgore the Untamed"], 610 },
+        { L["Vaelastrasz the Corrupt"], 611 },
+        { L["Broodlord Lashlayer"], 612 },
+        { L["Firemaw"], 613 },
+        { L["Ebonroc"], 614 },
+        { L["Flamegor"], 615 },
+        { L["Chromaggus"], 616 },
+        { L["Nefarian"], 617 },
+      }
+    },
+    ]]
+    -- Phase 9
+    --[[
+    {
+      L["Ruins of Ahn'Qiraj"],
+      {
+        { L["Kurinnaxx"], 718 },
+        { L["General Rajaxx"], 719 },
+        { L["Moam"], 720 },
+        { L["Buru the Gorger"], 721 },
+        { L["Ayamiss the Hunter"], 722 },
+        { L["Ossirian the Unscarred"], 723 },
+      }
+    },
+    {
+      L["Ahn'Qiraj"],
+      {
+        { L["The Prophet Skeram"], 709 },
+        { L["Silithid Royalty"], 710 },
+        { L["Battleguard Sartura"], 711 },
+        { L["Fankriss the Unyielding"], 712 },
+        { L["Viscidus"], 713 },
+        { L["Princess Huhuran"], 714 },
+        { L["Twin Emperors"], 715 },
+        { L["Ouro"], 716 },
+        { L["C'thun"], 717 },
+      }
+    },
+    ]]
+    -- Phase 10
+    --[[
+    {
+      L["Icecrown Citadel"],
+      {
+        -- The Lower Spire
+        { L["Lord Marrowgar"], 845 },
+        { L["Lady Deathwhisper"], 846 },
+        { L["Icecrown Gunship Battle"], 847 },
+        { L["Deathbringer Saurfang"], 848 },
+        -- The Plagueworks
+        { L["Festergut"], 849 },
+        { L["Rotface"], 850 },
+        { L["Professor Putricide"], 851 },
+        -- The Crimson Hall
+        { L["Blood Council"], 852 },
+        { L["Queen Lana'thel"], 853 },
+        -- The Frostwing Halls
+        { L["Valithria Dreamwalker"], 854 },
+        { L["Sindragosa"], 855 },
+        -- The Frozen Throne
+        { L["The Lich King"], 856 },
+      }
+    },
+    {
+      L["The Ruby Sanctum"],
+      {
+        { L["Baltharus the Warborn"], 890 },
+        { L["Saviana Ragefire"], 891 },
+        { L["General Zarithrian"], 893 },
+        { L["Halion"], 887 },
+      }
+    },
+    ]]
+    -- Phase 11
+    --[[
+    {
+      L["The Battle for Mount Hyjal"],
+      {
+        { L["Rage Winterchill"], 618 },
+        { L["Anetheron"], 619 },
+        { L["Kaz'rogal"], 620 },
+        { L["Azgalor"], 621 },
+        { L["Archimonde"], 622 },
+      }
+    },
+    {
+      L["Black Temple"],
+      {
+        { L["High Warlord Naj'entus"], 601 },
+        { L["Supremus"], 602 },
+        { L["Shade of Akama"], 603 },
+        { L["Teron Gorefiend"], 604 },
+        { L["Gurtogg Bloodboil"], 605 },
+        { L["Reliquary of Souls"], 606 },
+        { L["Mother Shahraz"], 607 },
+        { L["The Illidari Council"], 608 },
+        { L["Illidan Stormrage"], 609 },
+      }
+    },
+    ]]
     {
       L["Vault of Archavon"],
       {
