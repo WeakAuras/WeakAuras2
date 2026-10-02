@@ -55,7 +55,7 @@ local Private = select(2, ...)
 local tinsert, tconcat, wipe = table.insert, table.concat, wipe
 local tostring, pairs, type = tostring, pairs, type
 local error = error
-local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo;
+local CombatLogGetCurrentEventInfo = C_CombatLog.GetCurrentEventInfo;
 
 -- WoW APIs
 local IsPlayerMoving = IsPlayerMoving
@@ -3095,10 +3095,9 @@ do
   ---@param identifier string | number
   ---@return number? startTime, number? duration
   function WeakAuras.GetSpellLossOfControlCooldown(identifier)
-    if WeakAuras.IsTWW() then
-      return C_Spell.GetSpellLossOfControlCooldown(identifier)
-    else
-      return GetSpellLossOfControlCooldown(identifier)
+    local lossOfControlInfo = C_Spell.GetSpellLossOfControlCooldownInfo(identifier)
+    if lossOfControlInfo then
+      return lossOfControlInfo.startTime, lossOfControlInfo.duration
     end
   end
 
@@ -3564,7 +3563,7 @@ do
   if WeakAuras.IsTWW() then
     GetOverrideSpell = C_Spell.GetOverrideSpell
   else
-    GetOverrideSpell = FindSpellOverrideByID
+    GetOverrideSpell = C_SpellBook.FindSpellOverrideByID
   end
 
   function Private.ExecEnv.GetEffectiveSpellId(spellId, exactMatch, followoverride)
@@ -4088,7 +4087,7 @@ function Private.ExecEnv.CheckTotemSpellId(spellId, triggerSpellId, followoverri
   end
 
   if followoverride then
-    if spellId == FindSpellOverrideByID(triggerSpellId) then
+    if spellId == C_SpellBook.FindSpellOverrideByID(triggerSpellId) then
       return true
     end
   end
@@ -5239,8 +5238,8 @@ do
     end
   elseif class == "MONK" then
     function WeakAuras.CalculatedGcdDuration()
-      local spec = Private.ExecEnv.GetSpecialization()
-      local primaryStat = select(6, Private.ExecEnv.GetSpecializationInfo(spec))
+      local spec = C_SpecializationInfo.GetSpecialization()
+      local primaryStat = select(6, C_SpecializationInfo.GetSpecializationInfo(spec))
       if primaryStat == LE_UNIT_STAT_AGILITY then
         return 1
       end

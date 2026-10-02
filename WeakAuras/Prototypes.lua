@@ -788,9 +788,9 @@ if WeakAuras.IsRetail() then
 
     if (event == "WA_DELAYED_PLAYER_ENTERING_WORLD" or event == "PLAYER_TALENT_UPDATE") then
       C_Timer.After(1, function()
-        local spec = Private.ExecEnv.GetSpecialization()
+        local spec = C_SpecializationInfo.GetSpecialization()
         if type(spec) == "number" and spec > 0 then
-          local specId = Private.ExecEnv.GetSpecializationInfo(spec)
+          local specId = C_SpecializationInfo.GetSpecializationInfo(spec)
           if specId then
             Private.talentInfo[specId] = nil
             Private.GetTalentData(specId)
@@ -1046,13 +1046,13 @@ end
 function Private.ExecEnv.CheckCombatLogFlags(flags, flagToCheck)
   if type(flags) ~= "number" then return end
   if(flagToCheck == "Mine") then
-    return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0
+    return bit.band(flags, Enum.CombatLogObject.AffiliationMine) > 0
   elseif (flagToCheck == "InGroup") then
-    return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_OUTSIDER) == 0
+    return bit.band(flags, Enum.CombatLogObject.AffiliationOutsider) == 0
   elseif (flagToCheck == "InParty") then
-    return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_PARTY) > 0
+    return bit.band(flags, Enum.CombatLogObject.AffiliationParty) > 0
   elseif (flagToCheck == "NotInGroup") then
-    return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_OUTSIDER) > 0
+    return bit.band(flags, Enum.CombatLogObject.AffiliationOutsider) > 0
   end
 end
 
@@ -1086,23 +1086,24 @@ function Private.ExecEnv.CheckRaidFlags(flags, flagToCheck)
   flagToCheck = tonumber(flagToCheck)
   if not flagToCheck or not flags then return end --bailout
   if flagToCheck == 0 then --no raid mark
-    return bit.band(flags, COMBATLOG_OBJECT_RAIDTARGET_MASK) == 0
+    return bit.band(flags, Constants.CombatLogObjectTargetMasks.COMBATLOG_OBJECT_RAID_TARGET_MASK) == 0
   elseif flagToCheck == 9 then --any raid mark
-    return bit.band(flags, COMBATLOG_OBJECT_RAIDTARGET_MASK) > 0
+    return bit.band(flags, Constants.CombatLogObjectTargetMasks.COMBATLOG_OBJECT_RAID_TARGET_MASK) > 0
   else -- specific raid mark
-    return bit.band(flags, _G['COMBATLOG_OBJECT_RAIDTARGET'..flagToCheck]) > 0
+    return bit.band(flags, Enum.CombatLogObjectTarget['Raidtarget'..flagToCheck]) > 0
   end
 end
 
 local function IsSpellKnownOrOverridesAndBaseIsKnown(spell, pet)
   if spell == 0 then return false end
-  if IsSpellKnown(spell, pet) then
+  local spellBank = pet and Enum.SpellBookSpellBank.Pet or Enum.SpellBookSpellBank.Player
+  if C_SpellBook.IsSpellInSpellBook(spell, spellBank, false) then
     return true
   end
-  local baseSpell = FindBaseSpellByID(spell)
+  local baseSpell = C_SpellBook.FindBaseSpellByID(spell)
   if baseSpell and baseSpell ~= spell and baseSpell ~= 0 then
-    if FindSpellOverrideByID(baseSpell) == spell then
-      return IsSpellKnown(baseSpell, pet)
+    if C_SpellBook.FindSpellOverrideByID(baseSpell) == spell then
+      return C_SpellBook.IsSpellInSpellBook(baseSpell, spellBank, false)
     end
   end
 end
@@ -1111,13 +1112,13 @@ end
 ---@return boolean result
 function WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(spell)
   if spell == 0 or spell >= 2^31 then return false end
-  if IsPlayerSpell(spell) then
+  if C_SpellBook.IsSpellKnown(spell, Enum.SpellBookSpellBank.Player) then
     return true
   end
-  local baseSpell = FindBaseSpellByID(spell)
+  local baseSpell = C_SpellBook.FindBaseSpellByID(spell)
   if baseSpell and baseSpell ~= spell and baseSpell ~= 0 then
-    if FindSpellOverrideByID(baseSpell) == spell then
-      return IsPlayerSpell(baseSpell)
+    if C_SpellBook.FindSpellOverrideByID(baseSpell) == spell then
+      return C_SpellBook.IsSpellKnown(baseSpell, Enum.SpellBookSpellBank.Player)
     end
   end
   return false
@@ -1126,7 +1127,7 @@ end
 ---@private
 function WeakAuras.IsSpellKnownForLoad(spell, exact)
   if spell == 0 or spell >= 2^31 then return false end
-  local result = IsPlayerSpell(spell)
+  local result = C_SpellBook.IsSpellKnown(spell, Enum.SpellBookSpellBank.Player)
                  or IsSpellKnownOrOverridesAndBaseIsKnown(spell, false)
                  or IsSpellKnownOrOverridesAndBaseIsKnown(spell, true)
   if exact or result then
@@ -1150,7 +1151,7 @@ function WeakAuras.IsSpellKnown(spell, pet)
   if (pet) then
     return IsSpellKnownOrOverridesAndBaseIsKnown(spell, true)
   end
-  return IsPlayerSpell(spell) or IsSpellKnownOrOverridesAndBaseIsKnown(spell, false)
+  return C_SpellBook.IsSpellKnown(spell, Enum.SpellBookSpellBank.Player) or IsSpellKnownOrOverridesAndBaseIsKnown(spell, false)
 end
 
 ---@param spell string|number
@@ -1767,7 +1768,7 @@ Private.load_prototype = {
           end
 
           if (trigger.use_spec == nil) then
-            single_spec = Private.ExecEnv.GetSpecialization();
+            single_spec = C_SpecializationInfo.GetSpecialization();
           end
 
           -- If a single specific class was found, load the specific list for it
@@ -1775,7 +1776,7 @@ Private.load_prototype = {
             single_class = select(2, UnitClass("player"))
           end
           if not single_spec then
-            single_spec = Private.ExecEnv.GetSpecialization()
+            single_spec = C_SpecializationInfo.GetSpecialization()
           end
 
           if(single_class and Private.pvp_talent_types_specific[single_class]
@@ -2499,8 +2500,8 @@ Private.event_prototypes = {
         store = true,
         sorted = true,
         conditionType = "select",
-        enable = WeakAuras.IsTBCOrWrathOrMistsOrRetail(),
-        hidden = not WeakAuras.IsTBCOrWrathOrMistsOrRetail(),
+        enable = not WeakAuras.IsCataClassic(),
+        hidden = WeakAuras.IsCataClassic(),
       },
       {
         name = "creatureType",
@@ -2509,7 +2510,7 @@ Private.event_prototypes = {
         store = true,
         test = "true",
         hidden = true,
-        enable = WeakAuras.IsTBCOrWrathOrMistsOrRetail(),
+        enable = not WeakAuras.IsCataClassic(),
       },
       {
         name = "creatureFamilyIndex",
@@ -2590,11 +2591,11 @@ Private.event_prototypes = {
       },
       {
         name = "summonPending",
-        display = L["Summon Pending"],
+        display = WeakAuras.newFeatureString .. L["Summon Pending"],
         type = "tristate",
         width = WeakAuras.doubleWidth,
-        enable = WeakAuras.IsRetail(),
-        hidden = not WeakAuras.IsRetail(),
+        enable = not WeakAuras.IsCataClassic(),
+        hidden = WeakAuras.IsCataClassic(),
         init = "C_IncomingSummon.HasIncomingSummon(unit)",
         store = true,
         conditionType = "bool",
@@ -3222,13 +3223,11 @@ Private.event_prototypes = {
       end
       AddUnitEventForEvents(result, unit, "UNIT_MAXHEALTH")
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
-      if WeakAuras.IsMistsOrRetail() then
-        if trigger.use_showAbsorb then
-          AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
-        end
-        if trigger.use_showHealAbsorb then
-          AddUnitEventForEvents(result, unit, "UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
-        end
+      if trigger.use_showAbsorb then
+        AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
+      end
+      if trigger.use_showHealAbsorb then
+        AddUnitEventForEvents(result, unit, "UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
       end
       if trigger.use_showIncomingHeal then
         AddUnitEventForEvents(result, unit, "UNIT_HEAL_PREDICTION")
@@ -3365,12 +3364,10 @@ Private.event_prototypes = {
       },
       {
         name = "showAbsorb",
-        display = L["Fetch Absorb"],
+        display = WeakAuras.newFeatureString .. L["Fetch Absorb"],
         type = "toggle",
         test = "true",
         reloadOptions = true,
-        enable = WeakAuras.IsMistsOrRetail(),
-        hidden = not WeakAuras.IsMistsOrRetail(),
       },
       {
         name = "absorbMode",
@@ -3379,17 +3376,14 @@ Private.event_prototypes = {
         test = "true",
         values = "absorb_modes",
         required = true,
-        enable = function(trigger) return WeakAuras.IsMistsOrRetail() and trigger.use_showAbsorb end,
-        hidden = not WeakAuras.IsMistsOrRetail()
+        enable = function(trigger) return trigger.use_showAbsorb end,
       },
       {
         name = "showHealAbsorb",
-        display = L["Fetch Heal Absorb"],
+        display = WeakAuras.newFeatureString .. L["Fetch Heal Absorb"],
         type = "toggle",
         test = "true",
         reloadOptions = true,
-        enable = WeakAuras.IsMistsOrRetail(),
-        hidden = not WeakAuras.IsMistsOrRetail()
       },
       {
         name = "absorbHealMode",
@@ -3398,8 +3392,7 @@ Private.event_prototypes = {
         test = "true",
         values = "absorb_modes",
         required = true,
-        enable = function(trigger) return WeakAuras.IsMistsOrRetail() and trigger.use_showHealAbsorb end,
-        hidden = not WeakAuras.IsMistsOrRetail()
+        enable = function(trigger) return trigger.use_showHealAbsorb end,
       },
       {
         name = "absorb",
@@ -3408,8 +3401,7 @@ Private.event_prototypes = {
         init = "UnitGetTotalAbsorbs(unit)",
         store = true,
         conditionType = "number",
-        enable = function(trigger) return WeakAuras.IsMistsOrRetail() and trigger.use_showAbsorb end,
-        hidden = not WeakAuras.IsMistsOrRetail(),
+        enable = function(trigger) return trigger.use_showAbsorb end,
         multiEntry = {
           operator = "and",
           limit = 2
@@ -3423,8 +3415,7 @@ Private.event_prototypes = {
         init = "UnitGetTotalHealAbsorbs(unit)",
         store = true,
         conditionType = "number",
-        enable = function(trigger) return WeakAuras.IsMistsOrRetail() and trigger.use_showHealAbsorb end,
-        hidden = not WeakAuras.IsMistsOrRetail(),
+        enable = function(trigger) return trigger.use_showHealAbsorb end,
         multiEntry = {
           operator = "and",
           limit = 2
@@ -3677,7 +3668,7 @@ Private.event_prototypes = {
           end
         end,
         enable = function(trigger)
-          return WeakAuras.IsMistsOrRetail() and trigger.use_showAbsorb;
+          return trigger.use_showAbsorb;
         end
       },
       {
@@ -3689,7 +3680,7 @@ Private.event_prototypes = {
           end
           if (trigger.absorbHealMode == "OVERLAY_FROM_START") then
             return 0, healabsorb;
-          elseif (trigger.absorbMode == "OVERLAY_FROM_END") then
+          elseif (trigger.absorbHealMode == "OVERLAY_FROM_END") then
             return "forward", healabsorb;
           else
             local total = state.total
@@ -3700,7 +3691,7 @@ Private.event_prototypes = {
           end
         end,
         enable = function(trigger)
-          return WeakAuras.IsMistsOrRetail() and trigger.use_showHealAbsorb;
+          return trigger.use_showHealAbsorb;
         end
       },
       {
@@ -3810,7 +3801,7 @@ Private.event_prototypes = {
             local shardModifier = UnitPowerDisplayMod(powerType)
             local power = UnitPower(unit, powerType, true) / shardModifier
             local total = math.max(1, UnitPowerMax(unit, powerType, true)) / shardModifier
-            if Private.ExecEnv.GetSpecialization() ~= SPEC_WARLOCK_DESTRUCTION then
+            if C_SpecializationInfo.GetSpecialization() ~= SPEC_WARLOCK_DESTRUCTION then
               power = floor(power)
             end
           ]])
@@ -7115,7 +7106,7 @@ Private.event_prototypes = {
         name = "spec",
         display = L["Talent Specialization"],
         type = "select",
-        init = "WeakAuras.IsRetail() and Private.ExecEnv.GetSpecialization()",
+        init = "WeakAuras.IsRetail() and C_SpecializationInfo.GetSpecialization()",
         required = true,
         values = function(trigger)
           return WeakAuras.spec_types_specific[trigger.class]
@@ -7367,7 +7358,7 @@ Private.event_prototypes = {
         type = "multiselect",
         values = function()
           local class = select(2, UnitClass("player"));
-          local spec = Private.ExecEnv.GetSpecialization();
+          local spec = C_SpecializationInfo.GetSpecialization();
           if(Private.pvp_talent_types_specific[class] and  Private.pvp_talent_types_specific[class][spec]) then
             return Private.pvp_talent_types_specific[class][spec];
           else
@@ -7413,7 +7404,7 @@ Private.event_prototypes = {
     name = L["Class and Specialization"],
     init = function(trigger)
       return [[
-         local specId, specName, _, specIcon = Private.ExecEnv.GetSpecializationInfo(Private.ExecEnv.GetSpecialization())
+         local specId, specName, _, specIcon = C_SpecializationInfo.GetSpecializationInfo(C_SpecializationInfo.GetSpecialization())
       ]]
     end,
     args = {
@@ -7459,7 +7450,7 @@ Private.event_prototypes = {
     init = function(trigger)
       return [[
          local lootSpecId = GetLootSpecialization()
-         local currentSpecId = Private.ExecEnv.GetSpecializationInfo(Private.ExecEnv.GetSpecialization())
+         local currentSpecId = C_SpecializationInfo.GetSpecializationInfo(C_SpecializationInfo.GetSpecialization())
          if lootSpecId == 0 then --Player chose 'Current Specialization'
           lootSpecId = currentSpecId
          end
@@ -10358,7 +10349,7 @@ Private.event_prototypes = {
         "PLAYER_TARGET_CHANGED"
       },
       ["unit_events"] = {
-        ["player"] = {"UNIT_STATS", "UNIT_ATTACK_POWER", "UNIT_AURA", "PLAYER_DAMAGE_DONE_MODS", "UNIT_RESISTANCES"}
+        ["player"] = {"UNIT_STATS", "UNIT_ATTACK_POWER", "UNIT_ATTACK_SPEED", "UNIT_AURA", "PLAYER_DAMAGE_DONE_MODS", "UNIT_RESISTANCES", "UNIT_DEFENSE"}
       }
     },
     internal_events = function(trigger, untrigger)
@@ -10377,7 +10368,7 @@ Private.event_prototypes = {
       local ret = [[
         local main_stat, _
         if WeakAuras.IsRetail() then
-          _, _, _, _, _, main_stat = Private.ExecEnv.GetSpecializationInfo(Private.ExecEnv.GetSpecialization() or 0)
+          _, _, _, _, _, main_stat = C_SpecializationInfo.GetSpecializationInfo(C_SpecializationInfo.GetSpecialization() or 0)
         end
       ]]
       return ret;
@@ -10567,8 +10558,8 @@ Private.event_prototypes = {
         init = "GetMeleeHaste()",
         store = true,
         conditionType = "number",
-        enable = WeakAuras.IsTBCOrWrathOrCataOrMists(),
-        hidden = not WeakAuras.IsTBCOrWrathOrCataOrMists(),
+        enable = WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists(),
+        hidden = not WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10633,13 +10624,13 @@ Private.event_prototypes = {
       },
       {
         name = "spellpenpercent",
-        display = L["Spell Peneration Percent"],
+        display = L["Spell Penetration"],
         type = "number",
         init = "GetSpellPenetration()",
         store = true,
-        enable = WeakAuras.IsTBCOrWrathOrCataOrMists(),
+        enable = WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists(),
         conditionType = "number",
-        hidden = not WeakAuras.IsTBCOrWrathOrCataOrMists(),
+        hidden = not WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10851,9 +10842,9 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitDefense('player') + select(2, UnitDefense('player'))",
         store = true,
-        enable = WeakAuras.IsTBCOrWrath(),
+        enable = WeakAuras.IsClassicOrTBCOrWrath(),
         conditionType = "number",
-        hidden = not WeakAuras.IsTBCOrWrath(),
+        hidden = not WeakAuras.IsClassicOrTBCOrWrath(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -11001,9 +10992,7 @@ Private.event_prototypes = {
         type = "number",
         init = "PaperDollFrame_GetArmorReduction(select(2, UnitArmor('player')), UnitEffectiveLevel and UnitEffectiveLevel('player') or UnitLevel('player'))",
         store = true,
-        enable = WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -11029,7 +11018,7 @@ Private.event_prototypes = {
         name = "resiliencerating",
         display = L["Resilience Rating"],
         type = "number",
-        init = WeakAuras.IsTBCOrWrath() and "GetCombatRating(CR_RESILIENCE_PLAYER_DAMAGE_TAKEN)"
+        init = WeakAuras.IsTBCOrWrath() and "GetCombatRating(CR_RESILIENCE_CRIT_TAKEN)"
                 or "GetCombatRating(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)",
         store = true,
         enable = WeakAuras.IsTBCOrWrathOrCataOrMists(),
@@ -11045,6 +11034,7 @@ Private.event_prototypes = {
         display = L["Resilience (%)"],
         type = "number",
         init = WeakAuras.IsTBCOrWrath() and "GetCombatRatingBonus(CR_RESILIENCE_PLAYER_DAMAGE_TAKEN)"
+                or WeakAuras.IsMists() and "GetCombatRatingBonus(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN) + GetModResilienceDamageReduction()"
                 or "GetCombatRatingBonus(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)",
         store = true,
         enable = WeakAuras.IsTBCOrWrathOrCataOrMists(),
@@ -11502,9 +11492,9 @@ Private.event_prototypes = {
       end
       if (trigger.use_petspec) then
         ret = ret .. [[
-          local petspec = Private.ExecEnv.GetSpecialization(false, true)
+          local petspec = C_SpecializationInfo.GetSpecialization(false, true)
           if (petspec) then
-            activeIcon = select(4, Private.ExecEnv.GetSpecializationInfo(petspec, false, true));
+            activeIcon = select(4, C_SpecializationInfo.GetSpecializationInfo(petspec, false, true));
           end
         ]]
       end

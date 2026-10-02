@@ -1,6 +1,6 @@
 if not WeakAuras.IsLibsOK() then return end
 
-local Type, Version = "WeakAurasInputWithIndentation", 2
+local Type, Version = "WeakAurasInputWithIndentation", 3
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -15,7 +15,7 @@ local _G = _G
 
 if not AceGUIWeakAurasInputWithIndentationInsertLink then
   -- upgradeable hook
-  hooksecurefunc("ChatEdit_InsertLink", function(...) return _G.AceGUIWeakAurasInputWithIndentationInsertLink(...) end)
+  hooksecurefunc(ChatFrameUtil, "InsertLink", function(...) return _G.AceGUIWeakAurasInputWithIndentationInsertLink(...) end)
 end
 
 function _G.AceGUIWeakAurasInputWithIndentationInsertLink(text)

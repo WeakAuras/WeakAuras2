@@ -15,9 +15,9 @@ local UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
 local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
   = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
 local UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI
-  = UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI
+  = UnitIsUnit, GetRaidRosterInfo, C_SpecializationInfo.GetSpecialization, UnitInVehicle, UnitHasVehicleUI
 local SendChatMessage, UnitInBattleground, UnitInRaid, UnitInParty, GetTime
-  = SendChatMessage, UnitInBattleground, UnitInRaid, UnitInParty, GetTime
+  = C_ChatInfo.SendChatMessage, UnitInBattleground, UnitInRaid, UnitInParty, GetTime
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
   = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
 local debugstack = debugstack
@@ -1002,8 +1002,8 @@ local function CreateTalentCache()
     local spec = GetSpecialization()
     Private.talent_types_specific[player_class][spec] = Private.talent_types_specific[player_class][spec] or {};
 
-    for tier = 1, MAX_TALENT_TIERS do
-      for column = 1, NUM_TALENT_COLUMNS do
+    for tier = 1, Constants.TalentTierConstants.MAX_TALENT_TIERS do
+      for column = 1, Constants.TalentConsts.NumTalentColumns do
         -- Get name and icon info for the current talent of the current class and save it
         local _, talentName, talentIcon = Private.ExecEnv.GetTalentInfo(tier, column, 1)
         local talentId = (tier-1)*3+column
@@ -1715,13 +1715,13 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     if WeakAuras.IsClassicOrTBCOrWrath() then
       role = UnitGroupRolesAssigned("player")
       if WeakAuras.IsWrathClassic() and role == "NONE" then
-        role = GetTalentGroupRole(GetActiveTalentGroup()) or "NONE"
+        role = GetTalentGroupRole(C_SpecializationInfo.GetActiveSpecGroup()) or "NONE"
       end
     end
   end
 
   vehicle = UnitInVehicle('player') or UnitOnTaxi('player') or false
-  vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar() or HasVehicleActionBar() or false
+  vehicleUi = UnitHasVehicleUI('player') or C_ActionBar.HasOverrideActionBar() or C_ActionBar.HasVehicleActionBar() or false
 
   if WeakAuras.IsCataOrMistsOrRetail() then
     specId, role, position = Private.LibSpecWrapper.SpecRolePositionForUnit("player")
