@@ -10349,7 +10349,7 @@ Private.event_prototypes = {
         "PLAYER_TARGET_CHANGED"
       },
       ["unit_events"] = {
-        ["player"] = {"UNIT_STATS", "UNIT_ATTACK_POWER", "UNIT_AURA", "PLAYER_DAMAGE_DONE_MODS", "UNIT_RESISTANCES"}
+        ["player"] = {"UNIT_STATS", "UNIT_ATTACK_POWER", "UNIT_ATTACK_SPEED", "UNIT_AURA", "PLAYER_DAMAGE_DONE_MODS", "UNIT_RESISTANCES", "UNIT_DEFENSE"}
       }
     },
     internal_events = function(trigger, untrigger)
@@ -10558,8 +10558,8 @@ Private.event_prototypes = {
         init = "GetMeleeHaste()",
         store = true,
         conditionType = "number",
-        enable = WeakAuras.IsTBCOrWrathOrCataOrMists(),
-        hidden = not WeakAuras.IsTBCOrWrathOrCataOrMists(),
+        enable = WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists(),
+        hidden = not WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10624,13 +10624,13 @@ Private.event_prototypes = {
       },
       {
         name = "spellpenpercent",
-        display = L["Spell Peneration Percent"],
+        display = L["Spell Penetration"],
         type = "number",
         init = "GetSpellPenetration()",
         store = true,
-        enable = WeakAuras.IsTBCOrWrathOrCataOrMists(),
+        enable = WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists(),
         conditionType = "number",
-        hidden = not WeakAuras.IsTBCOrWrathOrCataOrMists(),
+        hidden = not WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10842,9 +10842,9 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitDefense('player') + select(2, UnitDefense('player'))",
         store = true,
-        enable = WeakAuras.IsTBCOrWrath(),
+        enable = WeakAuras.IsClassicOrTBCOrWrath(),
         conditionType = "number",
-        hidden = not WeakAuras.IsTBCOrWrath(),
+        hidden = not WeakAuras.IsClassicOrTBCOrWrath(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10992,9 +10992,7 @@ Private.event_prototypes = {
         type = "number",
         init = "PaperDollFrame_GetArmorReduction(select(2, UnitArmor('player')), UnitEffectiveLevel and UnitEffectiveLevel('player') or UnitLevel('player'))",
         store = true,
-        enable = WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -11020,7 +11018,7 @@ Private.event_prototypes = {
         name = "resiliencerating",
         display = L["Resilience Rating"],
         type = "number",
-        init = WeakAuras.IsTBCOrWrath() and "GetCombatRating(CR_RESILIENCE_PLAYER_DAMAGE_TAKEN)"
+        init = WeakAuras.IsTBCOrWrath() and "GetCombatRating(CR_RESILIENCE_CRIT_TAKEN)"
                 or "GetCombatRating(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)",
         store = true,
         enable = WeakAuras.IsTBCOrWrathOrCataOrMists(),
@@ -11036,6 +11034,7 @@ Private.event_prototypes = {
         display = L["Resilience (%)"],
         type = "number",
         init = WeakAuras.IsTBCOrWrath() and "GetCombatRatingBonus(CR_RESILIENCE_PLAYER_DAMAGE_TAKEN)"
+                or WeakAuras.IsMists() and "GetCombatRatingBonus(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN) + GetModResilienceDamageReduction()"
                 or "GetCombatRatingBonus(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)",
         store = true,
         enable = WeakAuras.IsTBCOrWrathOrCataOrMists(),
