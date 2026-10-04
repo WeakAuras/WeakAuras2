@@ -144,6 +144,32 @@ local function AddOptions(allOptions, data)
         maxTriggerNumForExpand = max(maxTriggerNumForExpand, #data.triggers)
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
+    },
+    pasteTrigger = {
+      type = "execute",
+      width = WeakAuras.normalWidth,
+      name = L["Paste Trigger"],
+      order = 2,
+      disabled = function()
+        return OptionsPrivate.GetPickedDisplay().controlledChildren ~= nil
+      end,
+      hidden = function()
+        return not OptionsPrivate.clipboard or OptionsPrivate.clipboard.type ~= "trigger"
+      end,
+      func = function()
+        local triggernum = #data.triggers + 1
+        OptionsPrivate.SetCollapsed(collapsedId, "trigger", triggernum, false)
+        maxTriggerNumForExpand = max(maxTriggerNumForExpand, triggernum)
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "insert",
+          path = {"triggers"},
+          payload = {
+            index = triggernum,
+            value = CopyTable(OptionsPrivate.clipboard.data)
+          }
+        })
+      end
     }
   }
 
@@ -359,6 +385,17 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
     WeakAuras.Add(data)
     WeakAuras.ClearAndUpdateOptions(data.id)
   end
+  options.__copy = {
+    disabled = function()
+      return OptionsPrivate.GetPickedDisplay().controlledChildren ~= nil
+    end,
+    func = function()
+      OptionsPrivate.clipboard = {
+        type = "trigger",
+        data = CopyTable(data.triggers[triggernum])
+      }
+    end
+  }
   options.__delete = {
     disabled = function()
       return #data.triggers == 1
