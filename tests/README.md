@@ -11,6 +11,10 @@ that the escape routes we have found and closed stay closed:
 - `common_options_test.lua` checks that the options panel evaluates stored
   custom code only inside the sandbox when it renders the error label under a
   code box.
+- `wrapped_systems_test.lua` checks that a callback an aura schedules through
+  `C_Timer` or `WeakAuras.timer` runs with that aura's environment restored, and
+  that an error in it is reported against the aura instead of escaping to the
+  timer library unattributed.
 
 A passing run is not a security proof. The tests only probe the routes they
 name. They cannot show that the block lists are complete, that no other route

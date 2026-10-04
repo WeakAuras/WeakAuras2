@@ -36,7 +36,18 @@ local WrapData = {
     { name = "After", arg = 2},
     { name = "NewTimer", arg = 2},
     { name = "NewTicker", arg = 2}
+  },
+  -- AceTimer, reached from custom code as WeakAuras.timer:ScheduleTimer(func, delay).
+  -- The colon call puts the system in argument 1, so the callback is argument 2 here too.
+  timer = {
+    { name = "ScheduleTimer", arg = 2},
+    { name = "ScheduleRepeatingTimer", arg = 2}
   }
+}
+
+-- Not every wrapped system is a global.
+local Systems = {
+  timer = function() return WeakAuras.timer end
 }
 
 --- @type fun(id: auraId, cloneId: string, system: any, funcs: {name: string, arg: number}[])
@@ -70,7 +81,8 @@ Private.AuraEnvironmentWrappedSystem.Get = function(systemName, id, cloneId)
   local cloneIdKey = cloneId or ""
   wrappers[id] = wrappers[id] or {}
   wrappers[id][cloneIdKey] = wrappers[id][cloneIdKey] or {}
+  local resolve = Systems[systemName]
   wrappers[id][cloneIdKey][systemName] = wrappers[id][cloneIdKey][systemName]
-    or Wrap(id, cloneId, _G[systemName], WrapData[systemName])
+    or Wrap(id, cloneId, resolve and resolve() or _G[systemName], WrapData[systemName])
   return wrappers[id][cloneIdKey][systemName]
 end

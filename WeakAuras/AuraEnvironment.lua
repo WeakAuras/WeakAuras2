@@ -521,6 +521,21 @@ local FakeWeakAurasMixin = {
   override = {
     me = GetUnitName("player", true),
     myGUID = UnitGUID("player"),
+    -- AceTimer. A scheduled callback runs long after the aura environment it was
+    -- created in is gone, so an error in it named neither the aura nor anything else
+    -- useful. Route it through the same wrapper C_Timer uses, which restores the
+    -- environment and attributes the error. Looked up per access because the wrapper
+    -- belongs to one aura, while this table is shared.
+    timer = setmetatable({}, {
+      __index = function(_, key)
+        if not current_aura_env then
+          return WeakAuras.timer[key]
+        end
+        return Private.AuraEnvironmentWrappedSystem.Get("timer",
+                 current_aura_env.id, current_aura_env.cloneId)[key]
+      end,
+      __metatable = false
+    }),
     GetData = function(id)
       local currentId = Private.UIDtoID(current_uid)
       getDataCallCounts[currentId] = getDataCallCounts[currentId] + 1
