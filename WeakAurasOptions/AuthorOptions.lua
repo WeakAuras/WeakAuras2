@@ -751,6 +751,47 @@ local function generateKey(prefix, options, index)
   return ensureUniqueKey(prefix, "", options, index)
 end
 
+---@type fun(data: auraData, parent: Option?)
+local function pasteOptions(data, parent)
+  local records = {}
+  for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+    local reference = parent and parent.references[child.id]
+    if not parent or reference then
+      local childOptions = reference and reference.options[reference.index].subOptions or child.authorOptions
+      local path = reference and reference.path or {}
+      local pastedOptions = Mixin({}, childOptions)
+      for _, option in ipairs(OptionsPrivate.clipboard.data) do
+        local newOption = CopyTable(option)
+        if newOption.key then
+          for _, existingOption in ipairs(pastedOptions) do
+            if existingOption.key == newOption.key then
+              newOption.key = generateKey(newOption.key .. "copy", pastedOptions, 1)
+              if newOption.name then
+                newOption.name = newOption.name .. " - " .. L["Copy"]
+              end
+              break
+            end
+          end
+        end
+        tinsert(pastedOptions, newOption)
+        local collapsePath = CopyTable(path)
+        tinsert(collapsePath, #pastedOptions)
+        OptionsPrivate.SetCollapsed(child.id, "author", collapsePath, false)
+        tinsert(records, {
+          uid = child.uid,
+          actionType = "insert",
+          path = expandSubOptionsPath(path),
+          payload = {
+            index = #pastedOptions,
+            value = newOption
+          }
+        })
+      end
+    end
+  end
+  OptionsPrivate.Private.TimeMachine:AppendMany(records)
+end
+
 ---@type table<fun(options: Option[], args: table, data: auraData, order: function, prefix: string, i: number)>
 local typeControlAdders
 ---@type fun(data: auraData, options: table, index: number): function, function
@@ -926,7 +967,7 @@ local function addAuthorModeOption(options, args, data, order, prefix, i)
 
   local _, optionData = next(option.references)
   local isInGroup = optionData.parent ~= nil
-  local buttonWidth = 0.6
+  local buttonWidth = 0.75
   if isInGroup then
     buttonWidth = buttonWidth + 0.3
   end
@@ -1240,6 +1281,30 @@ local function addAuthorModeOption(options, args, data, order, prefix, i)
     order = order(),
     func = duplicate(data, options, i),
     image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\duplicate",
+    imageWidth = 24,
+    imageHeight = 24,
+    control = "WeakAurasIcon"
+  }
+
+  args[prefix .. "copy"] = {
+    type = "execute",
+    width = 0.15,
+    name = L["Copy"],
+    order = order(),
+    func = function()
+      OptionsPrivate.clipboard = {
+        type = "option",
+        data = {}
+      }
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+        local reference = option.references[child.id]
+        if reference then
+          tinsert(OptionsPrivate.clipboard.data, CopyTable(reference.options[reference.index]))
+        end
+      end
+      WeakAuras.ClearAndUpdateOptions(data.id)
+    end,
+    image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\copy",
     imageWidth = 24,
     imageHeight = 24,
     control = "WeakAurasIcon"
@@ -2488,6 +2553,18 @@ typeControlAdders = {
         OptionsPrivate.Private.TimeMachine:Commit()
       end
     }
+    args[prefix .. "pasteSubOption"] = {
+      type = "execute",
+      name = L["Paste Option"],
+      order = order(),
+      width = WeakAuras.normalWidth,
+      hidden = function()
+        return not OptionsPrivate.clipboard or OptionsPrivate.clipboard.type ~= "option"
+      end,
+      func = function()
+        pasteOptions(data, option)
+      end
+    }
     args[prefix .. "groupEnd"] = {
       type = "header",
       name = L["End of %s"]:format(option.name),
@@ -3319,6 +3396,18 @@ function OptionsPrivate.GetAuthorOptions(data)
           OptionsPrivate.SetCollapsed(child.id, "author", i, false)
         end
         OptionsPrivate.Private.TimeMachine:Commit()
+      end
+    }
+    args["pasteOption"] = {
+      type = "execute",
+      width = WeakAuras.normalWidth,
+      name = L["Paste Option"],
+      order = order(),
+      hidden = function()
+        return not OptionsPrivate.clipboard or OptionsPrivate.clipboard.type ~= "option"
+      end,
+      func = function()
+        pasteOptions(data)
       end
     }
   else

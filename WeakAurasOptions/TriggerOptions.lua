@@ -144,6 +144,39 @@ local function AddOptions(allOptions, data)
         maxTriggerNumForExpand = max(maxTriggerNumForExpand, #data.triggers)
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
+    },
+    pasteTrigger = {
+      type = "execute",
+      width = WeakAuras.normalWidth,
+      name = L["Paste Trigger"],
+      order = 2,
+      hidden = function()
+        return not OptionsPrivate.clipboard or OptionsPrivate.clipboard.type ~= "trigger"
+      end,
+      func = function(info, button, secondCall)
+        local picked = OptionsPrivate.GetPickedDisplay()
+        if not picked or secondCall then
+          return
+        end
+        local records = {}
+        for child in OptionsPrivate.Private.TraverseLeafsOrAura(picked) do
+          for index, trigger in ipairs(OptionsPrivate.clipboard.data) do
+            local triggernum = #child.triggers + index
+            OptionsPrivate.SetCollapsed(collapsedId, "trigger", triggernum, false)
+            maxTriggerNumForExpand = max(maxTriggerNumForExpand, triggernum)
+            tinsert(records, {
+              uid = child.uid,
+              actionType = "insert",
+              path = {"triggers"},
+              payload = {
+                index = triggernum,
+                value = CopyTable(trigger)
+              }
+            })
+          end
+        end
+        OptionsPrivate.Private.TimeMachine:AppendMany(records)
+      end
     }
   }
 
@@ -357,6 +390,16 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
     local trigger = CopyTable(data.triggers[triggernum])
     tinsert(data.triggers, trigger)
     WeakAuras.Add(data)
+    WeakAuras.ClearAndUpdateOptions(data.id)
+  end
+  options.__copy = function(info, button, secondCall)
+    if not secondCall then
+      OptionsPrivate.clipboard = {
+        type = "trigger",
+        data = {}
+      }
+    end
+    tinsert(OptionsPrivate.clipboard.data, CopyTable(data.triggers[triggernum]))
     WeakAuras.ClearAndUpdateOptions(data.id)
   end
   options.__delete = {
