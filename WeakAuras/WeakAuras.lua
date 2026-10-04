@@ -2228,7 +2228,7 @@ function WeakAuras.Delete(data)
   Private.customActionsFunctions[id] = nil;
   Private.ExecEnv.customConditionsFunctions[id] = nil;
   Private.ExecEnv.conditionTextFormatters[id] = nil
-  Private.frameLevels[id] = nil;
+  Private.frameLevels[uid] = nil;
   Private.ExecEnv.conditionHelpers[data.uid] = nil
 
   Private.RemoveHistory(data.uid)
@@ -2330,9 +2330,6 @@ function WeakAuras.Rename(data, newid)
 
   Private.ExecEnv.conditionTextFormatters[newid] = Private.ExecEnv.conditionTextFormatters[oldid]
   Private.ExecEnv.conditionTextFormatters[oldid] = nil
-
-  Private.frameLevels[newid] = Private.frameLevels[oldid];
-  Private.frameLevels[oldid] = nil;
 
   Private.ProfileRenameAura(oldid, newid);
 
@@ -4420,11 +4417,14 @@ function Private.ValueToPath(data, path, value)
   end
 end
 
+--- Keyed by uid, which outlives a rename, so WeakAuras.Rename has nothing to move
+--- here. WeakAuras.Delete still clears the entry, by uid.
 Private.frameLevels = {};
-local function SetFrameLevel(id, frameLevel)
-  if (Private.frameLevels[id] == frameLevel) then
+local function SetFrameLevel(data, frameLevel)
+  if (Private.frameLevels[data.uid] == frameLevel) then
     return;
   end
+  local id = data.id
   if (Private.regions[id] and Private.regions[id].region) then
     Private.ApplyFrameLevel(Private.regions[id].region, frameLevel)
   end
@@ -4433,11 +4433,11 @@ local function SetFrameLevel(id, frameLevel)
       Private.ApplyFrameLevel(v, frameLevel)
     end
   end
-  Private.frameLevels[id] = frameLevel;
+  Private.frameLevels[data.uid] = frameLevel;
 end
 
 local function FixGroupChildrenOrderImpl(data, frameLevel)
-  SetFrameLevel(data.id, frameLevel)
+  SetFrameLevel(data, frameLevel)
   local offset
   if data.sharedFrameLevel then
     offset = 0
@@ -4448,7 +4448,7 @@ local function FixGroupChildrenOrderImpl(data, frameLevel)
     local childData = WeakAuras.GetData(childId)
     if childData.regionType ~= "group" and childData.regionType ~= "dynamicgroup" then
       frameLevel = frameLevel + offset
-      SetFrameLevel(childId, frameLevel)
+      SetFrameLevel(childData, frameLevel)
     else
       frameLevel = frameLevel + offset
       local endFrameLevel = FixGroupChildrenOrderImpl(childData, frameLevel)
@@ -4467,12 +4467,12 @@ function Private.FixGroupChildrenOrderForGroup(data)
   FixGroupChildrenOrderImpl(data, 0)
 end
 
-local function GetFrameLevelFor(id)
-  return Private.frameLevels[id] or 5;
+local function GetFrameLevelFor(uid)
+  return Private.frameLevels[uid] or 5;
 end
 
 function Private.ApplyFrameLevel(region, frameLevel)
-  frameLevel = frameLevel or GetFrameLevelFor(region.id)
+  frameLevel = frameLevel or GetFrameLevelFor(region.uid)
 
   local setBackgroundFrameLevel = false
   if region.subRegions then
