@@ -99330,6 +99330,17 @@ WeakAuras.ModelPaths = {
      {
       children = {
        {
+        fileId = "7015575",
+        text = "7015575.m2",
+        value = "7015575.m2",
+       },
+      },
+      text = "unk_exp02_7015575",
+      value = "unk_exp02_7015575",
+     },
+     {
+      children = {
+       {
         fileId = "7320488",
         text = "7320488.m2",
         value = "7320488.m2",
@@ -99584,6 +99595,50 @@ WeakAuras.ModelPaths = {
      {
       children = {
        {
+        fileId = "7839799",
+        text = "7839799.m2",
+        value = "7839799.m2",
+       },
+      },
+      text = "unk_exp02_7839799",
+      value = "unk_exp02_7839799",
+     },
+     {
+      children = {
+       {
+        fileId = "7839800",
+        text = "7839800.m2",
+        value = "7839800.m2",
+       },
+      },
+      text = "unk_exp02_7839800",
+      value = "unk_exp02_7839800",
+     },
+     {
+      children = {
+       {
+        fileId = "7839801",
+        text = "7839801.m2",
+        value = "7839801.m2",
+       },
+      },
+      text = "unk_exp02_7839801",
+      value = "unk_exp02_7839801",
+     },
+     {
+      children = {
+       {
+        fileId = "7262688",
+        text = "7262688.m2",
+        value = "7262688.m2",
+       },
+      },
+      text = "unk_exp04_7262688",
+      value = "unk_exp04_7262688",
+     },
+     {
+      children = {
+       {
         fileId = "7507894",
         text = "7507894.m2",
         value = "7507894.m2",
@@ -99591,6 +99646,50 @@ WeakAuras.ModelPaths = {
       },
       text = "unk_exp11_7507894",
       value = "unk_exp11_7507894",
+     },
+     {
+      children = {
+       {
+        fileId = "7896767",
+        text = "7896767.m2",
+        value = "7896767.m2",
+       },
+      },
+      text = "unk_exp11_7896767",
+      value = "unk_exp11_7896767",
+     },
+     {
+      children = {
+       {
+        fileId = "7902963",
+        text = "7902963.m2",
+        value = "7902963.m2",
+       },
+      },
+      text = "unk_exp11_7902963",
+      value = "unk_exp11_7902963",
+     },
+     {
+      children = {
+       {
+        fileId = "7902964",
+        text = "7902964.m2",
+        value = "7902964.m2",
+       },
+      },
+      text = "unk_exp11_7902964",
+      value = "unk_exp11_7902964",
+     },
+     {
+      children = {
+       {
+        fileId = "7902965",
+        text = "7902965.m2",
+        value = "7902965.m2",
+       },
+      },
+      text = "unk_exp11_7902965",
+      value = "unk_exp11_7902965",
      },
     },
     text = "unknown",
