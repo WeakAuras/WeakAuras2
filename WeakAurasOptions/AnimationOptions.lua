@@ -677,25 +677,25 @@ function OptionsPrivate.GetAnimationOptions(data)
             {
               uid = data.uid,
               actionType = "set",
-              path = {"animation", "finish", "colorR"},
+              path = {"animation", "main", "colorR"},
               payload = r
             },
             {
               uid = data.uid,
               actionType = "set",
-              path = {"animation", "finish", "colorG"},
+              path = {"animation", "main", "colorG"},
               payload = g
             },
             {
               uid = data.uid,
               actionType = "set",
-              path = {"animation", "finish", "colorB"},
+              path = {"animation", "main", "colorB"},
               payload = b
             },
             {
               uid = data.uid,
               actionType = "set",
-              path = {"animation", "finish", "colorA"},
+              path = {"animation", "main", "colorA"},
               payload = a
             },
           })
