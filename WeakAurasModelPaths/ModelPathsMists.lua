@@ -1599,6 +1599,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "8201443",
+      text = "bearmisha.m2",
+      value = "bearmisha.m2",
+     },
+    },
+    text = "bearmisha",
+    value = "bearmisha",
+   },
+   {
+    children = {
+     {
       fileId = "123058",
       text = "bearmount.m2",
       value = "bearmount.m2",
@@ -1818,6 +1829,17 @@ WeakAuras.ModelPaths = {
     },
     text = "boar",
     value = "boar",
+   },
+   {
+    children = {
+     {
+      fileId = "8201445",
+      text = "boarhuffer.m2",
+      value = "boarhuffer.m2",
+     },
+    },
+    text = "boarhuffer",
+    value = "boarhuffer",
    },
    {
     children = {
@@ -5462,6 +5484,17 @@ WeakAuras.ModelPaths = {
     },
     text = "forsakencatapult",
     value = "forsakencatapult",
+   },
+   {
+    children = {
+     {
+      fileId = "1633330",
+      text = "foxpet.m2",
+      value = "foxpet.m2",
+     },
+    },
+    text = "foxpet",
+    value = "foxpet",
    },
    {
     children = {
@@ -17788,6 +17821,136 @@ WeakAuras.ModelPaths = {
         fileId = "8267930",
         text = "helm_armor_fisherfolk_c_02_wo_m.m2",
         value = "helm_armor_fisherfolk_c_02_wo_m.m2",
+       },
+       {
+        fileId = "8217160",
+        text = "helm_armor_rexxarclassic_d_01_be_f.m2",
+        value = "helm_armor_rexxarclassic_d_01_be_f.m2",
+       },
+       {
+        fileId = "8217159",
+        text = "helm_armor_rexxarclassic_d_01_be_m.m2",
+        value = "helm_armor_rexxarclassic_d_01_be_m.m2",
+       },
+       {
+        fileId = "8217162",
+        text = "helm_armor_rexxarclassic_d_01_dr_f.m2",
+        value = "helm_armor_rexxarclassic_d_01_dr_f.m2",
+       },
+       {
+        fileId = "8217161",
+        text = "helm_armor_rexxarclassic_d_01_dr_m.m2",
+        value = "helm_armor_rexxarclassic_d_01_dr_m.m2",
+       },
+       {
+        fileId = "8217164",
+        text = "helm_armor_rexxarclassic_d_01_dw_f.m2",
+        value = "helm_armor_rexxarclassic_d_01_dw_f.m2",
+       },
+       {
+        fileId = "8217163",
+        text = "helm_armor_rexxarclassic_d_01_dw_m.m2",
+        value = "helm_armor_rexxarclassic_d_01_dw_m.m2",
+       },
+       {
+        fileId = "8217166",
+        text = "helm_armor_rexxarclassic_d_01_gn_f.m2",
+        value = "helm_armor_rexxarclassic_d_01_gn_f.m2",
+       },
+       {
+        fileId = "8217165",
+        text = "helm_armor_rexxarclassic_d_01_gn_m.m2",
+        value = "helm_armor_rexxarclassic_d_01_gn_m.m2",
+       },
+       {
+        fileId = "8217168",
+        text = "helm_armor_rexxarclassic_d_01_go_f.m2",
+        value = "helm_armor_rexxarclassic_d_01_go_f.m2",
+       },
+       {
+        fileId = "8217167",
+        text = "helm_armor_rexxarclassic_d_01_go_m.m2",
+        value = "helm_armor_rexxarclassic_d_01_go_m.m2",
+       },
+       {
+        fileId = "8217170",
+        text = "helm_armor_rexxarclassic_d_01_hu_f.m2",
+        value = "helm_armor_rexxarclassic_d_01_hu_f.m2",
+       },
+       {
+        fileId = "8217169",
+        text = "helm_armor_rexxarclassic_d_01_hu_m.m2",
+        value = "helm_armor_rexxarclassic_d_01_hu_m.m2",
+       },
+       {
+        fileId = "8217172",
+        text = "helm_armor_rexxarclassic_d_01_ni_f.m2",
+        value = "helm_armor_rexxarclassic_d_01_ni_f.m2",
+       },
+       {
+        fileId = "8217171",
+        text = "helm_armor_rexxarclassic_d_01_ni_m.m2",
+        value = "helm_armor_rexxarclassic_d_01_ni_m.m2",
+       },
+       {
+        fileId = "8217174",
+        text = "helm_armor_rexxarclassic_d_01_or_f.m2",
+        value = "helm_armor_rexxarclassic_d_01_or_f.m2",
+       },
+       {
+        fileId = "8217173",
+        text = "helm_armor_rexxarclassic_d_01_or_m.m2",
+        value = "helm_armor_rexxarclassic_d_01_or_m.m2",
+       },
+       {
+        fileId = "8217182",
+        text = "helm_armor_rexxarclassic_d_01_pa_f.m2",
+        value = "helm_armor_rexxarclassic_d_01_pa_f.m2",
+       },
+       {
+        fileId = "8217181",
+        text = "helm_armor_rexxarclassic_d_01_pa_m.m2",
+        value = "helm_armor_rexxarclassic_d_01_pa_m.m2",
+       },
+       {
+        fileId = "8217180",
+        text = "helm_armor_rexxarclassic_d_01_sc_f.m2",
+        value = "helm_armor_rexxarclassic_d_01_sc_f.m2",
+       },
+       {
+        fileId = "8217179",
+        text = "helm_armor_rexxarclassic_d_01_sc_m.m2",
+        value = "helm_armor_rexxarclassic_d_01_sc_m.m2",
+       },
+       {
+        fileId = "8217176",
+        text = "helm_armor_rexxarclassic_d_01_ta_f.m2",
+        value = "helm_armor_rexxarclassic_d_01_ta_f.m2",
+       },
+       {
+        fileId = "8217175",
+        text = "helm_armor_rexxarclassic_d_01_ta_m.m2",
+        value = "helm_armor_rexxarclassic_d_01_ta_m.m2",
+       },
+       {
+        fileId = "8217178",
+        text = "helm_armor_rexxarclassic_d_01_tr_f.m2",
+        value = "helm_armor_rexxarclassic_d_01_tr_f.m2",
+       },
+       {
+        fileId = "8217177",
+        text = "helm_armor_rexxarclassic_d_01_tr_m.m2",
+        value = "helm_armor_rexxarclassic_d_01_tr_m.m2",
+       },
+       {
+        fileId = "8217184",
+        text = "helm_armor_rexxarclassic_d_01_wo_f.m2",
+        value = "helm_armor_rexxarclassic_d_01_wo_f.m2",
+       },
+       {
+        fileId = "8217183",
+        text = "helm_armor_rexxarclassic_d_01_wo_m.m2",
+        value = "helm_armor_rexxarclassic_d_01_wo_m.m2",
        },
        {
         fileId = "5504037",
@@ -88918,6 +89081,26 @@ WeakAuras.ModelPaths = {
         fileId = "8267905",
         text = "shoulder_armor_fisherfolk_c_02_r.m2",
         value = "shoulder_armor_fisherfolk_c_02_r.m2",
+       },
+       {
+        fileId = "8218002",
+        text = "shoulder_armor_rexxarclassic_d_01_l.m2",
+        value = "shoulder_armor_rexxarclassic_d_01_l.m2",
+       },
+       {
+        fileId = "8218003",
+        text = "shoulder_armor_rexxarclassic_d_01_r.m2",
+        value = "shoulder_armor_rexxarclassic_d_01_r.m2",
+       },
+       {
+        fileId = "8208504",
+        text = "shoulder_armor_rexxarclassic_d_02_l.m2",
+        value = "shoulder_armor_rexxarclassic_d_02_l.m2",
+       },
+       {
+        fileId = "8208505",
+        text = "shoulder_armor_rexxarclassic_d_02_r.m2",
+        value = "shoulder_armor_rexxarclassic_d_02_r.m2",
        },
        {
         fileId = "5504073",
