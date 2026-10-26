@@ -100,6 +100,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
   local hasUp = input.__up
   local hasDown = input.__down
   local hasDuplicate = input.__duplicate
+  local hasCopy = input.__copy
   local hasApplyTemplate = input.__applyTemplate
   local hasDynamicTextCodes = input.__dynamicTextCodes
   local defaultCollapsed = input.__collapsed
@@ -126,7 +127,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
   end
 
   local titleWidth = WeakAuras.doubleWidth - (hasAdd and 0.15 or 0) - (hasDelete and 0.15 or 0)  - (hasUp and 0.15 or 0)
-                     - (hasDown and 0.15 or 0) - (hasDuplicate and 0.15 or 0) - (hasApplyTemplate and 0.15 or 0) - (hasDynamicTextCodes and 0.15 or 0)
+                     - (hasDown and 0.15 or 0) - (hasDuplicate and 0.15 or 0) - (hasCopy and 0.15 or 0) - (hasApplyTemplate and 0.15 or 0) - (hasDynamicTextCodes and 0.15 or 0)
 
   options[key .. "collapseSpacer"] = {
     type = marginTop and "header" or "description",
@@ -214,6 +215,21 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         hidden = hiddenFunc
       }
       setFuncs(options[key .. "duplicateButton"], input.__duplicate)
+    end
+
+    if hasCopy then
+      options[key .. "copyButton"] = {
+        type = "execute",
+        name = L["Copy"],
+        order = order + 0.55,
+        width = 0.15,
+        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\copy",
+        imageWidth = 24,
+        imageHeight = 24,
+        control = "WeakAurasIcon",
+        hidden = hiddenFunc
+      }
+      setFuncs(options[key .. "copyButton"], input.__copy)
     end
 
     if hasDelete then

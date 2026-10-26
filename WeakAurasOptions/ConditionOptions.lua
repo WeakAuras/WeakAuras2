@@ -2337,7 +2337,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
     type = "execute",
     name = GetConditionTitle(conditions[i].changes, i, allProperties),
     order = order,
-    width = WeakAuras.doubleWidth - 0.6,
+    width = WeakAuras.doubleWidth - 0.75,
     func = function()
       if data.controlledChildren then
         for id, reference in pairs(conditions[i].check.references) do
@@ -2499,6 +2499,35 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
     control = "WeakAurasIcon"
   };
   order = order + 1;
+
+  args["condition" .. i .. "copy"] = {
+    type = "execute",
+    name = L["Copy"],
+    order = order,
+    func = function()
+      OptionsPrivate.clipboard = {
+        type = "condition",
+        data = {}
+      }
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+        local index = i
+        if data.controlledChildren then
+          local reference = conditions[i].check.references[child.id]
+          index = reference and reference.conditionIndex
+        end
+        if index then
+          tinsert(OptionsPrivate.clipboard.data, CopyTable(child[conditionVariable][index]))
+        end
+      end
+      WeakAuras.ClearAndUpdateOptions(data.id)
+    end,
+    width = 0.15,
+    image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\copy",
+    imageWidth = 24,
+    imageHeight = 24,
+    control = "WeakAurasIcon"
+  }
+  order = order + 1
 
   args["condition" .. i .. "delete"] = {
     type = "execute",
@@ -3167,6 +3196,39 @@ function OptionsPrivate.GetConditionOptions(data)
     end
   }
   order = order + 1;
+
+  args["pasteCondition"] = {
+    type = "execute",
+    width = WeakAuras.normalWidth,
+    name = L["Paste Condition"],
+    order = order,
+    hidden = function()
+      return not OptionsPrivate.clipboard or OptionsPrivate.clipboard.type ~= "condition"
+    end,
+    func = function()
+      local records = {}
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+        for index, condition in ipairs(OptionsPrivate.clipboard.data) do
+          local conditionIndex = #child[conditionVariable] + index
+          local newCondition = CopyTable(condition)
+          if conditionIndex == 1 and newCondition.linked then
+            newCondition.linked = false
+          end
+          OptionsPrivate.SetCollapsed(child.id, "condition", conditionIndex, false)
+          tinsert(records, {
+            uid = child.uid,
+            actionType = "insert",
+            path = {conditionVariable},
+            payload = {
+              index = conditionIndex,
+              value = newCondition
+            }
+          })
+        end
+      end
+      OptionsPrivate.Private.TimeMachine:AppendMany(records)
+    end
+  }
 
   return options;
 end

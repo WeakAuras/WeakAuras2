@@ -342,7 +342,7 @@ function TimeMachine:Apply(records, delayedEffects)
       error("No action for actionType: " .. record.actionType)
     end
     local data = Private.GetDataByUID(record.uid)
-    action.actor(data, record.path, record.payload)
+    action.actor(data, record.path, copy(record, "payload"))
     if action.autoEffects or record.effects then
       ---@type effectType[]
       local effects = {}
