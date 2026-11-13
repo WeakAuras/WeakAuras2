@@ -92,6 +92,7 @@ clipboard.pasteMenuEntry = {
       for child in OptionsPrivate.Private.TraverseLeafs(clipboard.current) do
         copyAuraPart(clipboard.source, child, clipboard.part);
         WeakAuras.Add(child)
+        WeakAuras.UpdateThumbnail(child);
         WeakAuras.ClearAndUpdateOptions(child.id)
       end
     else
@@ -104,7 +105,7 @@ clipboard.pasteMenuEntry = {
     OptionsPrivate.Private.ScanForLoads({[clipboard.current.id] = true});
     OptionsPrivate.SortDisplayButtons(nil, true);
     WeakAuras.PickDisplay(clipboard.current.id);
-    WeakAuras.UpdateThumbnail(clipboard.current.id);
+    WeakAuras.UpdateThumbnail(clipboard.current);
     WeakAuras.ClearAndUpdateOptions(clipboard.current.id);
   end
 }
