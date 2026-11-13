@@ -350,7 +350,7 @@ local function descColor(option, key)
           desc,
           ("%s #%i: %.2f %.2f %.2f %.2f"):format(
             id,
-            childOption.path[#childOption.path],
+            optionData.path[#optionData.path],
             unpack(childOption[key])
           )
         )
