@@ -2337,7 +2337,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
     type = "execute",
     name = GetConditionTitle(conditions[i].changes, i, allProperties),
     order = order,
-    width = WeakAuras.doubleWidth - 0.6,
+    width = WeakAuras.doubleWidth - 0.75,
     func = function()
       if data.controlledChildren then
         for id, reference in pairs(conditions[i].check.references) do
@@ -2499,6 +2499,25 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
     control = "WeakAurasIcon"
   };
   order = order + 1;
+
+  args["condition" .. i .. "copy"] = {
+    type = "execute",
+    name = L["Copy"],
+    order = order,
+    disabled = data.controlledChildren ~= nil,
+    func = function()
+      OptionsPrivate.clipboard = {
+        type = "condition",
+        data = CopyTable(conditions[i])
+      }
+    end,
+    width = 0.15,
+    image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\copy",
+    imageWidth = 24,
+    imageHeight = 24,
+    control = "WeakAurasIcon"
+  }
+  order = order + 1
 
   args["condition" .. i .. "delete"] = {
     type = "execute",
@@ -3167,6 +3186,34 @@ function OptionsPrivate.GetConditionOptions(data)
     end
   }
   order = order + 1;
+
+  args["pasteCondition"] = {
+    type = "execute",
+    width = WeakAuras.normalWidth,
+    name = L["Paste Condition"],
+    order = order,
+    disabled = data.controlledChildren ~= nil,
+    hidden = function()
+      return not OptionsPrivate.clipboard or OptionsPrivate.clipboard.type ~= "condition"
+    end,
+    func = function()
+      local conditionIndex = #data[conditionVariable] + 1
+      local newCondition = CopyTable(OptionsPrivate.clipboard.data)
+      if conditionIndex == 1 and newCondition.linked then
+        newCondition.linked = false
+      end
+      OptionsPrivate.SetCollapsed(data.id, "condition", conditionIndex, false)
+      OptionsPrivate.Private.TimeMachine:Append({
+        uid = data.uid,
+        actionType = "insert",
+        path = {conditionVariable},
+        payload = {
+          index = conditionIndex,
+          value = newCondition
+        }
+      })
+    end
+  }
 
   return options;
 end

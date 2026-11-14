@@ -68,6 +68,57 @@ local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
       order = order + 1
     end
   end
+  result.pasteSubRegion = {
+    type = "execute",
+    width = WeakAuras.normalWidth,
+    name = L["Paste Sub Element"],
+    order = order,
+    disabled = function()
+      return OptionsPrivate.GetPickedDisplay().controlledChildren ~= nil
+    end,
+    hidden = function()
+      if not OptionsPrivate.clipboard or OptionsPrivate.clipboard.type ~= "subRegion" then
+        return true
+      end
+      local subRegionType = OptionsPrivate.clipboard.data.type
+      return not supported[subRegionType] or not OptionsPrivate.Private.subRegionTypes[subRegionType].supportsAdd
+    end,
+    func = function()
+      local subRegionData = CopyTable(OptionsPrivate.clipboard.data)
+      local subRegionType = OptionsPrivate.Private.subRegionTypes[subRegionData.type]
+      local default = subRegionType.default
+      local defaults = type(default) == "function" and default(data.regionType) or default
+      local anchorData = Mixin({subRegions = {}}, data)
+      local areaAnchors = OptionsPrivate.Private.GetAnchorsForData(anchorData, "area")
+      local pointAnchors = OptionsPrivate.Private.GetAnchorsForData(anchorData, "point")
+      if subRegionData.anchor_area and not areaAnchors[subRegionData.anchor_area] then
+        subRegionData.anchor_area = defaults.anchor_area
+      end
+      if subRegionData.anchor_point and not pointAnchors[subRegionData.anchor_point] then
+        subRegionData.anchor_point = defaults.anchor_point
+      end
+      local index = data.subRegions and #data.subRegions + 1 or 1
+      OptionsPrivate.SetCollapsed("collapse", "region", "sub." .. index .. "." .. subRegionData.type, false)
+      if data.subRegions then
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "insert",
+          path = {"subRegions"},
+          payload = {
+            index = index,
+            value = subRegionData
+          }
+        })
+      else
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "set",
+          path = {"subRegions"},
+          payload = {subRegionData}
+        })
+      end
+    end,
+  }
   regionOption["sub"] = result;
   return hasSubRegions
 end
