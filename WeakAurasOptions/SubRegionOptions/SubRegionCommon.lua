@@ -159,6 +159,17 @@ function OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, sub
     end
     WeakAuras.ClearAndUpdateOptions(parentData.id)
   end
+  options.__copy = {
+    disabled = function()
+      return OptionsPrivate.GetPickedDisplay().controlledChildren ~= nil
+    end,
+    func = function()
+      OptionsPrivate.clipboard = {
+        type = "subRegion",
+        data = CopyTable(parentData.subRegions[index])
+      }
+    end
+  }
   options.__delete = function()
     for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
       OptionsPrivate.DeleteSubRegion(child, index, subRegionType)

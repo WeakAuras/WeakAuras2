@@ -68,6 +68,60 @@ local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
       order = order + 1
     end
   end
+  result.pasteSubRegion = {
+    type = "execute",
+    width = WeakAuras.normalWidth,
+    name = L["Paste Sub Element"],
+    order = order,
+    hidden = function()
+      if not OptionsPrivate.clipboard or OptionsPrivate.clipboard.type ~= "subRegion" then
+        return true
+      end
+      local subRegionType = OptionsPrivate.clipboard.data.type
+      return not supported[subRegionType] or not OptionsPrivate.Private.subRegionTypes[subRegionType].supportsAdd
+    end,
+    func = function()
+      local subRegionType = OptionsPrivate.Private.subRegionTypes[OptionsPrivate.clipboard.data.type]
+      local records = {}
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+        if subRegionType.supports(child.regionType) then
+          local subRegionData = CopyTable(OptionsPrivate.clipboard.data)
+          local default = subRegionType.default
+          local defaults = type(default) == "function" and default(child.regionType) or default
+          local anchorData = Mixin({subRegions = {}}, child)
+          local areaAnchors = OptionsPrivate.Private.GetAnchorsForData(anchorData, "area")
+          local pointAnchors = OptionsPrivate.Private.GetAnchorsForData(anchorData, "point")
+          if subRegionData.anchor_area and not areaAnchors[subRegionData.anchor_area] then
+            subRegionData.anchor_area = defaults.anchor_area
+          end
+          if subRegionData.anchor_point and not pointAnchors[subRegionData.anchor_point] then
+            subRegionData.anchor_point = defaults.anchor_point
+          end
+          local index = child.subRegions and #child.subRegions + 1 or 1
+          OptionsPrivate.SetCollapsed("collapse", "region", "sub." .. index .. "." .. subRegionData.type, false)
+          if child.subRegions then
+            tinsert(records, {
+              uid = child.uid,
+              actionType = "insert",
+              path = {"subRegions"},
+              payload = {
+                index = index,
+                value = subRegionData
+              }
+            })
+          else
+            tinsert(records, {
+              uid = child.uid,
+              actionType = "set",
+              path = {"subRegions"},
+              payload = {subRegionData}
+            })
+          end
+        end
+      end
+      OptionsPrivate.Private.TimeMachine:AppendMany(records)
+    end,
+  }
   regionOption["sub"] = result;
   return hasSubRegions
 end
