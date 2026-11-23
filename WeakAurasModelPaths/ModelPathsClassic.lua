@@ -15159,6 +15159,11 @@ WeakAuras.ModelPaths = {
         value = "lshoulder_leather_pvpalliance_a_01.m2",
        },
        {
+        fileId = "6725199",
+        text = "lshoulder_leather_pvpalliancescarlet_c_01rogue.m2",
+        value = "lshoulder_leather_pvpalliancescarlet_c_01rogue.m2",
+       },
+       {
         fileId = "143165",
         text = "lshoulder_leather_pvphorde_a_01.m2",
         value = "lshoulder_leather_pvphorde_a_01.m2",
@@ -15792,6 +15797,11 @@ WeakAuras.ModelPaths = {
         fileId = "143467",
         text = "rshoulder_leather_pvpalliance_a_01.m2",
         value = "rshoulder_leather_pvpalliance_a_01.m2",
+       },
+       {
+        fileId = "6725200",
+        text = "rshoulder_leather_pvpalliancescarlet_c_01rogue.m2",
+        value = "rshoulder_leather_pvpalliancescarlet_c_01rogue.m2",
        },
        {
         fileId = "143468",
